@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/**
+ * Testfile for testing the influence the spectrum has on the cubes
+ **/ 
 public class Test : MonoBehaviour {
     public float newScale = 20;
     public GameObject[] bass;
     public int number = 5;
     public int s = 1;
 
-	// Use this for initialization
+	
 	void Start () {
         bass = GameObject.FindGameObjectsWithTag("Bass");
 	}
 	
-	// Update is called once per frame
+	
 	void Update () {
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming);
 
