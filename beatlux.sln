@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{8EEF6D7F-A2AE-52FC-9AE7-F64D6E138447}") = "beatlux", "Assembly-CSharp.csproj", "{8728D0D4-EAD0-3B6B-E6EE-7E6174E5C9D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8728D0D4-EAD0-3B6B-E6EE-7E6174E5C9D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8728D0D4-EAD0-3B6B-E6EE-7E6174E5C9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8728D0D4-EAD0-3B6B-E6EE-7E6174E5C9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8728D0D4-EAD0-3B6B-E6EE-7E6174E5C9D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
