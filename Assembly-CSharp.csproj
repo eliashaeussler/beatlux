@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\MenuFunctions.cs" />
      <Compile Include="Assets\Scripts\Spectrum.cs" />
      <Compile Include="Assets\Scripts\Test.cs" />
+     <None Include="Assets\Shaders\ItemGlow.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
