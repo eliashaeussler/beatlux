@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\MenuFunctions.cs" />
      <Compile Include="Assets\Scripts\Spectrum.cs" />
+     <Compile Include="Assets\Scripts\Spectrum1.cs" />
      <Compile Include="Assets\Scripts\Test.cs" />
      <None Include="Assets\Shaders\ItemGlow.shader" />
  <Reference Include="UnityEngine.UI">
