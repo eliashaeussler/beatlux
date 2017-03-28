@@ -22,7 +22,15 @@ public class CameraController : MonoBehaviour {
 
         float zMov = Input.GetAxisRaw("Vertical");
 
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            speed += 5f;
+        }
 
+        if(Input.GetKeyDown(KeyCode.RightShift))
+        {
+            speed -= 5f;
+        }
 
         Vector3 movHorizontal = transform.right * xMov;
         Vector3 movVertical = transform.forward * zMov;
