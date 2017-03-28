@@ -3,11 +3,11 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class CameraMover : MonoBehaviour {
 
-    public Camera cam;
+    
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
-    private Vector3 camRotation = Vector3.zero;
+    
     
    
 
@@ -35,10 +35,7 @@ public class CameraMover : MonoBehaviour {
         rotation = _rotation;
     }
 
-    public void CamRotate(Vector3 _camRotation)
-    {
-        camRotation = _camRotation;
-    }
+    
 
     void PerformMovement()
     {
@@ -53,11 +50,7 @@ public class CameraMover : MonoBehaviour {
     {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
 
-        if (cam != null)
-        {
-            cam.transform.Rotate(-camRotation);
-
-        }
+        
     }
 }
 

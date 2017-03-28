@@ -22,11 +22,6 @@ public class CameraController : MonoBehaviour {
 
         float zMov = Input.GetAxisRaw("Vertical");
 
-        //Prevent user from moving forward (DELETE LATER!!!)
-        /**if (Input.GetKey(KeyCode.W))
-        {
-            zMov = 0;
-        }**/
 
 
         Vector3 movHorizontal = transform.right * xMov;
@@ -40,12 +35,11 @@ public class CameraController : MonoBehaviour {
 
 
         Vector3 rotation = new Vector3(-xRot, yRot, 0f) * mouseSensitivity;
-        //Vector3 camRotation = new Vector3(xRot, 0f, 0f) * mouseSensitivity;
-
+        
         
 
         move.Rotate(rotation);
-        //move.CamRotate(camRotation);
+        
 
 
     }
