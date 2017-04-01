@@ -5,6 +5,7 @@ using System.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Playlist : MonoBehaviour {
 
@@ -14,9 +15,6 @@ public class Playlist : MonoBehaviour {
 	// Playlists
 	public List<PlaylistObj> playlists = new List<PlaylistObj>();
 
-	// Canvas GameObject
-	public GameObject canvas;
-
 	// Playlist List GameObject
 	public GameObject playlist;
 
@@ -25,7 +23,6 @@ public class Playlist : MonoBehaviour {
 	void Start ()
 	{
 		// Get reference to GameObjects
-		canvas = GameObject.Find ("Canvas");
 		playlist = GameObject.Find ("PlaylistGrid");
 
 		// Connect to database
@@ -71,17 +68,24 @@ public class Playlist : MonoBehaviour {
 				string[] fileIDs = !reader.IsDBNull (2) ? reader.GetString (2).Split (new Char[] { ',', ' ' }) : new string[0];
 
 				// Select files
-				List<String> files = new List<String> ();
+				List<FileObj> files = new List<FileObj> ();
 				foreach (string id in fileIDs)
 				{
 					// Send database query
 					SqliteCommand cmd2 = new SqliteCommand (db);
-					cmd2.CommandText = "SELECT path FROM file WHERE id = '" + id + "'";
+					cmd2.CommandText = "SELECT id,name,path FROM file WHERE id = '" + id + "'";
 					SqliteDataReader fileReader = cmd2.ExecuteReader ();
 
-					// Read and add file paths
-					while (fileReader.Read ()) {
-						files.Add (fileReader.GetString (0));
+					// Read and add file
+					while (fileReader.Read ())
+					{
+						FileObj file = new FileObj ();
+
+						file.ID = fileReader.GetInt32 (0);
+						file.Name = fileReader.GetString (1);
+						file.Path = fileReader.GetString (2);
+
+						files.Add (file);
 					}
 
 					// Close reader
@@ -110,24 +114,82 @@ public class Playlist : MonoBehaviour {
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
-			GameObject goText = new GameObject ();
-
-			// Append GameObject to playlists GameObject
-			goText.transform.SetParent (playlist.transform);
-
-			// Add text
-			Text text = goText.AddComponent<Text> ();
-
-			// Set transformations
-			text.rectTransform.sizeDelta = new Vector2(398, 30);
+			GameObject playlist = DisplayPlaylist ("#" + p.ID);
+			Text textPlaylist = playlist.GetComponent<Text> ();
 
 			// Text settings
-			text.text = p.Name;
-			text.color = Color.white;
+			textPlaylist.color = Color.white;
+			textPlaylist.text = p.Name;
 
-			// Font settings
-			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-			text.fontSize = 16;
+			// Create Event Trigger
+			EventTrigger trigger = playlist.AddComponent<EventTrigger> ();
+			EventTrigger.Entry entry = new EventTrigger.Entry ();
+
+			// Modify Event Trigger
+			entry.eventID = EventTriggerType.PointerClick;
+			entry.callback.AddListener ((eventData) => {
+				ToggleFiles(p);
+			});
+
+			// Add Event Trigger entry
+			trigger.triggers.Add (entry);
+
+			// Add files
+			foreach (FileObj f in p.Files)
+			{
+				// Create GameObject
+				GameObject file = DisplayPlaylist ("#" + p.ID + "." + f.ID);
+				Text textFile = file.GetComponent<Text> ();
+
+				// Text settings
+				textFile.color = Color.gray;
+				textFile.text = f.Name;
+
+				// Hide GameObject
+				file.SetActive (false);
+			}
+		}
+	}
+
+	GameObject DisplayPlaylist (string goName)
+	{
+		// Create GameOject
+		GameObject gameObject = new GameObject (goName);
+
+		// Append GameObject to playlists GameObject
+		gameObject.transform.SetParent (playlist.transform);
+
+		// Add text
+		Text text = gameObject.AddComponent<Text> ();
+
+		// Set transformations
+		text.rectTransform.sizeDelta = new Vector2(398, 30);
+
+		// Font settings
+		text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
+		text.fontSize = 16;
+
+		return gameObject;
+	}
+
+	void ToggleFiles (PlaylistObj playlist)
+	{
+		foreach (PlaylistObj p in playlists)
+		{
+			foreach (FileObj f in p.Files)
+			{
+				// Get GameObject for current file
+				GameObject file = this.playlist.transform.Find ("#" + p.ID + "." + f.ID).gameObject;
+
+				// Toggle files for GameObject
+				if (file != null) {
+					if (p == playlist) {
+						file.SetActive (!file.activeSelf);
+					} else {
+						file.SetActive (false);
+					}
+				}
+			}
 		}
 	}
 
@@ -141,11 +203,10 @@ public class Playlist : MonoBehaviour {
 			string sql = "";
 
 			// Check if playlist files are already in database
-			List<Int32> fileIDs = new List<Int32> ();
-			foreach (string file in playlist.Files)
+			foreach (FileObj file in playlist.Files)
 			{
 				// Query statement
-				sql = "SELECT id FROM file WHERE path = '" + file + "'";
+				sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
 				cmd = new SqliteCommand (sql, db);
 
 				// Get sql results
@@ -154,7 +215,7 @@ public class Playlist : MonoBehaviour {
 				// Read and add file IDs
 				int count = 0;
 				while (reader.Read ()) {
-					fileIDs.Add (reader.GetInt32 (0));
+					file.ID = reader.GetInt32 (0);
 					count++;
 				}
 
@@ -165,13 +226,10 @@ public class Playlist : MonoBehaviour {
 				// Add file to database if not already exists
 				if (count == 0)
 				{
-					// Get file name
-					string[] name = file.Split(new Char[] {'/', '\\'});
-
 					// Query statement
 					sql = "INSERT INTO file (name,path) VALUES(" +
-						"'" + name[name.Length-1] + "'," +
-						"'" + file + "')";
+						"'" + file.Name + "'," +
+						"'" + file.Path + "')";
 					cmd = new SqliteCommand (sql, db);
 
 					// Execute statement
@@ -179,7 +237,7 @@ public class Playlist : MonoBehaviour {
 					cmd.Dispose ();
 
 					// Read id: Query statement
-					sql = "SELECT id FROM file WHERE path = '" + file + "'";
+					sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
 					cmd = new SqliteCommand (sql, db);
 
 					// Read id: Get sql results
@@ -187,7 +245,7 @@ public class Playlist : MonoBehaviour {
 
 					// Read id
 					while (reader.Read ()) {
-						fileIDs.Add (reader.GetInt32 (0));
+						file.ID = reader.GetInt32 (0);
 					}
 
 					// Close reader
@@ -198,14 +256,27 @@ public class Playlist : MonoBehaviour {
 
 			// Format file IDs
 			string files = "NULL";
-			if (fileIDs.Count > 0)
+			int IDcount = 0;
+
+			for (int i=0; i < playlist.Files.Length; i++)
 			{
-				files = "'" + fileIDs [0].ToString ();
+				if (playlist.Files [i].ID != 0)
+				{
+					if (IDcount == 0) {
+						files = "'";
+					}
 
-				for(int i=1; i < fileIDs.Count; i++) {
-					files += "," + fileIDs [i].ToString ();
+					files += playlist.Files [i].ID.ToString ();
+
+					if (i != playlist.Files.Length-1) {
+						files += ",";
+					}
+
+					IDcount++;
 				}
+			}
 
+			if (IDcount > 0) {
 				files += "'";
 			}
 
