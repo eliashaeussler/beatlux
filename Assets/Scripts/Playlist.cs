@@ -214,6 +214,8 @@ public class Playlist : MonoBehaviour {
 
 
 
+	//-- DATABASE CONNECTION
+
 	bool DbConnect ()
 	{
 		if (db == null) {

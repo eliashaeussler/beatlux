@@ -11,6 +11,6 @@ public class PlaylistObj {
 	{
 		ID = 0;
 		Name = "";
-		Files = new string[] {};
+		Files = new string[] { };
 	}
 }
