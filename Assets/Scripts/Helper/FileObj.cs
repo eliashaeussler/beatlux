@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlaylistObj {
+public class FileObj {
 
 	public int ID { get; set; }
 	public string Name { get; set; }
-	public FileObj[] Files { get; set; }
+	public string Path { get; set; }
 
-	public PlaylistObj ()
+	public FileObj ()
 	{
 		ID = 0;
 		Name = "";
-		Files = new FileObj[] { };
+		Path = "";
 	}
 }
