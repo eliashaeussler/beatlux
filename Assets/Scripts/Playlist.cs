@@ -4,24 +4,38 @@ using Mono.Data.Sqlite;
 using System.Data;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Playlist : MonoBehaviour {
 
 	// Database connection
-	SqliteConnection db;
+	private SqliteConnection db;
 
 	// Playlists
-	List<PlaylistObj> playlists = new List<PlaylistObj>();
+	public List<PlaylistObj> playlists = new List<PlaylistObj>();
+
+	// Canvas GameObject
+	public GameObject canvas;
+
+	// Playlist List GameObject
+	public GameObject playlist;
 
 
 
 	void Start ()
 	{
+		// Get reference to GameObjects
+		canvas = GameObject.Find ("Canvas");
+		playlist = GameObject.Find ("PlaylistGrid");
+
 		// Connect to database
 		DbConnect ();
 
 		// Select playlists from database
-		LoadPlaylists ();
+		Load ();
+
+		// Display playlists
+		Display ();
 
 		// Close database connection
 		DbClose ();
@@ -29,7 +43,7 @@ public class Playlist : MonoBehaviour {
 
 
 
-	void LoadPlaylists ()
+	void Load ()
 	{
 		if (DbConnect ())
 		{
@@ -37,7 +51,7 @@ public class Playlist : MonoBehaviour {
 			SqliteCommand cmd = new SqliteCommand (db);
 
 			// Query statement
-			string sql = "SELECT id,name,files FROM playlist";
+			string sql = "SELECT id,name,files FROM playlist ORDER BY name ASC";
 			cmd.CommandText = sql;
 
 			// Get sql results
@@ -91,7 +105,33 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	int CreatePlaylist (PlaylistObj playlist)
+	void Display ()
+	{
+		foreach (PlaylistObj p in playlists)
+		{
+			// Create GameOject
+			GameObject goText = new GameObject ();
+
+			// Append GameObject to playlists GameObject
+			goText.transform.SetParent (playlist.transform);
+
+			// Add text
+			Text text = goText.AddComponent<Text> ();
+
+			// Set transformations
+			text.rectTransform.sizeDelta = new Vector2(398, 30);
+
+			// Text settings
+			text.text = p.Name;
+			text.color = Color.white;
+
+			// Font settings
+			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
+			text.fontSize = 16;
+		}
+	}
+
+	int Create (PlaylistObj playlist)
 	{
 		if (DbConnect () && playlist != null)
 		{
