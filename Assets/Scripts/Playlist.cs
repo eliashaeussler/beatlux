@@ -122,17 +122,34 @@ public class Playlist : MonoBehaviour {
 			textPlaylist.text = p.Name;
 
 			// Create Event Trigger
-			EventTrigger trigger = playlist.AddComponent<EventTrigger> ();
-			EventTrigger.Entry entry = new EventTrigger.Entry ();
+			EventTrigger events = playlist.AddComponent<EventTrigger> ();
 
-			// Modify Event Trigger
-			entry.eventID = EventTriggerType.PointerClick;
-			entry.callback.AddListener ((eventData) => {
+			// Add Click Event
+			EventTrigger.Entry evtClick = new EventTrigger.Entry ();
+			evtClick.eventID = EventTriggerType.PointerClick;
+			events.triggers.Add (evtClick);
+
+			evtClick.callback.AddListener ((eventData) => {
 				ToggleFiles(p);
 			});
 
-			// Add Event Trigger entry
-			trigger.triggers.Add (entry);
+			// Add Hover Enter Event
+			EventTrigger.Entry evtHover = new EventTrigger.Entry ();
+			evtHover.eventID = EventTriggerType.PointerEnter;
+			events.triggers.Add (evtHover);
+
+			evtHover.callback.AddListener ((eventData) => {
+				// TODO
+			});
+
+			// Add Hover Exit Event
+			EventTrigger.Entry evtExit = new EventTrigger.Entry ();
+			evtExit.eventID = EventTriggerType.PointerExit;
+			events.triggers.Add (evtExit);
+
+			evtExit.callback.AddListener ((eventData) => {
+				// TODO
+			});
 
 			// Add files
 			foreach (FileObj f in p.Files)
@@ -151,10 +168,10 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	GameObject DisplayPlaylist (string goName)
+	GameObject DisplayPlaylist (string name)
 	{
 		// Create GameOject
-		GameObject gameObject = new GameObject (goName);
+		GameObject gameObject = new GameObject (name);
 
 		// Append GameObject to playlists GameObject
 		gameObject.transform.SetParent (playlist.transform);
@@ -163,11 +180,17 @@ public class Playlist : MonoBehaviour {
 		Text text = gameObject.AddComponent<Text> ();
 
 		// Set transformations
-		text.rectTransform.sizeDelta = new Vector2(398, 30);
+		text.rectTransform.sizeDelta = new Vector2 (398, 20);
+		text.rectTransform.pivot = Vector2.up;
 
 		// Font settings
 		text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 		text.fontSize = 16;
+
+		// Add Content Size Fitter
+		// => now it's possible to get size of the text (used to append icons next to the text)
+		ContentSizeFitter csf = gameObject.AddComponent<ContentSizeFitter> ();
+		csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
 		return gameObject;
 	}
