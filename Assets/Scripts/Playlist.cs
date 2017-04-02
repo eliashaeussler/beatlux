@@ -109,46 +109,29 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	void Display ()
+	public void Display ()
 	{
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
 			GameObject playlist = DisplayPlaylist ("#" + p.ID);
-			Text textPlaylist = playlist.GetComponent<Text> ();
+			GameObject goText = playlist.transform.GetChild (0).gameObject;
+			Text textPlaylist = goText.GetComponent<Text> ();
 
 			// Text settings
 			textPlaylist.color = Color.white;
 			textPlaylist.text = p.Name;
 
-			// Create Event Trigger
-			EventTrigger events = playlist.AddComponent<EventTrigger> ();
+			// Create Event Triggers
+			EventTrigger evtText = goText.AddComponent<EventTrigger> ();
 
 			// Add Click Event
 			EventTrigger.Entry evtClick = new EventTrigger.Entry ();
 			evtClick.eventID = EventTriggerType.PointerClick;
-			events.triggers.Add (evtClick);
+			evtText.triggers.Add (evtClick);
 
 			evtClick.callback.AddListener ((eventData) => {
 				ToggleFiles(p);
-			});
-
-			// Add Hover Enter Event
-			EventTrigger.Entry evtHover = new EventTrigger.Entry ();
-			evtHover.eventID = EventTriggerType.PointerEnter;
-			events.triggers.Add (evtHover);
-
-			evtHover.callback.AddListener ((eventData) => {
-				// TODO
-			});
-
-			// Add Hover Exit Event
-			EventTrigger.Entry evtExit = new EventTrigger.Entry ();
-			evtExit.eventID = EventTriggerType.PointerExit;
-			events.triggers.Add (evtExit);
-
-			evtExit.callback.AddListener ((eventData) => {
-				// TODO
 			});
 
 			// Add files
@@ -156,7 +139,8 @@ public class Playlist : MonoBehaviour {
 			{
 				// Create GameObject
 				GameObject file = DisplayPlaylist ("#" + p.ID + "." + f.ID);
-				Text textFile = file.GetComponent<Text> ();
+				GameObject goFileText = file.transform.GetChild (0).gameObject;
+				Text textFile = goFileText.GetComponent<Text> ();
 
 				// Text settings
 				textFile.color = Color.gray;
@@ -168,20 +152,32 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	GameObject DisplayPlaylist (string name)
+	public GameObject DisplayPlaylist (string name)
 	{
 		// Create GameOject
 		GameObject gameObject = new GameObject (name);
-
-		// Append GameObject to playlists GameObject
 		gameObject.transform.SetParent (playlist.transform);
 
-		// Add text
-		Text text = gameObject.AddComponent<Text> ();
+		// Set GameObject transformations
+		RectTransform goTrans = gameObject.AddComponent<RectTransform> ();
+		goTrans.sizeDelta = new Vector2 (398, 20);
 
-		// Set transformations
-		text.rectTransform.sizeDelta = new Vector2 (398, 20);
-		text.rectTransform.pivot = Vector2.up;
+		// Add image to GameObject
+		// => used to have great access to the PointerEnter and PointerExit events
+		Image goImg = gameObject.AddComponent<Image> ();
+		goImg.color = Color.clear;
+
+
+		// Create text GameObject
+		GameObject goText = new GameObject ("Text");
+		goText.transform.SetParent (gameObject.transform);
+
+		// Add text
+		Text text = goText.AddComponent<Text> ();
+
+		// Set text transformations
+		text.rectTransform.pivot = Vector2.zero;
+		text.rectTransform.sizeDelta = goTrans.sizeDelta;
 
 		// Font settings
 		text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
@@ -189,8 +185,105 @@ public class Playlist : MonoBehaviour {
 
 		// Add Content Size Fitter
 		// => now it's possible to get size of the text (used to append icons next to the text)
-		ContentSizeFitter csf = gameObject.AddComponent<ContentSizeFitter> ();
+		ContentSizeFitter csf = goText.AddComponent<ContentSizeFitter> ();
 		csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+
+		/*// Create listen image GameObject
+		GameObject goImage = new GameObject ("Listen");
+		goImage.transform.SetParent (gameObject.transform);
+
+		// Add image
+		Image listenImg = goImage.AddComponent<Image> ();
+
+		// Set transformations
+		listenImg.rectTransform.localPosition = Vector3.zero;
+		listenImg.rectTransform.pivot = Vector2.zero;
+		listenImg.rectTransform.sizeDelta = new Vector2 (20, imgWrap.rectTransform.sizeDelta.y);*/ 
+
+
+		// Add Layout Group to GameObject
+		HorizontalLayoutGroup hlgGo = gameObject.AddComponent<HorizontalLayoutGroup> ();
+		hlgGo.childAlignment = TextAnchor.MiddleLeft;
+		hlgGo.spacing = 15;
+		hlgGo.childControlWidth = false;
+		hlgGo.childControlHeight = false;
+		hlgGo.childForceExpandWidth = false;
+		hlgGo.childForceExpandHeight = false;
+
+
+		// Create images GameObject
+		GameObject goImages = new GameObject ("Images");
+		goImages.transform.SetParent (gameObject.transform);
+
+		// Set images GameObject transformations
+		RectTransform imgTrans = goImages.AddComponent<RectTransform> ();
+		imgTrans.sizeDelta = new Vector2 (goTrans.sizeDelta.x - /*text.rectTransform.sizeDelta.x -*/ hlgGo.spacing, goTrans.sizeDelta.y);
+
+		// Add Layout Group to GameObject
+		HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
+		hlgImg.childAlignment = TextAnchor.MiddleRight;
+		hlgImg.spacing = 15;
+		hlgImg.childControlWidth = false;
+		hlgImg.childControlHeight = false;
+		hlgImg.childForceExpandWidth = false;
+		hlgImg.childForceExpandHeight = false;
+
+
+		// Create edit image GameObject
+		GameObject goEdit = new GameObject ("Edit");
+		goEdit.transform.SetParent (goImages.transform);
+
+		// Add image
+		Image editImg = goEdit.AddComponent<Image> ();
+
+		// Set transformations
+		editImg.rectTransform.sizeDelta = new Vector2 (20, goTrans.sizeDelta.y);
+
+
+		// Create delete image GameObject
+		GameObject goDelete = new GameObject ("Delete");
+		goDelete.transform.SetParent (goImages.transform);
+
+		// Add image
+		Image deleteImg = goDelete.AddComponent<Image> ();
+
+		// Set transformations
+		deleteImg.rectTransform.sizeDelta = editImg.rectTransform.sizeDelta;
+
+		// Disable images GameObject
+		goImages.SetActive (false);
+
+
+		// Create Event Triggers
+		EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
+
+		// Add Hover Enter Event
+		EventTrigger.Entry evtHover = new EventTrigger.Entry ();
+		evtHover.eventID = EventTriggerType.PointerEnter;
+		evtWrapper.triggers.Add (evtHover);
+
+		evtHover.callback.AddListener ((eventData) =>
+		{
+			// Get references
+			RectTransform textTrans = goText.GetComponent<RectTransform> ();
+			imgTrans.sizeDelta = new Vector2(goTrans.sizeDelta.x - textTrans.sizeDelta.x - hlgGo.spacing, imgTrans.sizeDelta.y);
+
+			// Enable images GameObject
+			goImages.SetActive (true);
+		});
+
+		// Add Hover Exit Event
+		EventTrigger.Entry evtExit = new EventTrigger.Entry ();
+		evtExit.eventID = EventTriggerType.PointerExit;
+		evtWrapper.triggers.Add (evtExit);
+
+		evtExit.callback.AddListener ((eventData) =>
+		{
+			// Disable images GameObject
+			goImages.SetActive (false);
+		});
+
 
 		return gameObject;
 	}
