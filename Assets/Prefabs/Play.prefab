@@ -16,12 +16,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 4
   m_Component:
-  - component: {fileID: 224000010898626318}
-  - component: {fileID: 223000012105754670}
-  - component: {fileID: 114000011350639320}
-  - component: {fileID: 114000013565017376}
+  - 224: {fileID: 224000010898626318}
+  - 223: {fileID: 223000012105754670}
+  - 114: {fileID: 114000011350639320}
+  - 114: {fileID: 114000013565017376}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -34,12 +34,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 4
   m_Component:
-  - component: {fileID: 224000013724442712}
-  - component: {fileID: 222000012605029222}
-  - component: {fileID: 114000013133481594}
-  - component: {fileID: 114000014137250128}
+  - 224: {fileID: 224000013724442712}
+  - 222: {fileID: 222000012605029222}
+  - 114: {fileID: 114000013133481594}
+  - 114: {fileID: 114000014137250128}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -52,12 +52,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 4
   m_Component:
-  - component: {fileID: 224000014164107426}
-  - component: {fileID: 222000010860506092}
-  - component: {fileID: 114000013172432612}
-  - component: {fileID: 114000010644027706}
+  - 224: {fileID: 224000014164107426}
+  - 222: {fileID: 222000010860506092}
+  - 114: {fileID: 114000013172432612}
+  - 114: {fileID: 114000010644027706}
   m_Layer: 5
   m_Name: Imageplay
   m_TagString: Untagged
@@ -349,3 +349,4 @@ RectTransform:
   m_AnchoredPosition: {x: -750, y: -350}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+

@@ -16,12 +16,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 4
   m_Component:
-  - component: {fileID: 4000012003117000}
-  - component: {fileID: 114000010517455736}
-  - component: {fileID: 114000011751511550}
-  - component: {fileID: 54000013263331746}
+  - 4: {fileID: 4000012003117000}
+  - 114: {fileID: 114000010517455736}
+  - 114: {fileID: 114000011751511550}
+  - 54: {fileID: 54000013263331746}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -34,15 +34,15 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 4
   m_Component:
-  - component: {fileID: 4000010313063672}
-  - component: {fileID: 20000014242465894}
-  - component: {fileID: 92000012439039006}
-  - component: {fileID: 124000012052415240}
-  - component: {fileID: 81000010281501388}
-  - component: {fileID: 82000013346554248}
-  - component: {fileID: 114000011453730154}
+  - 4: {fileID: 4000010313063672}
+  - 20: {fileID: 20000014242465894}
+  - 92: {fileID: 92000012439039006}
+  - 124: {fileID: 124000012052415240}
+  - 81: {fileID: 81000010281501388}
+  - 82: {fileID: 82000013346554248}
+  - 114: {fileID: 114000011453730154}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -149,7 +149,6 @@ AudioSource:
   Loop: 0
   Mute: 0
   Spatialize: 0
-  SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -162,14 +161,12 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
-      time: 0
+    - time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    - serializedVersion: 2
-      time: 1
+    - time: 1
       value: 0
       inSlope: 0
       outSlope: 0
@@ -180,8 +177,7 @@ AudioSource:
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
-      time: 0
+    - time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -192,8 +188,7 @@ AudioSource:
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
-      time: 0
+    - time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -204,8 +199,7 @@ AudioSource:
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - serializedVersion: 2
-      time: 0
+    - time: 0
       value: 1
       inSlope: 0
       outSlope: 0
@@ -268,3 +262,4 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014020994800}
   m_Enabled: 1
+
