@@ -921,6 +921,11 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1027586605}
+    - target: {fileID: 114833089194740550, guid: 3655b35b72c1346d99b08f3cbd96a260,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3655b35b72c1346d99b08f3cbd96a260, type: 2}
   m_IsPrefabParent: 0
@@ -2215,7 +2220,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
