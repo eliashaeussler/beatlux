@@ -206,8 +206,8 @@ public class Playlist : MonoBehaviour {
 		HorizontalLayoutGroup hlgGo = gameObject.AddComponent<HorizontalLayoutGroup> ();
 		hlgGo.childAlignment = TextAnchor.MiddleLeft;
 		hlgGo.spacing = 15;
-		hlgGo.childControlWidth = false;
-		hlgGo.childControlHeight = false;
+//		hlgGo.childControlWidth = false;
+//		hlgGo.childControlHeight = false;
 		hlgGo.childForceExpandWidth = false;
 		hlgGo.childForceExpandHeight = false;
 
@@ -224,8 +224,8 @@ public class Playlist : MonoBehaviour {
 		HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
 		hlgImg.childAlignment = TextAnchor.MiddleRight;
 		hlgImg.spacing = 15;
-		hlgImg.childControlWidth = false;
-		hlgImg.childControlHeight = false;
+//		hlgImg.childControlWidth = false;
+//		hlgImg.childControlHeight = false;
 		hlgImg.childForceExpandWidth = false;
 		hlgImg.childForceExpandHeight = false;
 
@@ -255,7 +255,7 @@ public class Playlist : MonoBehaviour {
 		goImages.SetActive (false);
 
 
-		// Create Event Triggers
+		// Create GameObject Event Triggers
 		EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
 
 		// Add Hover Enter Event
@@ -263,8 +263,7 @@ public class Playlist : MonoBehaviour {
 		evtHover.eventID = EventTriggerType.PointerEnter;
 		evtWrapper.triggers.Add (evtHover);
 
-		evtHover.callback.AddListener ((eventData) =>
-		{
+		evtHover.callback.AddListener ((eventData) => {
 			// Get references
 			RectTransform textTrans = goText.GetComponent<RectTransform> ();
 			imgTrans.sizeDelta = new Vector2(goTrans.sizeDelta.x - textTrans.sizeDelta.x - hlgGo.spacing, imgTrans.sizeDelta.y);
@@ -278,10 +277,33 @@ public class Playlist : MonoBehaviour {
 		evtExit.eventID = EventTriggerType.PointerExit;
 		evtWrapper.triggers.Add (evtExit);
 
-		evtExit.callback.AddListener ((eventData) =>
-		{
+		evtExit.callback.AddListener ((eventData) => {
 			// Disable images GameObject
 			goImages.SetActive (false);
+		});
+
+
+		// Create images Event Triggers
+		EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
+		EventTrigger evtImgDel = goDelete.AddComponent<EventTrigger> ();
+
+		// Add Image Edit Click Event
+		EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
+		evtImgEditClick.eventID = EventTriggerType.PointerClick;
+		evtImgEdit.triggers.Add (evtImgEditClick);
+
+		evtImgEditClick.callback.AddListener ((eventData) => {
+			print("edit");
+		});
+
+		// Add Image Delete Click Event
+		EventTrigger.Entry evtImgDelClick = new EventTrigger.Entry ();
+		evtImgDelClick.eventID = EventTriggerType.PointerClick;
+		evtImgDel.triggers.Add (evtImgDelClick);
+
+		evtImgDelClick.callback.AddListener ((eventData) => {
+			// Delete playlist or file
+			Delete (gameObject);
 		});
 
 
@@ -437,6 +459,30 @@ public class Playlist : MonoBehaviour {
 		}
 
 		return (int) Database.Constants.QueryFailed;
+	}
+
+	bool Delete (GameObject gameObject)
+	{
+		// Get playlist and file id
+		string[] name = gameObject.name.Split ('.');
+		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
+
+		// Get playlist and file
+		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
+		print (playlist);
+
+		return playlist != null ? DeletePlaylist (playlist) : true;//DeleteFile (playlist, file);
+	}
+
+	bool DeletePlaylist (PlaylistObj playlist)
+	{
+		return true;
+	}
+
+	bool DeleteFile (PlaylistObj playlist, FileObj file)
+	{
+		return true;
 	}
 
 
