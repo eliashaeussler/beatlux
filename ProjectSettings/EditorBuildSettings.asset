@@ -13,3 +13,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Spectrum.unity
   - enabled: 1
     path: Assets/Scenes/Divided.unity
+  - enabled: 1
+    path: Assets/Scenes/Musikauswahl.unity
+  - enabled: 1
+    path: Assets/Scenes/VisEinstellen.unity
