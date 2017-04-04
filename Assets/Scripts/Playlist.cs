@@ -18,6 +18,9 @@ public class Playlist : MonoBehaviour {
 	// Playlist List GameObject
 	public GameObject playlist;
 
+	// Active playlist
+	public static PlaylistObj active = null;
+
 
 
 	void Start ()
@@ -45,8 +48,8 @@ public class Playlist : MonoBehaviour {
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
-			GameObject playlist = DisplayPlaylist ("#" + p.ID);
-			GameObject goText = playlist.transform.GetChild (0).gameObject;
+			GameObject playlist = DisplayPlaylist (p);
+			GameObject goText = playlist.transform.GetChild (1).gameObject;
 			Text textPlaylist = goText.GetComponent<Text> ();
 
 			// Text settings
@@ -69,8 +72,8 @@ public class Playlist : MonoBehaviour {
 			foreach (FileObj f in p.Files)
 			{
 				// Create GameObject
-				GameObject file = DisplayPlaylist ("#" + p.ID + "." + f.ID);
-				GameObject goFileText = file.transform.GetChild (0).gameObject;
+				GameObject file = DisplayPlaylist (p, f);
+				GameObject goFileText = file.transform.GetChild (1).gameObject;
 				Text textFile = goFileText.GetComponent<Text> ();
 
 				// Text settings
@@ -83,152 +86,184 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	public GameObject DisplayPlaylist (string name)
+	public GameObject DisplayPlaylist (PlaylistObj playlist)
 	{
-		// Create GameOject
-		GameObject gameObject = new GameObject (name);
-		gameObject.transform.SetParent (this.playlist.transform);
+		return DisplayPlaylist (playlist, null);
+	}
 
-		// Add Layout Element to GameObject
-		LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
-		goLayout.minHeight = 30;
-		goLayout.preferredHeight = goLayout.minHeight;
+	public GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
+	{
+		if (playlist != null)
+		{
+			// Construct name
+			string name = "#" + playlist.ID;
+			if (file != null && playlist.Files.Contains (file))
+				name += "." + file.ID;
 
-		// Add image to GameObject
-		Image goImg = gameObject.AddComponent<Image> ();
-		goImg.color = Color.clear;
+			// Create GameOject
+			GameObject gameObject = new GameObject (name);
+			gameObject.transform.SetParent (this.playlist.transform);
 
+			// Add Layout Element to GameObject
+			LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
+			goLayout.minHeight = 30;
+			goLayout.preferredHeight = goLayout.minHeight;
 
-		// Create text GameObject
-		GameObject goText = new GameObject ("Text");
-		goText.transform.SetParent (gameObject.transform);
-
-		// Add text
-		Text text = goText.AddComponent<Text> ();
-
-		// Set text alignment
-		text.alignment = TextAnchor.MiddleLeft;
-
-		// Set text transformations
-		text.rectTransform.pivot = Vector2.up;
-		text.rectTransform.localPosition = Vector2.zero;
-		text.rectTransform.sizeDelta = new Vector2(100, 30);
-		text.rectTransform.anchorMin = Vector2.up;
-		text.rectTransform.anchorMax = Vector2.up;
-
-		// Font settings
-		text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-		text.fontSize = 16;
-
-		// Add Content Size Fitter
-		ContentSizeFitter csf = goText.AddComponent<ContentSizeFitter> ();
-		csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+			// Add image to GameObject
+			Image goImg = gameObject.AddComponent<Image> ();
+			goImg.color = Color.clear;
 
 
-		// Create images GameObject
-		GameObject goImages = new GameObject ("Images");
-		goImages.transform.SetParent (gameObject.transform);
+			// Create arrow image GameObject
+			GameObject goArrow = new GameObject ("Arrow");
+			goArrow.transform.SetParent (gameObject.transform);
 
-		// Set images GameObject transformations
-		RectTransform imgTrans = goImages.AddComponent<RectTransform> ();
-		imgTrans.pivot = Vector2.one;
-		imgTrans.localPosition = Vector2.zero;
-		imgTrans.sizeDelta = new Vector2 (100, 30);
-		imgTrans.anchorMin = Vector2.one;
-		imgTrans.anchorMax = Vector2.one;
+			// Add arrow image
+			Image imgArrow = goArrow.AddComponent<Image> ();
+			imgArrow.sprite = Resources.Load<Sprite> ("Images/" + (playlist == active && file == null ? "arrow-right" : "empty"));
 
-		// Add Layout Group to GameObject
-		HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
-		hlgImg.childAlignment = TextAnchor.MiddleRight;
-		hlgImg.spacing = 15;
-		hlgImg.childForceExpandWidth = false;
-		hlgImg.childForceExpandHeight = false;
+			// Set arrow image transformations
+			RectTransform imgArrowTrans = goArrow.GetComponent<RectTransform> ();
+			imgArrowTrans.pivot = Vector2.up;
+			imgArrowTrans.localPosition = Vector2.zero;
+			imgArrowTrans.sizeDelta = new Vector2 (30, 30);
+			imgArrowTrans.anchorMin = Vector2.up;
+			imgArrowTrans.anchorMax = Vector2.up;
 
 
-		// Create edit image GameObject
-		GameObject goEdit = new GameObject ("Edit");
-		goEdit.transform.SetParent (goImages.transform);
+			// Create text GameObject
+			GameObject goText = new GameObject ("Text");
+			goText.transform.SetParent (gameObject.transform);
 
-		// Add image
-		Image editImg = goEdit.AddComponent<Image> ();
-		editImg.sprite = Resources.Load<Sprite> ("Images/edit");
+			// Add text
+			Text text = goText.AddComponent<Text> ();
 
-		// Set transformations
-		editImg.rectTransform.sizeDelta = new Vector2 (20, 20);//goTrans.sizeDelta.y);
+			// Set text alignment
+			text.alignment = TextAnchor.MiddleLeft;
+
+			// Set text transformations
+			text.rectTransform.pivot = Vector2.up;
+			text.rectTransform.localPosition = new Vector2(35, 0);
+			text.rectTransform.sizeDelta = new Vector2(100, 30);
+			text.rectTransform.anchorMin = Vector2.up;
+			text.rectTransform.anchorMax = Vector2.up;
+
+			// Font settings
+			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
+			text.fontSize = 16;
+
+			// Add Content Size Fitter
+			ContentSizeFitter csf = goText.AddComponent<ContentSizeFitter> ();
+			csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
 
-		// Create delete image GameObject
-		GameObject goDelete = new GameObject ("Delete");
-		goDelete.transform.SetParent (goImages.transform);
+			// Create images GameObject
+			GameObject goImages = new GameObject ("Images");
+			goImages.transform.SetParent (gameObject.transform);
 
-		// Add image
-		Image deleteImg = goDelete.AddComponent<Image> ();
-		deleteImg.sprite = Resources.Load<Sprite> ("Images/delete");
+			// Set images GameObject transformations
+			RectTransform imgTrans = goImages.AddComponent<RectTransform> ();
+			imgTrans.pivot = Vector2.one;
+			imgTrans.localPosition = Vector2.zero;
+			imgTrans.sizeDelta = new Vector2 (100, 30);
+			imgTrans.anchorMin = Vector2.one;
+			imgTrans.anchorMax = Vector2.one;
 
-		// Disable images GameObject
-		goImages.SetActive (false);
+			// Add Layout Group to GameObject
+			HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
+			hlgImg.childAlignment = TextAnchor.MiddleRight;
+			hlgImg.spacing = 15;
+			hlgImg.childForceExpandWidth = false;
+			hlgImg.childForceExpandHeight = false;
 
 
-		// Create GameObject Event Triggers
-		EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
+			// Create edit image GameObject
+			GameObject goEdit = new GameObject ("Edit");
+			goEdit.transform.SetParent (goImages.transform);
 
-		// Add Hover Enter Event
-		EventTrigger.Entry evtHover = new EventTrigger.Entry ();
-		evtHover.eventID = EventTriggerType.PointerEnter;
-		evtWrapper.triggers.Add (evtHover);
+			// Add image
+			Image editImg = goEdit.AddComponent<Image> ();
+			editImg.sprite = Resources.Load<Sprite> ("Images/edit");
 
-		evtHover.callback.AddListener ((eventData) => {
-			goImages.SetActive (true);
-		});
+			// Set transformations
+			editImg.rectTransform.sizeDelta = new Vector2 (20, 20);
 
-		// Add Hover Exit Event
-		EventTrigger.Entry evtExit = new EventTrigger.Entry ();
-		evtExit.eventID = EventTriggerType.PointerExit;
-		evtWrapper.triggers.Add (evtExit);
 
-		evtExit.callback.AddListener ((eventData) => {
+			// Create delete image GameObject
+			GameObject goDelete = new GameObject ("Delete");
+			goDelete.transform.SetParent (goImages.transform);
+
+			// Add image
+			Image deleteImg = goDelete.AddComponent<Image> ();
+			deleteImg.sprite = Resources.Load<Sprite> ("Images/delete");
+
+			// Disable images GameObject
 			goImages.SetActive (false);
-		});
 
 
-		// Create images Event Triggers
-		EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
-		EventTrigger evtImgDel = goDelete.AddComponent<EventTrigger> ();
+			// Create GameObject Event Triggers
+			EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
 
-		// Add Image Edit Click Event
-		EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
-		evtImgEditClick.eventID = EventTriggerType.PointerClick;
-		evtImgEdit.triggers.Add (evtImgEditClick);
+			// Add Hover Enter Event
+			EventTrigger.Entry evtHover = new EventTrigger.Entry ();
+			evtHover.eventID = EventTriggerType.PointerEnter;
+			evtWrapper.triggers.Add (evtHover);
 
-		evtImgEditClick.callback.AddListener ((eventData) => {
-			print("edit");
-		});
+			evtHover.callback.AddListener ((eventData) => {
+				goImages.SetActive (true);
+			});
 
-		// Add Image Delete Click Event
-		EventTrigger.Entry evtImgDelClick = new EventTrigger.Entry ();
-		evtImgDelClick.eventID = EventTriggerType.PointerClick;
-		evtImgDel.triggers.Add (evtImgDelClick);
+			// Add Hover Exit Event
+			EventTrigger.Entry evtExit = new EventTrigger.Entry ();
+			evtExit.eventID = EventTriggerType.PointerExit;
+			evtWrapper.triggers.Add (evtExit);
 
-		evtImgDelClick.callback.AddListener ((eventData) => {
-			// Delete playlist or file
-			bool deleted = Delete (gameObject);
-
-			if (deleted) {
-				// Get playlist and file
-				PlaylistObj playlist = FindPlaylist (gameObject);
-				FileObj file = FindFile (gameObject);
-
-				// Remove from interface
-				Destroy (gameObject);
-
-				// Remove from list
-				if (file == null) playlists.Remove (playlist);
-				print(playlists.Count);
-			}
-		});
+			evtExit.callback.AddListener ((eventData) => {
+				goImages.SetActive (false);
+			});
 
 
-		return gameObject;
+			// Create images Event Triggers
+			EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
+			EventTrigger evtImgDel = goDelete.AddComponent<EventTrigger> ();
+
+			// Add Image Edit Click Event
+			EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
+			evtImgEditClick.eventID = EventTriggerType.PointerClick;
+			evtImgEdit.triggers.Add (evtImgEditClick);
+
+			evtImgEditClick.callback.AddListener ((eventData) => {
+				// TODO edit
+				print("edit");
+			});
+
+			// Add Image Delete Click Event
+			EventTrigger.Entry evtImgDelClick = new EventTrigger.Entry ();
+			evtImgDelClick.eventID = EventTriggerType.PointerClick;
+			evtImgDel.triggers.Add (evtImgDelClick);
+
+			evtImgDelClick.callback.AddListener ((eventData) => {
+				// Delete playlist or file
+				bool deleted = Delete (gameObject);
+
+				if (deleted) {
+					// Get playlist and file
+					PlaylistObj p = FindPlaylist (gameObject);
+					FileObj f = FindFile (gameObject);
+
+					// Remove from interface
+					Destroy (gameObject);
+
+					// Remove from list
+					if (f == null) playlists.Remove (p);
+				}
+			});
+
+
+			return gameObject;
+		}
+
+		return null;
 	}
 
 	void ToggleFiles (GameObject gameObject)
@@ -236,7 +271,11 @@ public class Playlist : MonoBehaviour {
 		// Get playlist
 		PlaylistObj playlist = FindPlaylist (gameObject);
 
+		// Set playlist as active playlist
+		active = playlist;
+
 		// Show or hide playlist files
+		bool opened = false;
 		foreach (PlaylistObj p in playlists)
 		{
 			foreach (FileObj f in p.Files)
@@ -248,11 +287,24 @@ public class Playlist : MonoBehaviour {
 				if (file != null) {
 					if (p == playlist) {
 						file.SetActive (!file.activeSelf);
+						opened = file.activeSelf;
 					} else {
 						file.SetActive (false);
 					}
 				}
 			}
+
+			// Change arrows
+			Image arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Image>();
+			if (p != playlist) {
+				arr.sprite = Resources.Load<Sprite> ("Images/empty");
+			}
+		}
+
+		// Change arrow image
+		Image arrow = gameObject.transform.Find ("Arrow").GetComponent<Image> ();
+		if (arrow != null) {
+			arrow.sprite = Resources.Load<Sprite> ("Images/arrow-" + (opened ? "down" : "right"));
 		}
 	}
 
