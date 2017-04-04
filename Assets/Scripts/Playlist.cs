@@ -170,7 +170,7 @@ public class Playlist : MonoBehaviour {
 			// Add Layout Group to GameObject
 			HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
 			hlgImg.childAlignment = TextAnchor.MiddleRight;
-			hlgImg.spacing = 15;
+			hlgImg.spacing = 5;
 			hlgImg.childForceExpandWidth = false;
 			hlgImg.childForceExpandHeight = false;
 
@@ -196,7 +196,8 @@ public class Playlist : MonoBehaviour {
 				evtImgEditClick.eventID = EventTriggerType.PointerClick;
 				evtImgEdit.triggers.Add (evtImgEditClick);
 
-				evtImgEditClick.callback.AddListener ((eventData) => {
+				evtImgEditClick.callback.AddListener ((eventData) =>
+				{
 					// TODO
 				});
 			}
@@ -344,7 +345,6 @@ public class Playlist : MonoBehaviour {
 	{
 		// Get playlist and file id
 		string[] name = gameObject.name.Split ('.');
-		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
 		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
 
 		// Get playlist

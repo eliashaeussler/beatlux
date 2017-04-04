@@ -2811,7 +2811,7 @@ GameObject:
   - 222: {fileID: 1827518766}
   - 114: {fileID: 1827518765}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: PlaylistsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
