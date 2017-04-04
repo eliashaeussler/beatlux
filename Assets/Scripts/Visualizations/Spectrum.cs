@@ -35,6 +35,7 @@ public class Spectrum : MonoBehaviour
             Instantiate(prefab, pos, Quaternion.identity);
         }
         cubes = GameObject.FindGameObjectsWithTag("Cubes");
+        Debug.Log(cubes.Length);
 
     }
 

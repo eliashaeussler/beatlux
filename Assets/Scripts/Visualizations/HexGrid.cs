@@ -5,11 +5,12 @@ public class HexGrid : MonoBehaviour {
     private float hexHeight = 1f;
     private float hexwidth = 1f;
     public GameObject hex;
-    private GameObject[] hexes;
-    private float gap = 0.5f;
+    private GameObject[] hexes = new GameObject[100];
+    private float gap = 1f;
     private Vector3 startPos = new Vector3(0,0,0);
     public int hexNumber = 100;
     public float newScale = 500;
+    public float timing = 5f;
 
     // Use this for initialization
     void Start () {
@@ -33,6 +34,7 @@ public class HexGrid : MonoBehaviour {
             }
         }
         hexes = GameObject.FindGameObjectsWithTag("Hexes");
+        Debug.Log(hexes.Length);
     }
 	
 	// Update is called once per frame
@@ -42,19 +44,19 @@ public class HexGrid : MonoBehaviour {
         /**
          * Scaling the height of each cube, based on the value in the spectrum-array
          **/
-        for (int i = 0; i < hexNumber; i++)
+        for (int i = 1; i < hexes.Length; i++)
         {
             Vector3 previousScale = hexes[i].transform.localScale;
 
 
-            if (spectrum[i] * newScale > 1)   //Only update the cube if the height is above set value (1.3)
+            if (spectrum[i] * newScale > previousScale.y)   //Only update the cube if the height is above set value (1.3)
             {
-                previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale, Time.deltaTime * 30);
+                previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale*(i/2), Time.deltaTime * timing);
 
             }
             else
             {
-                previousScale.y = 0.1f;
+                previousScale.y -= Random.Range(0.1f, 0.5f);
 
             }
             hexes[i].transform.localScale = previousScale;
