@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class Playlist : MonoBehaviour {
 
@@ -19,15 +20,12 @@ public class Playlist : MonoBehaviour {
 	public GameObject playlist;
 
 	// Active playlist
-	public static PlaylistObj active = null;
+	public static PlaylistObj active;
 
 
 
 	void Start ()
 	{
-		// Get reference to GameObjects
-//		playlist = GameObject.Find ("PlaylistContent");
-
 		// Connect to database
 		DbConnect ();
 
@@ -43,13 +41,13 @@ public class Playlist : MonoBehaviour {
 
 
 
-	public void Display ()
+	void Display ()
 	{
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
 			GameObject playlist = DisplayPlaylist (p);
-			GameObject goText = playlist.transform.GetChild (1).gameObject;
+			GameObject goText = playlist.transform.Find ("Text").gameObject;
 			Text textPlaylist = goText.GetComponent<Text> ();
 
 			// Text settings
@@ -73,7 +71,7 @@ public class Playlist : MonoBehaviour {
 			{
 				// Create GameObject
 				GameObject file = DisplayPlaylist (p, f);
-				GameObject goFileText = file.transform.GetChild (1).gameObject;
+				GameObject goFileText = file.transform.Find ("Text").gameObject;
 				Text textFile = goFileText.GetComponent<Text> ();
 
 				// Text settings
@@ -86,12 +84,12 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	public GameObject DisplayPlaylist (PlaylistObj playlist)
+	private GameObject DisplayPlaylist (PlaylistObj playlist)
 	{
 		return DisplayPlaylist (playlist, null);
 	}
 
-	public GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
+	private GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
 	{
 		if (playlist != null)
 		{
@@ -177,16 +175,31 @@ public class Playlist : MonoBehaviour {
 			hlgImg.childForceExpandHeight = false;
 
 
-			// Create edit image GameObject
-			GameObject goEdit = new GameObject ("Edit");
-			goEdit.transform.SetParent (goImages.transform);
+			if (file == null)
+			{
+				// Create edit image GameObject
+				GameObject goEdit = new GameObject ("Edit");
+				goEdit.transform.SetParent (goImages.transform);
 
-			// Add image
-			Image editImg = goEdit.AddComponent<Image> ();
-			editImg.sprite = Resources.Load<Sprite> ("Images/edit");
+				// Add image
+				Image editImg = goEdit.AddComponent<Image> ();
+				editImg.sprite = Resources.Load<Sprite> ("Images/edit");
 
-			// Set transformations
-			editImg.rectTransform.sizeDelta = new Vector2 (20, 20);
+				// Set transformations
+				editImg.rectTransform.sizeDelta = new Vector2 (20, 20);
+
+				// Create images Event Triggers
+				EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
+
+				// Add Image Edit Click Event
+				EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
+				evtImgEditClick.eventID = EventTriggerType.PointerClick;
+				evtImgEdit.triggers.Add (evtImgEditClick);
+
+				evtImgEditClick.callback.AddListener ((eventData) => {
+					// TODO
+				});
+			}
 
 
 			// Create delete image GameObject
@@ -224,42 +237,35 @@ public class Playlist : MonoBehaviour {
 
 
 			// Create images Event Triggers
-			EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
 			EventTrigger evtImgDel = goDelete.AddComponent<EventTrigger> ();
-
-			// Add Image Edit Click Event
-			EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
-			evtImgEditClick.eventID = EventTriggerType.PointerClick;
-			evtImgEdit.triggers.Add (evtImgEditClick);
-
-			evtImgEditClick.callback.AddListener ((eventData) => {
-				// TODO edit
-				print("edit");
-			});
 
 			// Add Image Delete Click Event
 			EventTrigger.Entry evtImgDelClick = new EventTrigger.Entry ();
 			evtImgDelClick.eventID = EventTriggerType.PointerClick;
 			evtImgDel.triggers.Add (evtImgDelClick);
 
-			evtImgDelClick.callback.AddListener ((eventData) => {
-				// Delete playlist or file
-				bool deleted = Delete (gameObject);
+			evtImgDelClick.callback.AddListener ((eventData) =>
+			{
+				// Get playlist and file
+				PlaylistObj p = FindPlaylist (gameObject);
+				FileObj f = FindFile (gameObject);
 
-				if (deleted) {
-					// Get playlist and file
-					PlaylistObj p = FindPlaylist (gameObject);
-					FileObj f = FindFile (gameObject);
+				if (EditorUtility.DisplayDialog("Playlist löschen", "Soll die Playlist \"" + p.Name + "\" wirklich gelöscht werden?", "Ja", "Nein"))
+				{
+					// Delete playlist or file
+					bool deleted = Delete (gameObject);
 
-					// Remove from interface
-					Destroy (gameObject);
+					if (deleted) {
+						// Remove from interface
+						Destroy (gameObject);
 
-					if (f == null) {
-						// Remove from list
-						playlists.Remove (p);
+						if (f == null) {
+							// Remove from list
+							playlists.Remove (p);
 
-						// Unset active playlist
-						if (p == active) active = null;
+							// Unset active playlist
+							if (p == active) active = null;
+						}
 					}
 				}
 			});
