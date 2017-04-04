@@ -23,7 +23,7 @@ public class Playlist : MonoBehaviour {
 	void Start ()
 	{
 		// Get reference to GameObjects
-		playlist = GameObject.Find ("PlaylistGrid");
+		playlist = GameObject.Find ("PlaylistContent");
 
 		// Connect to database
 		DbConnect ();
@@ -94,7 +94,7 @@ public class Playlist : MonoBehaviour {
 				}
 
 				// Set files
-				obj.Files = files.ToArray();
+				obj.Files = files;
 
 				// Add contents to playlists array
 				playlists.Add (obj);
@@ -123,15 +123,15 @@ public class Playlist : MonoBehaviour {
 			textPlaylist.text = p.Name;
 
 			// Create Event Triggers
-			EventTrigger evtText = goText.AddComponent<EventTrigger> ();
+			EventTrigger events = playlist.AddComponent<EventTrigger> ();
 
 			// Add Click Event
 			EventTrigger.Entry evtClick = new EventTrigger.Entry ();
 			evtClick.eventID = EventTriggerType.PointerClick;
-			evtText.triggers.Add (evtClick);
+			events.triggers.Add (evtClick);
 
 			evtClick.callback.AddListener ((eventData) => {
-				ToggleFiles(p);
+				ToggleFiles(playlist);
 			});
 
 			// Add files
@@ -158,12 +158,12 @@ public class Playlist : MonoBehaviour {
 		GameObject gameObject = new GameObject (name);
 		gameObject.transform.SetParent (playlist.transform);
 
-		// Set GameObject transformations
-		RectTransform goTrans = gameObject.AddComponent<RectTransform> ();
-		goTrans.sizeDelta = new Vector2 (398, 20);
+		// Add Layout Element to GameObject
+		LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
+		goLayout.minHeight = 30;
+		goLayout.preferredHeight = goLayout.minHeight;
 
 		// Add image to GameObject
-		// => used to have great access to the PointerEnter and PointerExit events
 		Image goImg = gameObject.AddComponent<Image> ();
 		goImg.color = Color.clear;
 
@@ -176,40 +176,19 @@ public class Playlist : MonoBehaviour {
 		Text text = goText.AddComponent<Text> ();
 
 		// Set text transformations
-		text.rectTransform.pivot = Vector2.zero;
-		text.rectTransform.sizeDelta = goTrans.sizeDelta;
+		text.rectTransform.pivot = Vector2.up;
+		text.rectTransform.localPosition = Vector2.zero;
+		text.rectTransform.sizeDelta = new Vector2(100, 30);
+		text.rectTransform.anchorMin = Vector2.up;
+		text.rectTransform.anchorMax = Vector2.up;
 
 		// Font settings
 		text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 		text.fontSize = 16;
 
 		// Add Content Size Fitter
-		// => now it's possible to get size of the text (used to append icons next to the text)
 		ContentSizeFitter csf = goText.AddComponent<ContentSizeFitter> ();
 		csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-
-		/*// Create listen image GameObject
-		GameObject goImage = new GameObject ("Listen");
-		goImage.transform.SetParent (gameObject.transform);
-
-		// Add image
-		Image listenImg = goImage.AddComponent<Image> ();
-
-		// Set transformations
-		listenImg.rectTransform.localPosition = Vector3.zero;
-		listenImg.rectTransform.pivot = Vector2.zero;
-		listenImg.rectTransform.sizeDelta = new Vector2 (20, imgWrap.rectTransform.sizeDelta.y);*/ 
-
-
-		// Add Layout Group to GameObject
-		HorizontalLayoutGroup hlgGo = gameObject.AddComponent<HorizontalLayoutGroup> ();
-		hlgGo.childAlignment = TextAnchor.MiddleLeft;
-		hlgGo.spacing = 15;
-//		hlgGo.childControlWidth = false;
-//		hlgGo.childControlHeight = false;
-		hlgGo.childForceExpandWidth = false;
-		hlgGo.childForceExpandHeight = false;
 
 
 		// Create images GameObject
@@ -218,14 +197,16 @@ public class Playlist : MonoBehaviour {
 
 		// Set images GameObject transformations
 		RectTransform imgTrans = goImages.AddComponent<RectTransform> ();
-		imgTrans.sizeDelta = new Vector2 (goTrans.sizeDelta.x - /*text.rectTransform.sizeDelta.x -*/ hlgGo.spacing, goTrans.sizeDelta.y);
+		imgTrans.pivot = Vector2.one;
+		imgTrans.localPosition = Vector2.zero;
+		imgTrans.sizeDelta = new Vector2 (100, 30);
+		imgTrans.anchorMin = Vector2.one;
+		imgTrans.anchorMax = Vector2.one;
 
 		// Add Layout Group to GameObject
 		HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
 		hlgImg.childAlignment = TextAnchor.MiddleRight;
 		hlgImg.spacing = 15;
-//		hlgImg.childControlWidth = false;
-//		hlgImg.childControlHeight = false;
 		hlgImg.childForceExpandWidth = false;
 		hlgImg.childForceExpandHeight = false;
 
@@ -236,9 +217,10 @@ public class Playlist : MonoBehaviour {
 
 		// Add image
 		Image editImg = goEdit.AddComponent<Image> ();
+		editImg.sprite = Resources.Load<Sprite> ("Images/edit");
 
 		// Set transformations
-		editImg.rectTransform.sizeDelta = new Vector2 (20, goTrans.sizeDelta.y);
+		editImg.rectTransform.sizeDelta = new Vector2 (20, 20);//goTrans.sizeDelta.y);
 
 
 		// Create delete image GameObject
@@ -247,9 +229,7 @@ public class Playlist : MonoBehaviour {
 
 		// Add image
 		Image deleteImg = goDelete.AddComponent<Image> ();
-
-		// Set transformations
-		deleteImg.rectTransform.sizeDelta = editImg.rectTransform.sizeDelta;
+		deleteImg.sprite = Resources.Load<Sprite> ("Images/delete");
 
 		// Disable images GameObject
 		goImages.SetActive (false);
@@ -264,11 +244,6 @@ public class Playlist : MonoBehaviour {
 		evtWrapper.triggers.Add (evtHover);
 
 		evtHover.callback.AddListener ((eventData) => {
-			// Get references
-			RectTransform textTrans = goText.GetComponent<RectTransform> ();
-			imgTrans.sizeDelta = new Vector2(goTrans.sizeDelta.x - textTrans.sizeDelta.x - hlgGo.spacing, imgTrans.sizeDelta.y);
-
-			// Enable images GameObject
 			goImages.SetActive (true);
 		});
 
@@ -278,7 +253,6 @@ public class Playlist : MonoBehaviour {
 		evtWrapper.triggers.Add (evtExit);
 
 		evtExit.callback.AddListener ((eventData) => {
-			// Disable images GameObject
 			goImages.SetActive (false);
 		});
 
@@ -310,8 +284,12 @@ public class Playlist : MonoBehaviour {
 		return gameObject;
 	}
 
-	void ToggleFiles (PlaylistObj playlist)
+	void ToggleFiles (GameObject gameObject)
 	{
+		// Get playlist
+		PlaylistObj playlist = FindPlaylist (gameObject);
+
+		// Show or hide playlist files
 		foreach (PlaylistObj p in playlists)
 		{
 			foreach (FileObj f in p.Files)
@@ -396,7 +374,7 @@ public class Playlist : MonoBehaviour {
 			string files = "NULL";
 			int IDcount = 0;
 
-			for (int i=0; i < playlist.Files.Length; i++)
+			for (int i=0; i < playlist.Files.Count; i++)
 			{
 				if (playlist.Files [i].ID != 0)
 				{
@@ -406,7 +384,7 @@ public class Playlist : MonoBehaviour {
 
 					files += playlist.Files [i].ID.ToString ();
 
-					if (i != playlist.Files.Length-1) {
+					if (i != playlist.Files.Count-1) {
 						files += ",";
 					}
 
@@ -463,26 +441,51 @@ public class Playlist : MonoBehaviour {
 
 	bool Delete (GameObject gameObject)
 	{
-		// Get playlist and file id
-		string[] name = gameObject.name.Split ('.');
-		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
-		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
-
 		// Get playlist and file
-		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
-		print (playlist);
+		PlaylistObj playlist = FindPlaylist (gameObject);
+		FileObj file = FindFile (gameObject);
 
-		return playlist != null ? DeletePlaylist (playlist) : true;//DeleteFile (playlist, file);
+		return playlist != null ? (file != null ? DeleteFile (playlist, file) : DeletePlaylist (playlist)) : false;
 	}
 
 	bool DeletePlaylist (PlaylistObj playlist)
 	{
+		print (playlist.Name);
 		return true;
 	}
 
 	bool DeleteFile (PlaylistObj playlist, FileObj file)
 	{
+		print (playlist.Name + "," + file.Name);
 		return true;
+	}
+
+	PlaylistObj FindPlaylist (GameObject gameObject)
+	{
+		// Get playlist id
+		string[] name = gameObject.name.Split ('.');
+		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+
+		// Get playlist
+		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
+
+		return playlist;
+	}
+
+	FileObj FindFile (GameObject gameObject)
+	{
+		// Get playlist and file id
+		string[] name = gameObject.name.Split ('.');
+		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
+
+		// Get playlist
+		PlaylistObj playlist = FindPlaylist (gameObject);
+
+		// Get file
+		FileObj file = playlist.Files.Find(x => x.ID == fileID);
+
+		return file;
 	}
 
 
