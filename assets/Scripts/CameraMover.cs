@@ -7,7 +7,7 @@ public class CameraMover : MonoBehaviour {
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
-    
+    private bool permitmove = true;
     
    
 
@@ -20,8 +20,11 @@ public class CameraMover : MonoBehaviour {
 
     void FixedUpdate()
     {
-        PerformMovement();
-        PerformRotation();
+        
+        if (permitmove) {
+            PerformMovement();
+            PerformRotation();
+        }
        
     }
 
@@ -35,7 +38,11 @@ public class CameraMover : MonoBehaviour {
         rotation = _rotation;
     }
 
-    
+    public void Permission(bool _permitmove)
+    {
+        permitmove = _permitmove;
+
+    }
 
     void PerformMovement()
     {

@@ -5,7 +5,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
     public float speed = 10f;
     public float mouseSensitivity = 3f;
-   
+    public bool permitmove = true;
 
     private CameraMover move;
 
@@ -32,6 +32,11 @@ public class CameraController : MonoBehaviour {
             speed -= 5f;
         }
 
+        if (Input.GetKeyDown("space"))
+        {
+            permitmove = !permitmove;
+        }
+
         Vector3 movHorizontal = transform.right * xMov;
         Vector3 movVertical = transform.forward * zMov;
 
@@ -43,8 +48,8 @@ public class CameraController : MonoBehaviour {
 
 
         Vector3 rotation = new Vector3(-xRot, yRot, 0f) * mouseSensitivity;
-        
-        
+
+        move.Permission(permitmove);
 
         move.Rotate(rotation);
         

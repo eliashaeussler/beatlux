@@ -195,6 +195,22 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114992140225265492, guid: 706f7322d23bb409f99d1130b0ade000,
+        type: 2}
+      propertyPath: hex
+      value: 
+      objectReference: {fileID: 1000010523474420, guid: 8657cd5714b13bd40b1df4d76be7cf93,
+        type: 2}
+    - target: {fileID: 114992140225265492, guid: 706f7322d23bb409f99d1130b0ade000,
+        type: 2}
+      propertyPath: newScale
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 114992140225265492, guid: 706f7322d23bb409f99d1130b0ade000,
+        type: 2}
+      propertyPath: hexNumber
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 706f7322d23bb409f99d1130b0ade000, type: 2}
   m_IsPrefabParent: 0
@@ -443,8 +459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac85cf1190a5e84890e793bbcb86a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hex: {fileID: 1000011393181986, guid: 067b6932e2eacdf4982cf7ba9cbc49e7, type: 2}
-  hexNumber: 100
+  hex: {fileID: 1000010523474420, guid: 8657cd5714b13bd40b1df4d76be7cf93, type: 2}
+  hexNumber: 20
   newScale: 500
 --- !u!4 &1679026544
 Transform:
@@ -456,7 +472,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.042602, y: 1.7316619, z: -2.9864078}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -16.88, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
