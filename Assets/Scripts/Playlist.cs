@@ -40,75 +40,6 @@ public class Playlist : MonoBehaviour {
 
 
 
-	void Load ()
-	{
-		if (DbConnect ())
-		{
-			// Database command
-			SqliteCommand cmd = new SqliteCommand (db);
-
-			// Query statement
-			string sql = "SELECT id,name,files FROM playlist ORDER BY name ASC";
-			cmd.CommandText = sql;
-
-			// Get sql results
-			SqliteDataReader reader = cmd.ExecuteReader ();
-
-			// Read sql results
-			while (reader.Read ())
-			{
-				// Create playlist object
-				PlaylistObj obj = new PlaylistObj ();
-
-				// Set id and name
-				obj.ID = reader.GetInt32 (0);
-				obj.Name = reader.GetString (1);
-
-				// Get file IDs
-				string[] fileIDs = !reader.IsDBNull (2) ? reader.GetString (2).Split (new Char[] { ',', ' ' }) : new string[0];
-
-				// Select files
-				List<FileObj> files = new List<FileObj> ();
-				foreach (string id in fileIDs)
-				{
-					// Send database query
-					SqliteCommand cmd2 = new SqliteCommand (db);
-					cmd2.CommandText = "SELECT id,name,path FROM file WHERE id = '" + id + "'";
-					SqliteDataReader fileReader = cmd2.ExecuteReader ();
-
-					// Read and add file
-					while (fileReader.Read ())
-					{
-						FileObj file = new FileObj ();
-
-						file.ID = fileReader.GetInt32 (0);
-						file.Name = fileReader.GetString (1);
-						file.Path = fileReader.GetString (2);
-
-						files.Add (file);
-					}
-
-					// Close reader
-					fileReader.Close ();
-					cmd2.Dispose ();
-				}
-
-				// Set files
-				obj.Files = files;
-
-				// Add contents to playlists array
-				playlists.Add (obj);
-			}
-
-			// Close reader
-			reader.Close ();
-			cmd.Dispose ();
-
-			// Close database connection
-			DbClose ();
-		}
-	}
-
 	public void Display ()
 	{
 		foreach (PlaylistObj p in playlists)
@@ -156,7 +87,7 @@ public class Playlist : MonoBehaviour {
 	{
 		// Create GameOject
 		GameObject gameObject = new GameObject (name);
-		gameObject.transform.SetParent (playlist.transform);
+		gameObject.transform.SetParent (this.playlist.transform);
 
 		// Add Layout Element to GameObject
 		LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
@@ -174,6 +105,9 @@ public class Playlist : MonoBehaviour {
 
 		// Add text
 		Text text = goText.AddComponent<Text> ();
+
+		// Set text alignment
+		text.alignment = TextAnchor.MiddleLeft;
 
 		// Set text transformations
 		text.rectTransform.pivot = Vector2.up;
@@ -277,7 +211,20 @@ public class Playlist : MonoBehaviour {
 
 		evtImgDelClick.callback.AddListener ((eventData) => {
 			// Delete playlist or file
-			Delete (gameObject);
+			bool deleted = Delete (gameObject);
+
+			if (deleted) {
+				// Get playlist and file
+				PlaylistObj playlist = FindPlaylist (gameObject);
+				FileObj file = FindFile (gameObject);
+
+				// Remove from interface
+				Destroy (gameObject);
+
+				// Remove from list
+				if (file == null) playlists.Remove (playlist);
+				print(playlists.Count);
+			}
 		});
 
 
@@ -306,6 +253,116 @@ public class Playlist : MonoBehaviour {
 					}
 				}
 			}
+		}
+	}
+
+	bool Delete (GameObject gameObject)
+	{
+		// Get file
+		PlaylistObj playlist = FindPlaylist (gameObject);
+		FileObj file = FindFile (gameObject);
+
+		return playlist != null ? (file != null ? DeleteFile (playlist, file) : DeletePlaylist (playlist)) : false;
+	}
+
+	PlaylistObj FindPlaylist (GameObject gameObject)
+	{
+		// Get playlist id
+		string[] name = gameObject.name.Split ('.');
+		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+
+		// Get playlist
+		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
+
+		return playlist;
+	}
+
+	FileObj FindFile (GameObject gameObject)
+	{
+		// Get playlist and file id
+		string[] name = gameObject.name.Split ('.');
+		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
+
+		// Get playlist
+		PlaylistObj playlist = FindPlaylist (gameObject);
+
+		// Get file
+		FileObj file = playlist.Files.Find(x => x.ID == fileID);
+
+		return file;
+	}
+
+
+
+	//-- DATABASE METHODS
+
+	void Load ()
+	{
+		if (DbConnect ())
+		{
+			// Database command
+			SqliteCommand cmd = new SqliteCommand (db);
+
+			// Query statement
+			string sql = "SELECT id,name,files FROM playlist ORDER BY name ASC";
+			cmd.CommandText = sql;
+
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			// Read sql results
+			while (reader.Read ())
+			{
+				// Create playlist object
+				PlaylistObj obj = new PlaylistObj ();
+
+				// Set id and name
+				obj.ID = reader.GetInt32 (0);
+				obj.Name = reader.GetString (1);
+
+				// Get file IDs
+				string[] fileIDs = !reader.IsDBNull (2) ? reader.GetString (2).Split (new Char[] { ',', ' ' }) : new string[0];
+
+				// Select files
+				List<FileObj> files = new List<FileObj> ();
+				foreach (string id in fileIDs)
+				{
+					// Send database query
+					SqliteCommand cmd2 = new SqliteCommand (db);
+					cmd2.CommandText = "SELECT id,name,path FROM file WHERE id = '" + id + "'";
+					SqliteDataReader fileReader = cmd2.ExecuteReader ();
+
+					// Read and add file
+					while (fileReader.Read ())
+					{
+						FileObj file = new FileObj ();
+
+						file.ID = fileReader.GetInt32 (0);
+						file.Name = fileReader.GetString (1);
+						file.Path = fileReader.GetString (2);
+
+						files.Add (file);
+					}
+
+					// Close reader
+					fileReader.Close ();
+					cmd2.Dispose ();
+				}
+
+				// Set files
+				obj.Files = files;
+
+				// Add contents to playlists array
+				playlists.Add (obj);
+			}
+
+			// Close reader
+			reader.Close ();
+			cmd.Dispose ();
+
+			// Close database connection
+			DbClose ();
 		}
 	}
 
@@ -439,53 +496,99 @@ public class Playlist : MonoBehaviour {
 		return (int) Database.Constants.QueryFailed;
 	}
 
-	bool Delete (GameObject gameObject)
-	{
-		// Get playlist and file
-		PlaylistObj playlist = FindPlaylist (gameObject);
-		FileObj file = FindFile (gameObject);
-
-		return playlist != null ? (file != null ? DeleteFile (playlist, file) : DeletePlaylist (playlist)) : false;
-	}
-
 	bool DeletePlaylist (PlaylistObj playlist)
 	{
-		print (playlist.Name);
-		return true;
+		if (DbConnect () && playlist != null)
+		{
+			// Query statement
+			string sql = "DELETE FROM playlist WHERE id = '" + playlist.ID + "'";
+			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Result
+			int result = cmd.ExecuteNonQuery ();
+
+			// Close database connection
+			cmd.Dispose ();
+			DbClose ();
+
+			return result > 0;
+		}
+
+		return false;
 	}
 
 	bool DeleteFile (PlaylistObj playlist, FileObj file)
 	{
-		print (playlist.Name + "," + file.Name);
-		return true;
-	}
+		if (DbConnect () && playlist != null && file != null && playlist.Files.Contains (file))
+		{
+			// Select files of playlist
+			string sql = "SELECT files FROM playlist WHERE id = '" + playlist.ID + "'";
+			SqliteCommand cmd = new SqliteCommand (sql, db);
 
-	PlaylistObj FindPlaylist (GameObject gameObject)
-	{
-		// Get playlist id
-		string[] name = gameObject.name.Split ('.');
-		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
 
-		// Get playlist
-		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
+			// Read file IDs
+			List<String> fileIDs = null;
+			while (reader.Read ()) {
+				if (!reader.IsDBNull (0)) {
+					fileIDs = new List<String> (reader.GetString (0).Split (new Char[] { ',', ' ' }));
+				}
+			}
 
-		return playlist;
-	}
+			// Close reader
+			reader.Close();
+			cmd.Dispose ();
 
-	FileObj FindFile (GameObject gameObject)
-	{
-		// Get playlist and file id
-		string[] name = gameObject.name.Split ('.');
-		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
-		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
+			if (fileIDs != null && fileIDs.Contains (file.ID.ToString ()))
+			{
+				// Remove file
+				fileIDs.Remove (file.ID.ToString ());
 
-		// Get playlist
-		PlaylistObj playlist = FindPlaylist (gameObject);
+				// Update file IDs
+				string files = "NULL";
+				int IDcount = 0;
 
-		// Get file
-		FileObj file = playlist.Files.Find(x => x.ID == fileID);
+				for (int i=0; i < fileIDs.Count; i++)
+				{
+					if (Int32.Parse (fileIDs [i]) != 0)
+					{
+						if (IDcount == 0) {
+							files = "'";
+						}
 
-		return file;
+						files += fileIDs [i];
+
+						if (i != fileIDs.Count-1) {
+							files += ",";
+						}
+
+						IDcount++;
+					}
+				}
+
+				if (IDcount > 0) {
+					files += "'";
+				}
+
+				// Query statement
+				sql = "UPDATE playlist SET " +
+					"files = " + files + " " +
+					"WHERE id = '" + playlist.ID + "'";
+				cmd = new SqliteCommand (sql, db);
+
+				// Result
+				int result = cmd.ExecuteNonQuery ();
+
+				// Close database connection
+				cmd.Dispose ();
+				DbClose ();
+
+				return result > 0;
+			}
+		}
+
+		return false;
 	}
 
 
