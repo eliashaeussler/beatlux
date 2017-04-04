@@ -1198,7 +1198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f72d8b71f1b244afbf5e071cc93145a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playlist: {fileID: 0}
+  playlist: {fileID: 914428409}
 --- !u!81 &451189741
 AudioListener:
   m_ObjectHideFlags: 0
@@ -2503,6 +2503,11 @@ Prefab:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 114219471714719242, guid: 7c8d2645001a84766a78723725218eb4,
+        type: 2}
+      propertyPath: playlist
+      value: 
+      objectReference: {fileID: 914428409}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7c8d2645001a84766a78723725218eb4, type: 2}
   m_IsPrefabParent: 0

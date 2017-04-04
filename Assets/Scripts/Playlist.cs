@@ -26,7 +26,7 @@ public class Playlist : MonoBehaviour {
 	void Start ()
 	{
 		// Get reference to GameObjects
-		playlist = GameObject.Find ("PlaylistContent");
+//		playlist = GameObject.Find ("PlaylistContent");
 
 		// Connect to database
 		DbConnect ();
@@ -254,8 +254,13 @@ public class Playlist : MonoBehaviour {
 					// Remove from interface
 					Destroy (gameObject);
 
-					// Remove from list
-					if (f == null) playlists.Remove (p);
+					if (f == null) {
+						// Remove from list
+						playlists.Remove (p);
+
+						// Unset active playlist
+						if (p == active) active = null;
+					}
 				}
 			});
 
