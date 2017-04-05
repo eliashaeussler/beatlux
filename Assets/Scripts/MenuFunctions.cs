@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.IO;
 
 public class MenuFunctions : MonoBehaviour {
     
@@ -24,4 +25,22 @@ public class MenuFunctions : MonoBehaviour {
 #endif
         
     }
+
+    string sourcePath;
+    public static string[] searchResults;
+    public static string pathF;
+
+    public void getInput(string s)
+    {
+        if (s == "")
+        {
+            pathF = @SourceFolder.sPath.pathFinal;
+        }
+        else
+        {
+            searchResults = Directory.GetFiles(@SourceFolder.sPath.pathFinal, "*" + s + "*", SearchOption.AllDirectories);
+        }
+
+
+    } 
 }
