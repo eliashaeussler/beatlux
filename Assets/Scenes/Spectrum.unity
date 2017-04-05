@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4407687, g: 0.48940963, b: 0.5694779, a: 1}
+  m_IndirectSpecularColor: {r: 0.44076842, g: 0.48940885, b: 0.56947684, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -304,42 +304,57 @@ Prefab:
     - target: {fileID: 224000013724442712, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -500
+      value: -800
       objectReference: {fileID: 0}
     - target: {fileID: 224000013724442712, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -250
+      value: -410
       objectReference: {fileID: 0}
     - target: {fileID: 224000013724442712, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 224000013724442712, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 224000014164107426, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -500
+      value: -800
       objectReference: {fileID: 0}
     - target: {fileID: 224000014164107426, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -250
+      value: -410
       objectReference: {fileID: 0}
     - target: {fileID: 224000014164107426, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 224000014164107426, guid: 3cb1a5b9717a232468fb6b194ec073de,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 50
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011350639320, guid: 3cb1a5b9717a232468fb6b194ec073de,
+        type: 2}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011350639320, guid: 3cb1a5b9717a232468fb6b194ec073de,
+        type: 2}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011350639320, guid: 3cb1a5b9717a232468fb6b194ec073de,
+        type: 2}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3cb1a5b9717a232468fb6b194ec073de, type: 2}
