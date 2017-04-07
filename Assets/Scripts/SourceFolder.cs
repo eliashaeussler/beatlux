@@ -173,6 +173,8 @@ public class SourceFolder : MonoBehaviour {
             Text myText = folderObject.AddComponent<Text>();
             myText.color = Color.black;
             myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+            // if file name is to long it is shortend
             if (Path.GetFileName(p).Length > 20)
             {
                 string zS = Path.GetFileName(p);
