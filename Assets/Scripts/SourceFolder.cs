@@ -194,14 +194,19 @@ public class SourceFolder : MonoBehaviour {
         // creates back-button if necessary 
         if(pathFolder != mainpath) {
 
+            // creates game object and places it
             GameObject back = new GameObject("Back2");
             back.transform.SetParent(folder.transform);
             RectTransform trans2 = back.AddComponent<RectTransform>();
             trans2.anchoredPosition = new Vector2(x, y);
             trans2.sizeDelta = new Vector2(290, 50);
             trans2.localScale = new Vector3(1, 1, 1);
+
+            // adds text 
             Text myBack = back.AddComponent<Text>();
             back.AddComponent<EventTrigger>();
+
+            // adds event trigger with recursion
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventData) => { init(Path.GetFullPath(Path.Combine(@pathFolder, @".."))); });
