@@ -18,6 +18,8 @@ public class Source : MonoBehaviour {
 	void Update () {
         sourceText = GetComponent<Text>();
         sourceText.text = SourceFolder.sPath.pathAll;
+        sourceText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
+        sourceText.fontSize = 20;
 
     }
 

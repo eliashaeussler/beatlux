@@ -45,8 +45,8 @@ public class SourceFolder : MonoBehaviour {
 
             // path and objects are initialised 
             i = 0;
-            float x = -42.0f;
-            float y = 200.0f;
+            float x = 0.0f;
+            float y = 110.0f;
             Transform child2 = transform.Find("Folders");
             Text file = child2.GetComponent<Text>();
             string[] filePaths = MenuFunctions.searchResults;
@@ -68,7 +68,7 @@ public class SourceFolder : MonoBehaviour {
                 //adds a text to the gameobjects which is filled and modified 
                 Text myText = fileObject.AddComponent<Text>();
                 myText.color = Color.black;
-                myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
 
                 // if the name is to long, it is shortend
                 if (Path.GetFileName(paths).Length > 20)
@@ -116,8 +116,8 @@ public class SourceFolder : MonoBehaviour {
         string[] folderPaths = Directory.GetDirectories(@pathAll);
         Transform child = transform.Find("Folders");
         GameObject folderObject;
-        float x = -42.0f;
-        float y = 200.0f;
+        float x = 0.0f;
+        float y = 110.0f;
         Text folder = child.GetComponent<Text>();
 
         // for each folder an object is created
@@ -144,7 +144,7 @@ public class SourceFolder : MonoBehaviour {
             //adds a text to the gameobjects which is filled and modified 
             Text myText = folderObject.AddComponent<Text>();
             myText.color = Color.black;
-            myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
             myText.text = Path.GetFileName(s);
             myText.fontSize = 30;
             y = y - 50.0f;
@@ -172,7 +172,7 @@ public class SourceFolder : MonoBehaviour {
             //adds a text to the gameobjects which is filled and modified 
             Text myText = folderObject.AddComponent<Text>();
             myText.color = Color.black;
-            myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
 
             // if file name is to long it is shortend
             if (Path.GetFileName(p).Length > 20)
@@ -214,7 +214,7 @@ public class SourceFolder : MonoBehaviour {
             entry.callback.AddListener((eventData) => { init(Path.GetFullPath(Path.Combine(@pathFolder, @".."))); });
             back.GetComponent<EventTrigger>().triggers.Add(entry);
             myBack.color = Color.black;
-            myBack.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            myBack.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
             myBack.text = "Back";
             myBack.fontSize = 30;
 
