@@ -156,6 +156,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1001 &217614894
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011882672160, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &1667460106
 Prefab:
   m_ObjectHideFlags: 0
@@ -359,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac85cf1190a5e84890e793bbcb86a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hex: {fileID: 1000010523474420, guid: 8657cd5714b13bd40b1df4d76be7cf93, type: 2}
+  hex: {fileID: 1000013784870086, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
   hexNumber: 20
   newScale: 500
   timing: 5
