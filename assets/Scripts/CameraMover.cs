@@ -3,25 +3,37 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class CameraMover : MonoBehaviour {
 
+    private Rigidbody rb;
+    private Vector3 spawnPosition = Vector3.zero;
+    private Quaternion spawnRotation; 
     
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
     private bool permitmove = true;
-    
+    private bool resetPosition = false;
    
 
-    private Rigidbody rb;
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        spawnPosition = rb.position;
+        spawnRotation = rb.rotation;
     }
 
     void FixedUpdate()
     {
-        
-        if (permitmove) {
+        if (resetPosition)
+        {
+            resetPosition = false;
+            rb.position = spawnPosition;
+            rb.rotation = spawnRotation;
+        }
+
+        if (permitmove)
+        {
             PerformMovement();
             PerformRotation();
         }
@@ -36,6 +48,11 @@ public class CameraMover : MonoBehaviour {
     public void Rotate(Vector3 _rotation)
     {
         rotation = _rotation;
+    }
+
+    public void resPosition()
+    {
+        resetPosition = true;
     }
 
     public void Permission(bool _permitmove)

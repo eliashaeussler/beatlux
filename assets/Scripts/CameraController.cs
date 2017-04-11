@@ -37,6 +37,11 @@ public class CameraController : MonoBehaviour {
             permitmove = !permitmove;
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            move.resPosition();
+        }
+
         Vector3 movHorizontal = transform.right * xMov;
         Vector3 movVertical = transform.forward * zMov;
 
