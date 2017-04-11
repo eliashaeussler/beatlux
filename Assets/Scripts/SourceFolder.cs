@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
 using UnityEditor;
+using System;
 
 public class SourceFolder : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class SourceFolder : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mainpath = @"C:\Users\u29880\Documents\hey";
+        //Path.GetPathRoot(Environment.SystemDirectory); doesnt work under my settings, dont know why
         pathFinal = mainpath;
         init(mainpath);
     }
@@ -46,9 +48,8 @@ public class SourceFolder : MonoBehaviour {
             // path and objects are initialised 
             i = 0;
             float x = 0.0f;
-            float y = 110.0f;
-            Transform child2 = transform.Find("Folders");
-            Text file = child2.GetComponent<Text>();
+            float y = 490.0f;
+            GameObject child2 = GameObject.Find("Folders");
             string[] filePaths = MenuFunctions.searchResults;
 
             foreach (string paths in filePaths)
@@ -58,7 +59,7 @@ public class SourceFolder : MonoBehaviour {
                 //creates a gameobject with a recttransform to position it
                 GameObject fileObject = new GameObject("MyTest" + i);
                 
-                fileObject.transform.SetParent(file.transform);
+                fileObject.transform.SetParent(child2.transform);
                 RectTransform trans = fileObject.AddComponent<RectTransform>();
                 trans.anchoredPosition = new Vector2(x, y);
                 trans.sizeDelta = new Vector2(290, 50);
@@ -114,11 +115,10 @@ public class SourceFolder : MonoBehaviour {
         pathAll = pathFolder;
         sPath = this;
         string[] folderPaths = Directory.GetDirectories(@pathAll);
-        Transform child = transform.Find("Folders");
+        GameObject child = GameObject.Find("Folders");
         GameObject folderObject;
-        float x = 0.0f;
-        float y = 110.0f;
-        Text folder = child.GetComponent<Text>();
+        float x = 0f;
+        float y = 490f;
 
         // for each folder an object is created
         foreach (string s in folderPaths)
@@ -127,7 +127,7 @@ public class SourceFolder : MonoBehaviour {
             i++;
             //creates a gameobject with a recttransform to position it
             folderObject = new GameObject("MyTest" + i);
-            folderObject.transform.SetParent(folder.transform);
+            folderObject.transform.SetParent(child.transform);
             RectTransform trans = folderObject.AddComponent<RectTransform>();
             trans.anchoredPosition = new Vector2(x, y);
             trans.sizeDelta = new Vector2(290, 50);
@@ -162,7 +162,7 @@ public class SourceFolder : MonoBehaviour {
             i++;
             //creates a gameobject with a recttransform to position it
             folderObject = new GameObject("MyTest" + i);
-            folderObject.transform.SetParent(folder.transform);
+            folderObject.transform.SetParent(child.transform);
             RectTransform trans = folderObject.AddComponent<RectTransform>();
             trans.anchoredPosition = new Vector2(x, y);
             trans.sizeDelta = new Vector2(290, 50);
@@ -198,7 +198,7 @@ public class SourceFolder : MonoBehaviour {
 
             // creates game object and places it
             GameObject back = new GameObject("Back2");
-            back.transform.SetParent(folder.transform);
+            back.transform.SetParent(child.transform);
             RectTransform trans2 = back.AddComponent<RectTransform>();
             trans2.anchoredPosition = new Vector2(x, y);
             trans2.sizeDelta = new Vector2(290, 50);
