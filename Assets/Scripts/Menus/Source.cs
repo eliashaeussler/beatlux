@@ -17,7 +17,7 @@ public class Source : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         sourceText = GetComponent<Text>();
-        sourceText.text = SourceFolder.sPath.pathAll;
+        sourceText.text = SourceFolder.currentPath;
         sourceText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
         sourceText.fontSize = 20;
 

@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.IO;
+using System.Collections.Generic;
+using System;
 
 public class MenuFunctions : MonoBehaviour {
     
@@ -26,21 +28,24 @@ public class MenuFunctions : MonoBehaviour {
         
     }
 
-    string sourcePath;
-    public static string[] searchResults;
+	public static List<String> searchResults;
     public static string pathF;
 
     public void getInput(string s)
     {
         if (s == "")
         {
-            pathF = @SourceFolder.sPath.pathFinal;
+            pathF = @SourceFolder.mainPath;
         }
         else
         {
-            searchResults = Directory.GetFiles(@SourceFolder.sPath.pathFinal, "*" + s + "*", SearchOption.AllDirectories);
+			// Reset results
+			searchResults = new List<String> ();
+
+			// Get results
+			searchResults.AddRange ( Directory.GetFiles (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
+			searchResults.AddRange ( Directory.GetDirectories (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
+			//			searchResults.Sort ();
         }
-
-
     } 
 }
