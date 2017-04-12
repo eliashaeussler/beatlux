@@ -19,9 +19,8 @@ public class Playlist : MonoBehaviour {
 	// Playlist List GameObject
 	public GameObject playlist;
 
-	// Dialog
-	public GameObject dialog;
-	public GameObject dialogWrapper;
+	// Dialog reference
+	public Dialog dialog;
 
 	// Active playlist
 	public static PlaylistObj activePlaylist;
@@ -33,6 +32,11 @@ public class Playlist : MonoBehaviour {
 
 	void Start ()
 	{
+		// Create new dialog
+		GameObject d = GameObject.Find ("Canvas").transform.Find ("Dialog").gameObject;
+		GameObject dW = d.transform.Find ("DialogWrapper").gameObject;
+		dialog = new Dialog (d, dW);
+
 		// Connect to database
 		DbConnect ();
 
@@ -130,6 +134,7 @@ public class Playlist : MonoBehaviour {
 			hlg.spacing = 10;
 			hlg.childForceExpandWidth = false;
 			hlg.childForceExpandHeight = false;
+			hlg.childAlignment = TextAnchor.MiddleLeft;
 
 
 			// Create arrow text GameObject
@@ -147,11 +152,11 @@ public class Playlist : MonoBehaviour {
 
 			// Font settings
 			textArrow.font = IconFont.font;
-			textArrow.fontSize = 16;
+			textArrow.fontSize = 30;
 
 			// Add Layout Element
 			LayoutElement layoutElementArrow = goArrow.AddComponent<LayoutElement> ();
-			layoutElementArrow.minWidth = 20;
+			layoutElementArrow.minWidth = 30;
 
 
 			// Create text GameObject
@@ -169,7 +174,7 @@ public class Playlist : MonoBehaviour {
 
 			// Font settings
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-			text.fontSize = 16;
+			text.fontSize = 30;
 
 
 			if (file != null)
@@ -189,7 +194,7 @@ public class Playlist : MonoBehaviour {
 
 				// Font settings
 				textListening.font = IconFont.font;
-				textListening.fontSize = 16;
+				textListening.fontSize = 30;
 			}
 
 
@@ -197,9 +202,21 @@ public class Playlist : MonoBehaviour {
 			GameObject goEditIcons = new GameObject ("Images");
 			goEditIcons.transform.SetParent (gameObject.transform);
 
+			// Set transformations
+			RectTransform editIconsTrans = goEditIcons.AddComponent<RectTransform> ();
+			editIconsTrans.anchoredPosition = Vector2.zero;
+			editIconsTrans.anchorMin = new Vector2 (1.0f, 0.5f);
+			editIconsTrans.anchorMax = new Vector2 (1.0f, 0.5f);
+			editIconsTrans.pivot = new Vector2 (1.0f, 0.5f);
+
 			// Add Layout Element
 			LayoutElement layoutElementEditIcons = goEditIcons.AddComponent<LayoutElement> ();
-			layoutElementEditIcons.flexibleWidth = 1;
+			layoutElementEditIcons.ignoreLayout = true;
+
+			// Add Content Size Fitter
+			ContentSizeFitter csfEditIcons = goEditIcons.AddComponent<ContentSizeFitter> ();
+			csfEditIcons.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+			csfEditIcons.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
 			// Add Layout Group to GameObject
 			HorizontalLayoutGroup hlgImg = goEditIcons.AddComponent<HorizontalLayoutGroup> ();
@@ -230,7 +247,7 @@ public class Playlist : MonoBehaviour {
 
 				// Font settings
 				editText.font = IconFont.font;
-				editText.fontSize = 16;
+				editText.fontSize = 30;
 
 				// Create edit text Event Trigger
 				EventTrigger evtTextEdit = goEdit.AddComponent<EventTrigger> ();
@@ -262,7 +279,7 @@ public class Playlist : MonoBehaviour {
 
 			// Font settings
 			deleteText.font = IconFont.font;
-			deleteText.fontSize = 16;
+			deleteText.fontSize = 30;
 
 
 			// Create delete text Event Trigger
@@ -443,19 +460,17 @@ public class Playlist : MonoBehaviour {
 			PlaylistObj playlist = FindPlaylist (obj);
 
 			// Content elements
-			Transform header = dialogWrapper.transform.Find ("Header");
-			Transform main = dialogWrapper.transform.Find ("Main");
-			Transform footer = dialogWrapper.transform.Find ("Footer");
+			Transform header = dialog.wrapper.transform.Find ("Header");
+			Transform main = dialog.wrapper.transform.Find ("Main");
+			Transform footer = dialog.wrapper.transform.Find ("Footer");
 
 			// Header elements
 			Text heading = header.Find ("Heading").GetComponent<Text> ();
 
 			// Main elements
-			GameObject mainText = main.Find ("Text").gameObject;
-			Text text = mainText.GetComponent<Text> ();
-			GameObject inputField = main.Find ("InputField").gameObject;
-			Text inputText = inputField.transform.Find ("Text").GetComponent<Text> ();
-			Text inputPlaceholder = inputField.transform.Find ("Placeholder").GetComponent<Text> ();
+			Text text;
+			InputField inputField;
+			Text inputText;
 
 			// Footer elements
 			Button buttonOK = footer.Find ("Button_OK").GetComponent<Button> ();
@@ -468,11 +483,11 @@ public class Playlist : MonoBehaviour {
 
 			// New playlist
 			case "PL_ADD":
+				
 				// UI elements
 				heading.text = "Neue Playlist erstellen";
-				mainText.SetActive (false);
-				inputField.SetActive (true);
-				inputPlaceholder.text = "Wie soll die neue Playlist heißen?";
+				inputField = dialog.AddInputField ("", "Wie soll die neue Playlist heißen?");
+				inputText = inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();
 
 				// Events
 				buttonOK.onClick.AddListener (delegate {
@@ -498,19 +513,21 @@ public class Playlist : MonoBehaviour {
 
 				break;
 
-				// Edit playlist
+
+
+			// Edit playlist
 			case "PL_EDIT":
+				
 				if (playlist != null)
 				{
 					// UI elements
 					heading.text = "Playlist bearbeiten";
-					mainText.SetActive (false);
-					inputField.SetActive (true);
-					inputText.text = playlist.Name;
-					inputPlaceholder.text = playlist.Name;
+					inputField = dialog.AddInputField (playlist.Name, playlist.Name);
+					inputText = inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();
 
 					// Events
 					buttonOK.onClick.AddListener (delegate {
+						
 						playlist.Name = inputText.text;
 						bool edited = Edit (playlist);
 
@@ -529,16 +546,20 @@ public class Playlist : MonoBehaviour {
 
 				break;
 
-				// Delete playlist
+
+
+			// Delete playlist
 			case "PL_DEL":
+				
 				if (playlist != null)
 				{
 					// UI elements
 					heading.text = "Playlist löschen";
-					text.text = "Playlist \"" + playlist.Name + "\" endgültig löschen?";
+					text = dialog.AddText ("Playlist \"" + playlist.Name + "\" endgültig löschen?");
 
 					// Events
 					buttonOK.onClick.AddListener (delegate {
+						
 						Delete (obj);
 						Load ();
 						Display ();
@@ -552,13 +573,15 @@ public class Playlist : MonoBehaviour {
 
 				break;
 
+
+
 			default:
 				return;
 
 			}
 
 			// Show dialog
-			dialog.SetActive (true);
+			dialog.dialog.SetActive (true);
 
 			return;
 		}
@@ -568,14 +591,7 @@ public class Playlist : MonoBehaviour {
 
 	public void HideDialog ()
 	{
-		if (dialog != null)
-		{
-			// Hide dialog
-			dialog.SetActive (false);
-
-			// Reset UI elements
-			// TODO
-		}
+		if (dialog != null) dialog.HideDialog ();
 	}
 
 
@@ -737,21 +753,25 @@ public class Playlist : MonoBehaviour {
 	{
 		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
 		{
-			// Query statement
-			string sql = "UPDATE playlist SET " +
-				"name = '" + playlist.Name + "', " +
-				"files = " + FormatFileIDs (playlist.Files) + " " +
-				"WHERE id = '" + playlist.ID + "'";
-			SqliteCommand cmd = new SqliteCommand (sql, db);
+			try
+			{
+				// Query statement
+				string sql = "UPDATE playlist SET " +
+					"name = '" + playlist.Name + "', " +
+					"files = " + FormatFileIDs (playlist.Files) + " " +
+					"WHERE id = '" + playlist.ID + "'";
+				SqliteCommand cmd = new SqliteCommand (sql, db);
 
-			// Result
-			int result = cmd.ExecuteNonQuery ();
+				// Result
+				int result = cmd.ExecuteNonQuery ();
 
-			// Close database connection
-			cmd.Dispose ();
-			DbClose ();
+				// Close database connection
+				cmd.Dispose ();
+				DbClose ();
 
-			return result > 0;
+				return result > 0;
+			}
+			catch (SqliteException) {}
 		}
 
 		// Close database connection
