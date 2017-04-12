@@ -14,13 +14,20 @@ public class Playlist : MonoBehaviour {
 	private SqliteConnection db;
 
 	// Playlists
-	public List<PlaylistObj> playlists = new List<PlaylistObj>();
+	public List<PlaylistObj> playlists;
 
 	// Playlist List GameObject
 	public GameObject playlist;
 
+	// Dialog
+	public GameObject dialog;
+	public GameObject dialogWrapper;
+
 	// Active playlist
-	public static PlaylistObj active;
+	public static PlaylistObj activePlaylist;
+
+	// Active file
+	public static FileObj activeFile;
 
 
 
@@ -43,6 +50,11 @@ public class Playlist : MonoBehaviour {
 
 	void Display ()
 	{
+		// Remove all GameObjects
+		foreach (Transform pl in playlist.transform) {
+			Destroy (pl.gameObject);
+		}
+
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
@@ -51,7 +63,6 @@ public class Playlist : MonoBehaviour {
 			Text textPlaylist = goText.GetComponent<Text> ();
 
 			// Text settings
-			textPlaylist.color = Color.white;
 			textPlaylist.text = p.Name;
 
 			// Create Event Triggers
@@ -75,7 +86,6 @@ public class Playlist : MonoBehaviour {
 				Text textFile = goFileText.GetComponent<Text> ();
 
 				// Text settings
-				textFile.color = Color.gray;
 				textFile.text = f.Name;
 
 				// Hide GameObject
@@ -95,8 +105,9 @@ public class Playlist : MonoBehaviour {
 		{
 			// Construct name
 			string name = "#" + playlist.ID;
-			if (file != null && playlist.Files.Contains (file))
+			if (file != null && playlist.Files.Contains (file)) {
 				name += "." + file.ID;
+			}
 
 			// Create GameOject
 			GameObject gameObject = new GameObject (name);
@@ -111,22 +122,36 @@ public class Playlist : MonoBehaviour {
 			Image goImg = gameObject.AddComponent<Image> ();
 			goImg.color = Color.clear;
 
+			// Set transformations
+			goImg.rectTransform.pivot = Vector2.up;
 
-			// Create arrow image GameObject
+			// Add Horizontal Layout Group
+			HorizontalLayoutGroup hlg = gameObject.AddComponent<HorizontalLayoutGroup> ();
+			hlg.spacing = 10;
+			hlg.childForceExpandWidth = false;
+			hlg.childForceExpandHeight = false;
+
+
+			// Create arrow text GameObject
 			GameObject goArrow = new GameObject ("Arrow");
 			goArrow.transform.SetParent (gameObject.transform);
 
-			// Add arrow image
-			Image imgArrow = goArrow.AddComponent<Image> ();
-			imgArrow.sprite = Resources.Load<Sprite> ("Images/" + (playlist == active && file == null ? "arrow-right" : "empty"));
+			// Add text
+			TextUnicode textArrow = goArrow.AddComponent<TextUnicode> ();
+			if (playlist.Equals(activePlaylist) && file == null) {
+				textArrow.text = IconFont.DROPDOWN_CLOSED;
+			}
 
-			// Set arrow image transformations
-			RectTransform imgArrowTrans = goArrow.GetComponent<RectTransform> ();
-			imgArrowTrans.pivot = Vector2.up;
-			imgArrowTrans.localPosition = Vector2.zero;
-			imgArrowTrans.sizeDelta = new Vector2 (30, 30);
-			imgArrowTrans.anchorMin = Vector2.up;
-			imgArrowTrans.anchorMax = Vector2.up;
+			// Set text alignment
+			textArrow.alignment = TextAnchor.MiddleLeft;
+
+			// Font settings
+			textArrow.font = IconFont.font;
+			textArrow.fontSize = 16;
+
+			// Add Layout Element
+			LayoutElement layoutElementArrow = goArrow.AddComponent<LayoutElement> ();
+			layoutElementArrow.minWidth = 20;
 
 
 			// Create text GameObject
@@ -139,80 +164,122 @@ public class Playlist : MonoBehaviour {
 			// Set text alignment
 			text.alignment = TextAnchor.MiddleLeft;
 
-			// Set text transformations
-			text.rectTransform.pivot = Vector2.up;
-			text.rectTransform.localPosition = new Vector2(35, 0);
-			text.rectTransform.sizeDelta = new Vector2(100, 30);
-			text.rectTransform.anchorMin = Vector2.up;
-			text.rectTransform.anchorMax = Vector2.up;
+			// Set text color
+			text.color = file == null ? Color.white : Color.gray;
 
 			// Font settings
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.fontSize = 16;
 
-			// Add Content Size Fitter
-			ContentSizeFitter csf = goText.AddComponent<ContentSizeFitter> ();
-			csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+			if (file != null)
+			{	
+				// Create listening text GameObject
+				GameObject goListening = new GameObject ("Listening");
+				goListening.transform.SetParent (gameObject.transform);
+
+				// Add text
+				TextUnicode textListening = goListening.AddComponent<TextUnicode> ();
+				if (playlist.Equals (activePlaylist) && file.Equals (activeFile)) {
+					textListening.text = IconFont.LISTENING;
+				}
+
+				// Set text alignment
+				textListening.alignment = TextAnchor.MiddleRight;
+
+				// Font settings
+				textListening.font = IconFont.font;
+				textListening.fontSize = 16;
+			}
 
 
-			// Create images GameObject
-			GameObject goImages = new GameObject ("Images");
-			goImages.transform.SetParent (gameObject.transform);
+			// Create edit icons GameObject
+			GameObject goEditIcons = new GameObject ("Images");
+			goEditIcons.transform.SetParent (gameObject.transform);
 
-			// Set images GameObject transformations
-			RectTransform imgTrans = goImages.AddComponent<RectTransform> ();
-			imgTrans.pivot = Vector2.one;
-			imgTrans.localPosition = Vector2.zero;
-			imgTrans.sizeDelta = new Vector2 (100, 30);
-			imgTrans.anchorMin = Vector2.one;
-			imgTrans.anchorMax = Vector2.one;
+			// Add Layout Element
+			LayoutElement layoutElementEditIcons = goEditIcons.AddComponent<LayoutElement> ();
+			layoutElementEditIcons.flexibleWidth = 1;
 
 			// Add Layout Group to GameObject
-			HorizontalLayoutGroup hlgImg = goImages.AddComponent<HorizontalLayoutGroup> ();
+			HorizontalLayoutGroup hlgImg = goEditIcons.AddComponent<HorizontalLayoutGroup> ();
 			hlgImg.childAlignment = TextAnchor.MiddleRight;
 			hlgImg.spacing = 5;
 			hlgImg.childForceExpandWidth = false;
 			hlgImg.childForceExpandHeight = false;
 
+			// Disable edit icons GameObject
+			goEditIcons.SetActive (false);
+
 
 			if (file == null)
 			{
-				// Create edit image GameObject
+				// Create edit text GameObject
 				GameObject goEdit = new GameObject ("Edit");
-				goEdit.transform.SetParent (goImages.transform);
+				goEdit.transform.SetParent (goEditIcons.transform);
 
-				// Add image
-				Image editImg = goEdit.AddComponent<Image> ();
-				editImg.sprite = Resources.Load<Sprite> ("Images/edit");
+				// Add text
+				TextUnicode editText = goEdit.AddComponent<TextUnicode> ();
+				editText.text = IconFont.EDIT;
+
+				// Set text alignment
+				editText.alignment = TextAnchor.MiddleRight;
 
 				// Set transformations
-				editImg.rectTransform.sizeDelta = new Vector2 (20, 20);
+				editText.rectTransform.sizeDelta = new Vector2 (20, 30);
 
-				// Create images Event Triggers
-				EventTrigger evtImgEdit = goEdit.AddComponent<EventTrigger> ();
+				// Font settings
+				editText.font = IconFont.font;
+				editText.fontSize = 16;
 
-				// Add Image Edit Click Event
-				EventTrigger.Entry evtImgEditClick = new EventTrigger.Entry ();
-				evtImgEditClick.eventID = EventTriggerType.PointerClick;
-				evtImgEdit.triggers.Add (evtImgEditClick);
+				// Create edit text Event Trigger
+				EventTrigger evtTextEdit = goEdit.AddComponent<EventTrigger> ();
 
-				evtImgEditClick.callback.AddListener ((eventData) =>
-				{
-					// TODO
+				// Add Edit Click Event
+				EventTrigger.Entry evtTextEditClick = new EventTrigger.Entry ();
+				evtTextEditClick.eventID = EventTriggerType.PointerClick;
+				evtTextEdit.triggers.Add (evtTextEditClick);
+
+				evtTextEditClick.callback.AddListener ((eventData) => {
+					ShowDialog ("PL_EDIT", gameObject);
 				});
 			}
 
 
-			// Create delete image GameObject
+			// Create delete text GameObject
 			GameObject goDelete = new GameObject ("Delete");
-			goDelete.transform.SetParent (goImages.transform);
+			goDelete.transform.SetParent (goEditIcons.transform);
 
-			// Add image
-			Image deleteImg = goDelete.AddComponent<Image> ();
-			deleteImg.sprite = Resources.Load<Sprite> ("Images/delete");
+			// Add text
+			Text deleteText = goDelete.AddComponent<Text> ();
+			deleteText.text = IconFont.TRASH;
 
-			// Disable images GameObject
-			goImages.SetActive (false);
+			// Set text alignment
+			deleteText.alignment = TextAnchor.MiddleRight;
+
+			// Set transformations
+			deleteText.rectTransform.sizeDelta = new Vector2 (20, 30);
+
+			// Font settings
+			deleteText.font = IconFont.font;
+			deleteText.fontSize = 16;
+
+
+			// Create delete text Event Trigger
+			EventTrigger evtTextDel = goDelete.AddComponent<EventTrigger> ();
+
+			// Add Delete Click Event
+			EventTrigger.Entry evtTextDelClick = new EventTrigger.Entry ();
+			evtTextDelClick.eventID = EventTriggerType.PointerClick;
+			evtTextDel.triggers.Add (evtTextDelClick);
+
+			evtTextDelClick.callback.AddListener ((eventData) => {
+				if (FindFile (gameObject) == null) {
+					ShowDialog ("PL_DEL", gameObject);
+				} else {
+					Delete (gameObject);
+				}
+			});
 
 
 			// Create GameObject Event Triggers
@@ -224,7 +291,7 @@ public class Playlist : MonoBehaviour {
 			evtWrapper.triggers.Add (evtHover);
 
 			evtHover.callback.AddListener ((eventData) => {
-				goImages.SetActive (true);
+				goEditIcons.SetActive (true);
 			});
 
 			// Add Hover Exit Event
@@ -233,42 +300,7 @@ public class Playlist : MonoBehaviour {
 			evtWrapper.triggers.Add (evtExit);
 
 			evtExit.callback.AddListener ((eventData) => {
-				goImages.SetActive (false);
-			});
-
-
-			// Create images Event Triggers
-			EventTrigger evtImgDel = goDelete.AddComponent<EventTrigger> ();
-
-			// Add Image Delete Click Event
-			EventTrigger.Entry evtImgDelClick = new EventTrigger.Entry ();
-			evtImgDelClick.eventID = EventTriggerType.PointerClick;
-			evtImgDel.triggers.Add (evtImgDelClick);
-
-			evtImgDelClick.callback.AddListener ((eventData) =>
-			{
-				// Get playlist and file
-				PlaylistObj p = FindPlaylist (gameObject);
-				FileObj f = FindFile (gameObject);
-
-				if (EditorUtility.DisplayDialog("Playlist löschen", "Soll die Playlist \"" + p.Name + "\" wirklich gelöscht werden?", "Ja", "Nein"))
-				{
-					// Delete playlist or file
-					bool deleted = Delete (gameObject);
-
-					if (deleted) {
-						// Remove from interface
-						Destroy (gameObject);
-
-						if (f == null) {
-							// Remove from list
-							playlists.Remove (p);
-
-							// Unset active playlist
-							if (p == active) active = null;
-						}
-					}
-				}
+				goEditIcons.SetActive (false);
 			});
 
 
@@ -284,7 +316,7 @@ public class Playlist : MonoBehaviour {
 		PlaylistObj playlist = FindPlaylist (gameObject);
 
 		// Set playlist as active playlist
-		active = playlist;
+		activePlaylist = playlist;
 
 		// Show or hide playlist files
 		bool opened = false;
@@ -307,17 +339,37 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Change arrows
-			Image arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Image>();
+			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Text>();
 			if (p != playlist) {
-				arr.sprite = Resources.Load<Sprite> ("Images/empty");
+				arr.text = "";
 			}
 		}
 
 		// Change arrow image
-		Image arrow = gameObject.transform.Find ("Arrow").GetComponent<Image> ();
+		Text arrow = gameObject.transform.Find ("Arrow").GetComponent<Text> ();
 		if (arrow != null) {
-			arrow.sprite = Resources.Load<Sprite> ("Images/arrow-" + (opened ? "down" : "right"));
+			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
 		}
+	}
+
+	public long NewPlaylist (string name)
+	{
+		if (name.Length > 0)
+		{
+			// Create playlist object
+			PlaylistObj playlist = new PlaylistObj (name);
+
+			// Create object in database
+			long id = Create (playlist);
+
+			// Reload playlists
+			Load ();
+			Display ();
+
+			return id;
+		}
+
+		return (long) Database.Constants.QueryFailed;
 	}
 
 	bool Delete (GameObject gameObject)
@@ -326,34 +378,204 @@ public class Playlist : MonoBehaviour {
 		PlaylistObj playlist = FindPlaylist (gameObject);
 		FileObj file = FindFile (gameObject);
 
-		return playlist != null ? (file != null ? DeleteFile (playlist, file) : DeletePlaylist (playlist)) : false;
+		bool deleted = playlist != null ? (file != null ? DeleteFile (playlist, file) : DeletePlaylist (playlist)) : false;
+
+		if (deleted) {
+			// Remove from interface
+			Destroy (gameObject);
+
+			if (file == null) {
+				// Remove from list
+				playlists.Remove (playlist);
+
+				// Unset active playlist
+				if (playlist == activePlaylist) activePlaylist = null;
+			}
+		}
+
+		return deleted;
 	}
 
 	PlaylistObj FindPlaylist (GameObject gameObject)
 	{
-		// Get playlist id
-		string[] name = gameObject.name.Split ('.');
-		int playlistID = Int32.Parse (name [0].Split ('#') [1]);
+		if (gameObject != null)
+		{
+			// Get playlist id
+			string[] name = gameObject.name.Split ('.');
+			long playlistID = Int64.Parse (name [0].Split ('#') [1]);
 
-		// Get playlist
-		PlaylistObj playlist = playlists.Find(x => x.ID == playlistID);
+			// Get playlist
+			return playlists.Find (x => x.ID == playlistID);
+		}
 
-		return playlist;
+		return null;
 	}
 
 	FileObj FindFile (GameObject gameObject)
 	{
-		// Get playlist and file id
-		string[] name = gameObject.name.Split ('.');
-		int fileID = name.Length > 1 ? Int32.Parse (name [1]) : 0;
+		if (gameObject != null)
+		{
+			// Get playlist and file id
+			string[] name = gameObject.name.Split ('.');
+			long fileID = name.Length > 1 ? Int64.Parse (name [1]) : 0;
 
-		// Get playlist
-		PlaylistObj playlist = FindPlaylist (gameObject);
+			// Get playlist
+			PlaylistObj playlist = FindPlaylist (gameObject);
 
-		// Get file
-		FileObj file = playlist.Files.Find(x => x.ID == fileID);
+			// Get file
+			if (playlist != null) {
+				return playlist.Files.Find (x => x.ID == fileID);
+			}
+		}
 
-		return file;
+		return null;
+	}
+
+	public void ShowDialog (string type) {
+		ShowDialog (type, null);
+	}
+
+	public void ShowDialog (string type, GameObject obj)
+	{
+		if (dialog != null)
+		{
+			// Playlist object
+			PlaylistObj playlist = FindPlaylist (obj);
+
+			// Content elements
+			Transform header = dialogWrapper.transform.Find ("Header");
+			Transform main = dialogWrapper.transform.Find ("Main");
+			Transform footer = dialogWrapper.transform.Find ("Footer");
+
+			// Header elements
+			Text heading = header.Find ("Heading").GetComponent<Text> ();
+
+			// Main elements
+			GameObject mainText = main.Find ("Text").gameObject;
+			Text text = mainText.GetComponent<Text> ();
+			GameObject inputField = main.Find ("InputField").gameObject;
+			Text inputText = inputField.transform.Find ("Text").GetComponent<Text> ();
+			Text inputPlaceholder = inputField.transform.Find ("Placeholder").GetComponent<Text> ();
+
+			// Footer elements
+			Button buttonOK = footer.Find ("Button_OK").GetComponent<Button> ();
+			Text buttonOKText = footer.Find ("Button_OK").Find ("Text").GetComponent<Text> ();
+			Button buttonCancel = footer.Find ("Button_Cancel").GetComponent<Button> ();
+			Text buttonCancelText = footer.Find ("Button_Cancel").Find ("Text").GetComponent<Text> ();
+
+
+			switch (type) {
+
+			// New playlist
+			case "PL_ADD":
+				// UI elements
+				heading.text = "Neue Playlist erstellen";
+				mainText.SetActive (false);
+				inputField.SetActive (true);
+				inputPlaceholder.text = "Wie soll die neue Playlist heißen?";
+
+				// Events
+				buttonOK.onClick.AddListener (delegate {
+					long id = NewPlaylist (inputText.text);
+
+					switch (id) {
+					case (long) Database.Constants.DuplicateFound:
+						// TODO
+						print("Bereits vorhanden.");
+						break;
+
+					case (long) Database.Constants.QueryFailed:
+						// TODO
+						print("Fehlgeschlagen.");
+						break;
+
+					default:
+						HideDialog ();
+						break;
+
+					}
+				});
+
+				break;
+
+				// Edit playlist
+			case "PL_EDIT":
+				if (playlist != null)
+				{
+					// UI elements
+					heading.text = "Playlist bearbeiten";
+					mainText.SetActive (false);
+					inputField.SetActive (true);
+					inputText.text = playlist.Name;
+					inputPlaceholder.text = playlist.Name;
+
+					// Events
+					buttonOK.onClick.AddListener (delegate {
+						playlist.Name = inputText.text;
+						bool edited = Edit (playlist);
+
+						if (edited) {
+							Load ();
+							Display ();
+						}
+
+						HideDialog ();
+					});
+				}
+				else
+				{
+					return;
+				}
+
+				break;
+
+				// Delete playlist
+			case "PL_DEL":
+				if (playlist != null)
+				{
+					// UI elements
+					heading.text = "Playlist löschen";
+					text.text = "Playlist \"" + playlist.Name + "\" endgültig löschen?";
+
+					// Events
+					buttonOK.onClick.AddListener (delegate {
+						Delete (obj);
+						Load ();
+						Display ();
+						HideDialog ();
+					});
+				}
+				else
+				{
+					return;
+				}
+
+				break;
+
+			default:
+				return;
+
+			}
+
+			// Show dialog
+			dialog.SetActive (true);
+
+			return;
+		}
+
+		return;
+	}
+
+	public void HideDialog ()
+	{
+		if (dialog != null)
+		{
+			// Hide dialog
+			dialog.SetActive (false);
+
+			// Reset UI elements
+			// TODO
+		}
 	}
 
 
@@ -364,6 +586,9 @@ public class Playlist : MonoBehaviour {
 	{
 		if (DbConnect ())
 		{
+			// Reset playlists list
+			playlists = new List<PlaylistObj> ();
+
 			// Database command
 			SqliteCommand cmd = new SqliteCommand (db);
 
@@ -378,11 +603,10 @@ public class Playlist : MonoBehaviour {
 			while (reader.Read ())
 			{
 				// Create playlist object
-				PlaylistObj obj = new PlaylistObj ();
+				PlaylistObj obj = new PlaylistObj (reader.GetString (1));
 
-				// Set id and name
-				obj.ID = reader.GetInt32 (0);
-				obj.Name = reader.GetString (1);
+				// Set ID
+				obj.ID = reader.GetInt64 (0);
 
 				// Get file IDs
 				string[] fileIDs = !reader.IsDBNull (2) ? reader.GetString (2).Split (new Char[] { ',', ' ' }) : new string[0];
@@ -401,7 +625,7 @@ public class Playlist : MonoBehaviour {
 					{
 						FileObj file = new FileObj ();
 
-						file.ID = fileReader.GetInt32 (0);
+						file.ID = fileReader.GetInt64 (0);
 						file.Name = fileReader.GetString (1);
 						file.Path = fileReader.GetString (2);
 
@@ -429,9 +653,9 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	int Create (PlaylistObj playlist)
+	long Create (PlaylistObj playlist)
 	{
-		if (DbConnect () && playlist != null)
+		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
 		{
 			// SQL settings
 			SqliteCommand cmd = null;
@@ -451,7 +675,7 @@ public class Playlist : MonoBehaviour {
 				// Read and add file IDs
 				int count = 0;
 				while (reader.Read ()) {
-					file.ID = reader.GetInt32 (0);
+					file.ID = reader.GetInt64 (0);
 					count++;
 				}
 
@@ -465,98 +689,141 @@ public class Playlist : MonoBehaviour {
 					// Query statement
 					sql = "INSERT INTO file (name,path) VALUES(" +
 						"'" + file.Name + "'," +
-						"'" + file.Path + "')";
+						"'" + file.Path + "'); SELECT last_insert_rowid()";
 					cmd = new SqliteCommand (sql, db);
 
 					// Execute statement
-					cmd.ExecuteNonQuery ();
-					cmd.Dispose ();
-
-					// Read id: Query statement
-					sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
-					cmd = new SqliteCommand (sql, db);
-
-					// Read id: Get sql results
-					reader = cmd.ExecuteReader ();
-
-					// Read id
-					while (reader.Read ()) {
-						file.ID = reader.GetInt32 (0);
-					}
-
-					// Close reader
-					reader.Close ();
+					file.ID = (long) cmd.ExecuteScalar ();
 					cmd.Dispose ();
 				}
 			}
 
 			// Format file IDs
-			string files = "NULL";
-			int IDcount = 0;
-
-			for (int i=0; i < playlist.Files.Count; i++)
-			{
-				if (playlist.Files [i].ID != 0)
-				{
-					if (IDcount == 0) {
-						files = "'";
-					}
-
-					files += playlist.Files [i].ID.ToString ();
-
-					if (i != playlist.Files.Count-1) {
-						files += ",";
-					}
-
-					IDcount++;
-				}
-			}
-
-			if (IDcount > 0) {
-				files += "'";
-			}
+			string files = FormatFileIDs (playlist.Files);
 
 			// Insert playlist into database
 			try
 			{
 				sql = "INSERT INTO playlist (name,files) VALUES(" +
 					"'" + playlist.Name + "'," +
-					files + ")";
+					files + "); SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, db);
 
-				// Execute insert statement
-				cmd.ExecuteNonQuery ();
-				cmd.Dispose ();
-
-				// Select id of inserted playlist
-				sql = "SELECT id FROM playlist WHERE name = '" + playlist.Name + "'";
-				cmd = new SqliteCommand (sql, db);
-
-				// Get sql results
-				reader = cmd.ExecuteReader ();
-
-				// Read id
-				int playlistId = (int) Database.Constants.QueryFailed;
-				while (reader.Read ()) {
-					playlistId = reader.GetInt32 (0);
-				}
-
-				// Close reader
-				reader.Close();
-				cmd.Dispose ();
+				// Execute insert statement and get ID
+				long id = (long) cmd.ExecuteScalar ();
 
 				// Close database connection
+				cmd.Dispose ();
 				DbClose ();
 
-				return playlistId;
+				return id;
 			}
 			catch (SqliteException)
 			{
-				return (int) Database.Constants.DuplicateFound;
+				// Close database connection
+				DbClose ();
+
+				return (long) Database.Constants.DuplicateFound;
 			}
 		}
 
-		return (int) Database.Constants.QueryFailed;
+		// Close database connection
+		DbClose ();
+
+		return (long) Database.Constants.QueryFailed;
+	}
+
+	bool Edit(PlaylistObj playlist)
+	{
+		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
+		{
+			// Query statement
+			string sql = "UPDATE playlist SET " +
+				"name = '" + playlist.Name + "', " +
+				"files = " + FormatFileIDs (playlist.Files) + " " +
+				"WHERE id = '" + playlist.ID + "'";
+			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Result
+			int result = cmd.ExecuteNonQuery ();
+
+			// Close database connection
+			cmd.Dispose ();
+			DbClose ();
+
+			return result > 0;
+		}
+
+		// Close database connection
+		DbClose ();
+
+		return false;
+	}
+
+	bool AddFile (FileObj file, PlaylistObj playlist)
+	{
+		if (DbConnect () && file != null && playlist != null)
+		{
+			// Reset file ID
+			file.ID = 0;
+
+			// Update file ID: Query statement
+			string sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
+			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			// Read id
+			while (reader.Read ()) {
+				file.ID = reader.GetInt64 (0);
+			}
+
+			// Close reader
+			reader.Close();
+			cmd.Dispose ();
+
+			// Add file if ID is still not valid
+			if (!(file.ID > 0))
+			{
+				// Query statement
+				sql = "INSERT INTO file (name,path) VALUES (" +
+					"'" + file.Name + "', " +
+					"'" + file.Path + "'); SELECT last_insert_rowid()";
+				cmd = new SqliteCommand (sql, db);
+
+				// Send query
+				file.ID = (long) cmd.ExecuteScalar ();
+				cmd.Dispose ();
+			}
+
+			if (!playlist.Files.Contains (file))
+			{
+				// Add file to playlist
+				playlist.Files.Add (file);
+
+				// Set file IDs
+				string files = FormatFileIDs (playlist.Files);
+
+				// Query statement
+				sql = "UPDATE playlist SET files = " + files + " WHERE id = '" + playlist.ID + "'";
+				cmd = new SqliteCommand (sql, db);
+
+				// Result
+				int result = cmd.ExecuteNonQuery ();
+
+				// Close database connection
+				cmd.Dispose ();
+				DbClose ();
+
+				return result > 0;
+			}
+		}
+
+		// Close database connection
+		DbClose ();
+
+		return false;
 	}
 
 	bool DeletePlaylist (PlaylistObj playlist)
@@ -576,6 +843,9 @@ public class Playlist : MonoBehaviour {
 
 			return result > 0;
 		}
+
+		// Close database connection
+		DbClose ();
 
 		return false;
 	}
@@ -609,30 +879,7 @@ public class Playlist : MonoBehaviour {
 				fileIDs.Remove (file.ID.ToString ());
 
 				// Update file IDs
-				string files = "NULL";
-				int IDcount = 0;
-
-				for (int i=0; i < fileIDs.Count; i++)
-				{
-					if (Int32.Parse (fileIDs [i]) != 0)
-					{
-						if (IDcount == 0) {
-							files = "'";
-						}
-
-						files += fileIDs [i];
-
-						if (i != fileIDs.Count-1) {
-							files += ",";
-						}
-
-						IDcount++;
-					}
-				}
-
-				if (IDcount > 0) {
-					files += "'";
-				}
+				string files = FormatFileIDs (fileIDs);
 
 				// Query statement
 				sql = "UPDATE playlist SET " +
@@ -650,6 +897,9 @@ public class Playlist : MonoBehaviour {
 				return result > 0;
 			}
 		}
+
+		// Close database connection
+		DbClose ();
 
 		return false;
 	}
@@ -674,5 +924,59 @@ public class Playlist : MonoBehaviour {
 
 		// Reset database instance
 		db = null;
+	}
+
+
+
+	//-- HELPER METHODS
+
+	string FormatFileIDs (List<String> fileIDs)
+	{
+		// Create FileObj list
+		List<FileObj> files = new List<FileObj> (fileIDs.Count);
+		foreach (string id in fileIDs) {
+			FileObj file = new FileObj ();
+			file.ID = Int64.Parse (id);
+			files.Add (file);
+		}
+
+		return FormatFileIDs (files);
+	}
+
+	string FormatFileIDs (List<FileObj> files)
+	{
+		// Output
+		string output = "NULL";
+
+		// Number of IDs
+		int IDcount = 0;
+
+		for (int i=0; i < files.Count; i++)
+		{
+			if (files [i].ID != 0)
+			{
+				// Insert starting apostrophe for sql query
+				if (IDcount == 0) {
+					output = "'";
+				}
+
+				// Insert ID
+				output += files [i].ID.ToString ();
+
+				// Insert comma
+				if (i != files.Count-1) {
+					output += ",";
+				}
+
+				IDcount++;
+			}
+		}
+
+		// Insert final apostrophe for sql query
+		if (IDcount > 0) {
+			output += "'";
+		}
+
+		return output;
 	}
 }

@@ -29,7 +29,7 @@ public class Database {
 	static SqliteConnection con;
 
 	// Enums for error handling
-	public enum Constants : int
+	public enum Constants : long
 	{
 		QueryFailed = -1,
 		DuplicateFound = -2

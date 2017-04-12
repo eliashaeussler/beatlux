@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FileObj {
 
-	public int ID { get; set; }
+	public long ID { get; set; }
 	public string Name { get; set; }
 	public string Path { get; set; }
 
@@ -12,5 +12,11 @@ public class FileObj {
 		ID = 0;
 		Name = "";
 		Path = "";
+	}
+
+	public override bool Equals(object obj)
+	{
+		FileObj rhs = (FileObj) obj;
+		return rhs != null && this.Name == rhs.Name && this.Path == rhs.Path;
 	}
 }

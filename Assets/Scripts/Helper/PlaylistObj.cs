@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 public class PlaylistObj {
 
-	public int ID { get; set; }
+	public long ID { get; set; }
 	public string Name { get; set; }
 	public List<FileObj> Files { get; set; }
 
-	public PlaylistObj ()
+	public PlaylistObj (string Name)
 	{
-		ID = 0;
-		Name = "";
-		Files = new List<FileObj> ();
+		this.Name = Name;
+		this.ID = 0;
+		this.Files = new List<FileObj> ();
 	}
 }
