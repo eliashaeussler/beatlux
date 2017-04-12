@@ -18,7 +18,7 @@ public class SourceFolder : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		mainpath = @Directory.GetDirectoryRoot (Environment.CurrentDirectory);
+		mainpath = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
         //Path.GetPathRoot(Environment.SystemDirectory); doesnt work under my settings, dont know why
         pathFinal = mainpath;
         init(mainpath);
