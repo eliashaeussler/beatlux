@@ -835,12 +835,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 50
-    m_Right: 50
-    m_Top: 50
-    m_Bottom: 50
+    m_Left: 25
+    m_Right: 25
+    m_Top: 25
+    m_Bottom: 25
   m_ChildAlignment: 0
-  m_Spacing: 50
+  m_Spacing: 25
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
 --- !u!114 &136185183
@@ -2487,7 +2487,7 @@ AudioListener:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 451189739}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!124 &451189742
 Behaviour:
   m_ObjectHideFlags: 0
@@ -2495,7 +2495,7 @@ Behaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 451189739}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!92 &451189743
 Behaviour:
   m_ObjectHideFlags: 0
@@ -2503,7 +2503,7 @@ Behaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 451189739}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &451189744
 Camera:
   m_ObjectHideFlags: 0
@@ -2688,7 +2688,7 @@ GameObject:
   - 222: {fileID: 515287739}
   - 114: {fileID: 515287742}
   m_Layer: 5
-  m_Name: Visualisierungen
+  m_Name: Visualisierung
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2768,7 +2768,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Visualisierungen
+  m_Text: Visualisierung
 --- !u!114 &515287742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3111,7 +3111,7 @@ GameObject:
   - 114: {fileID: 593299734}
   - 114: {fileID: 593299736}
   m_Layer: 5
-  m_Name: Musikauswahl
+  m_Name: Musik
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3167,7 +3167,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Musikauswahl
+  m_Text: Musik
 --- !u!222 &593299735
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9105,7 +9105,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2033832940}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
