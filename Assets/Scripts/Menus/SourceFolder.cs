@@ -18,7 +18,7 @@ public class SourceFolder : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        mainpath = @"C:\Users\u29880\Documents\hey";
+		mainpath = @Directory.GetDirectoryRoot (Environment.CurrentDirectory);
         //Path.GetPathRoot(Environment.SystemDirectory); doesnt work under my settings, dont know why
         pathFinal = mainpath;
         init(mainpath);
