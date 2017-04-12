@@ -48,10 +48,10 @@ public class SourceFolder : MonoBehaviour {
 			// path and objects are initialised 
 			i = 0;
 
-			GameObject child2 = GameObject.Find("Folders");
+			GameObject child2 = GameObject.Find("FileContent");
 			string[] filePaths = MenuFunctions.searchResults;
-			child2.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (filePaths.Length) * 50);
-			float x = ((filePaths.Length) * 50) / 2 + GameObject.Find("ScrollContent").GetComponent<RectTransform>().sizeDelta.y / 2;
+//			child2.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (filePaths.Length) * 50);
+//			float x = ((filePaths.Length) * 50) / 2 + GameObject.Find("FileContent").GetComponent<RectTransform>().sizeDelta.y / 2;
 			float y = 0.0f;
 
 			foreach (string paths in filePaths)
@@ -63,7 +63,7 @@ public class SourceFolder : MonoBehaviour {
 
 				fileObject.transform.SetParent(child2.transform);
 				RectTransform trans = fileObject.AddComponent<RectTransform>();
-				trans.anchoredPosition = new Vector2(x, y);
+//				trans.anchoredPosition = new Vector2(x, y);
 				trans.sizeDelta = new Vector2(290, 50);
 				trans.localScale = new Vector3(1, 1, 1);
 
@@ -113,18 +113,25 @@ public class SourceFolder : MonoBehaviour {
 		i = 0;
 
 
+
+		// Scroll to top
+		Scrollbar scrollbar = GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar;
+		scrollbar.value = 1;
+
+
+
 		// path and objects are initialised
 		pathAll = pathFolder;
 		sPath = this;
 		string[] folderPaths = Directory.GetDirectories(@pathAll);
 		string[] filerPath = Directory.GetFiles(@pathAll);
-		GameObject child = GameObject.Find("Folders");
-		child.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (folderPaths.Length + filerPath.Length) * 50);
+		GameObject child = GameObject.Find("FileContent");
+		//child.GetComponent<RectTransform>().sizeDelta = new Vector2(0, (folderPaths.Length + filerPath.Length) * 50);
 
 		// child.GetComponent<RectTransform>().sizeDelta.Set(500, child.GetComponent<RectTransform>().sizeDelta.y); 
 		GameObject folderObject;
 		float x = 0.0f;
-		float y = ((folderPaths.Length + filerPath.Length) * 50)/2+GameObject.Find("ScrollContent").GetComponent<RectTransform>().sizeDelta.y/2;
+		float y = ((folderPaths.Length + filerPath.Length) * 50)/2+GameObject.Find("FileContent").GetComponent<RectTransform>().sizeDelta.y/2;
 
 		// for each folder an object is created
 		foreach (string s in folderPaths)
@@ -139,6 +146,11 @@ public class SourceFolder : MonoBehaviour {
 			trans.sizeDelta = new Vector2(290, 50);
 			trans.localScale = new Vector3(1, 1, 1);
 
+			// Add Layout Element
+			LayoutElement layoutElement = folderObject.AddComponent<LayoutElement> ();
+			layoutElement.minHeight = 30;
+			layoutElement.preferredHeight = 30;
+
 			//creates and adds an eventtrigger so the text is clickable
 			folderObject.AddComponent<EventTrigger>();
 			EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -149,7 +161,7 @@ public class SourceFolder : MonoBehaviour {
 
 			//adds a text to the gameobjects which is filled and modified 
 			Text myText = folderObject.AddComponent<Text>();
-			myText.color = Color.black;
+			myText.color = Color.white;
 			myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
 			myText.text = Path.GetFileName(s);
 			myText.fontSize = 30;
@@ -176,7 +188,7 @@ public class SourceFolder : MonoBehaviour {
 
 			//adds a text to the gameobjects which is filled and modified 
 			Text myText = folderObject.AddComponent<Text>();
-			myText.color = Color.black;
+			myText.color = Color.white;
 			myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
 
 			// if file name is to long it is shortend
