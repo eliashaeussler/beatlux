@@ -1560,8 +1560,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a6c997da745bf4b85f49c8444d6ce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPath: 
-  mainPath: 
 --- !u!114 &298145147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2088,6 +2086,7 @@ GameObject:
   - 224: {fileID: 390605515}
   - 114: {fileID: 390605517}
   - 222: {fileID: 390605516}
+  - 114: {fileID: 390605518}
   m_Layer: 5
   m_Name: PlaylistContent
   m_TagString: Untagged
@@ -2111,7 +2110,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -25, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &390605516
 CanvasRenderer:
@@ -2139,6 +2138,19 @@ MonoBehaviour:
   m_Spacing: 20
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
+--- !u!114 &390605518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 390605514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1741964061, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &406189225
 GameObject:
   m_ObjectHideFlags: 0
@@ -4550,6 +4562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15bc53d1229add04eb311d3f172c164f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 0}
 --- !u!114 &949247394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4627,7 +4640,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -25, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &961362170
 CanvasRenderer:
@@ -4666,8 +4679,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a6c997da745bf4b85f49c8444d6ce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPath: 
-  mainPath: 
 --- !u!114 &961362173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7073,7 +7084,6 @@ GameObject:
   m_Component:
   - 224: {fileID: 1565376267}
   - 222: {fileID: 1565376270}
-  - 114: {fileID: 1565376269}
   - 114: {fileID: 1565376268}
   m_Layer: 5
   m_Name: Scrollbar Vertical
@@ -7099,7 +7109,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 15, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1565376268
 MonoBehaviour:
@@ -7147,33 +7157,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &1565376269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1565376266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
 --- !u!222 &1565376270
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7265,7 +7248,6 @@ GameObject:
   m_Component:
   - 224: {fileID: 1581274347}
   - 222: {fileID: 1581274350}
-  - 114: {fileID: 1581274349}
   - 114: {fileID: 1581274348}
   m_Layer: 5
   m_Name: Scrollbar Vertical
@@ -7291,7 +7273,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 15, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1581274348
 MonoBehaviour:
@@ -7339,33 +7321,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &1581274349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1581274346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
 --- !u!222 &1581274350
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8132,6 +8087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15bc53d1229add04eb311d3f172c164f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 1768582094}
 --- !u!114 &1768582099
 MonoBehaviour:
   m_ObjectHideFlags: 0

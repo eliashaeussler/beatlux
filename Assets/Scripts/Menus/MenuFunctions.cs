@@ -28,7 +28,8 @@ public class MenuFunctions : MonoBehaviour {
         
     }
 
-	public static List<String> searchResults;
+	public static List<String> searchDirs;
+	public static List<String> searchFiles;
     public static string pathF;
 
     public void getInput(string s)
@@ -39,13 +40,9 @@ public class MenuFunctions : MonoBehaviour {
         }
         else
         {
-			// Reset results
-			searchResults = new List<String> ();
-
 			// Get results
-			searchResults.AddRange ( Directory.GetFiles (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
-			searchResults.AddRange ( Directory.GetDirectories (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
-			//			searchResults.Sort ();
+			searchDirs = new List<String> ( Directory.GetDirectories (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
+			searchFiles = new List<String> ( Directory.GetFiles (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
         }
     } 
 }

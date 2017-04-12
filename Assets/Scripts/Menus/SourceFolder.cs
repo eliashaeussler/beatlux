@@ -19,6 +19,7 @@ public class SourceFolder : MonoBehaviour {
 	{
 		// Set main path
 		mainPath = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
+		currentPath = mainPath;
 
 		// Display files and folders for main path
 		init (mainPath);
@@ -30,66 +31,58 @@ public class SourceFolder : MonoBehaviour {
 		// If the search entry is deleted, init() is called and the strings are set to null so update wont be called 
 		if (MenuFunctions.pathF != null)
 		{
-			init (mainPath);
+			init (currentPath);
 			MenuFunctions.pathF = null;
-			MenuFunctions.searchResults = null;
+			MenuFunctions.searchDirs = null;
 		}
 
 		// If something was searched 
-		else if (MenuFunctions.searchResults != null)
+		else if (MenuFunctions.searchDirs != null)
 		{
-			// deletes all previous created objects
-			for (int n=0; n <= i; n++) Destroy(GameObject.Find(n.ToString ()));
-
-			// Get search results
-			GameObject gameObject = GameObject.Find("FileContent");
-			List<String> filePaths = MenuFunctions.searchResults;
-
-			// Display files and folders
-			i = 0;
-			foreach (string paths in filePaths)
-			{
-				i++;
-
-				// creates a gameobject with a recttransform to position it
-				GameObject fileObject = new GameObject(i.ToString ());
-				fileObject.transform.SetParent(gameObject.transform);
-
-				RectTransform trans = fileObject.AddComponent<RectTransform>();
-
-				// adds a text to the gameobjects which is filled and modified 
-				Text text = fileObject.AddComponent<Text>();
-				text.color = Color.white;
-				text.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
-				text.fontSize = 30;
-			}
+			display (MenuFunctions.searchDirs, MenuFunctions.searchFiles, true);
 		}
 	}
 
 
+	public void init (string pathFolder)
+	{
+		// path and objects are initialised
+		currentPath = pathFolder;
+
+		// Get files and folders
+		List<String> directories = new List<String> (Directory.GetDirectories(currentPath));
+		List<String> files = new List<String> (Directory.GetFiles(currentPath));
+
+		// Show files and folders
+		display (directories, files, false);
+	}
+
 
 	// init creates all the objects
-	void init (string pathFolder)
+	void display (List<String> directories, List<String> files, bool fromSearch)
 	{
 		// deletes all previous created objects
 		if (i >= 0) {
-			for (int n=0; n <= i; n++) Destroy(GameObject.Find(n.ToString ()));
+			Transform entries = GameObject.Find ("FileContent").transform;
+			foreach (Transform t in entries.transform) {
+				Destroy (t.gameObject);
+			}
 		}
 
 		// Reset file index
 		i = 0;
 
+		// Clear search input
+		if (!fromSearch)
+			GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
+
 		// Scroll to top
 		GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 
-		// path and objects are initialised
-		currentPath = pathFolder;
-
-		// Get files and folders
-		List<String> results = new List<String> ();
-		results.AddRange ( Directory.GetDirectories(currentPath) );
+		// Combine directories and folders
+		List<String> results = new List<String> (directories);
 		int lastDirectory = results.Count;
-		results.AddRange ( Directory.GetFiles(currentPath) );
+		results.AddRange (files);
 
 		GameObject gameObject = GameObject.Find("FileContent");
 		GameObject folderObject;
@@ -127,20 +120,22 @@ public class SourceFolder : MonoBehaviour {
 			folderObject.GetComponent<EventTrigger> ().triggers.Add (entry);
 
 			// adds a text to the gameobjects which is filled and modified 
-			Text myText = folderObject.AddComponent<Text>();
-			myText.color = Color.white;
-			myText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
-			myText.text = Path.GetFileName(s);
-			myText.fontSize = 30;
+			Text text = folderObject.AddComponent<Text> ();
+			text.color = Color.white;
+			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
+			text.text = Path.GetFileName (s);
+			text.fontSize = 30;
 		}
 
 	}
 
 	public void HistoryBack()
 	{
-		// TODO clear input field
+		// Clear search input
+		GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
 
-		init(Path.GetFullPath(Path.Combine(@currentPath, @"..")));
+		// Display file contents
+		init (Path.GetFullPath(Path.Combine(@currentPath, @"..")));
 	}
 
 }

@@ -6,21 +6,19 @@ using System.IO;
 
 public class Source : MonoBehaviour {
 
-    // Use this for initialization
-    Text sourceText;
+    public GameObject source;
+	Text text;
 
-    void Start () {
-
-      
+    void Start ()
+	{
+		text = source.GetComponent<Text> ();
+		text.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
+		text.fontSize = 20;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        sourceText = GetComponent<Text>();
-        sourceText.text = SourceFolder.currentPath;
-        sourceText.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
-        sourceText.fontSize = 20;
 
+	void Update ()
+	{
+        text.text = SourceFolder.currentPath;
     }
 
 }
