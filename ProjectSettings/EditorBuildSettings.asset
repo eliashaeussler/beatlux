@@ -6,16 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/Menus/MainMenu.unity
   - enabled: 1
-    path: Assets/Scenes/Kette.unity
+    path: Assets/Scenes/Menus/Musikauswahl.unity
   - enabled: 1
-    path: Assets/Scenes/Spectrum.unity
+    path: Assets/Scenes/Menus/VisEinstellen.unity
   - enabled: 1
-    path: Assets/Scenes/Divided.unity
+    path: Assets/Scenes/Visualizations/Divided.unity
   - enabled: 1
-    path: Assets/Scenes/Musikauswahl.unity
+    path: Assets/Scenes/Visualizations/Hexagons.unity
   - enabled: 1
-    path: Assets/Scenes/VisEinstellen.unity
+    path: Assets/Scenes/Visualizations/Kette.unity
   - enabled: 1
-    path: Assets/Scenes/Hexagons.unity
+    path: Assets/Scenes/Visualizations/LogoVisualisation.unity
+  - enabled: 1
+    path: Assets/Scenes/Visualizations/Spectrum.unity
