@@ -17,10 +17,26 @@ public class SettingManager : MonoBehaviour {
     //Storage for all available resolutions
     public Resolution[] resolutions;
 
+    void Start()
+    {
+        resolutions = Screen.resolutions;   //Saving all resolutions that the current monitor is able to display
+
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+        {
+            Screen.fullScreen = gameSettings.fullscreen;
+            Screen.SetResolution(resolutions[gameSettings.resolutionIndex].width, resolutions[gameSettings.resolutionIndex].height, Screen.fullScreen);
+            QualitySettings.masterTextureLimit = gameSettings.textureQuality;
+            QualitySettings.antiAliasing = gameSettings.antialiasing;
+
+
+        }
+    }
+
     void OnEnable()
     {
         gameSettings = new GameSettings();
 
+        //Listeners for all options, delegating the appropriate methode on change of value
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
         resolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
@@ -28,9 +44,9 @@ public class SettingManager : MonoBehaviour {
         antialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
         applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
 
+        resolutions = Screen.resolutions;
 
-        resolutions = Screen.resolutions;   //Saving all resolutions that the current monitor is able to display
-        foreach(Resolution resolution in resolutions)
+        foreach (Resolution resolution in resolutions)
         {
             resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
         }
@@ -46,6 +62,7 @@ public class SettingManager : MonoBehaviour {
     public void OnResolutionChange()
     {
         Screen.SetResolution(resolutions[resolutionDropdown.value].width, resolutions[resolutionDropdown.value].height, Screen.fullScreen);
+        gameSettings.resolutionIndex = resolutionDropdown.value;
     }
 
     public void OnTextureQualityChange()

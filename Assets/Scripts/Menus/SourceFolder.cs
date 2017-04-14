@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
-using UnityEditor;
+//using UnityEditor;
 using System;
 
 public class SourceFolder : MonoBehaviour {
