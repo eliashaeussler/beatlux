@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 public class SettingManager : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class SettingManager : MonoBehaviour {
     public Dropdown resolutionDropdown;
     public Dropdown textureQualityDropdown;
     public Dropdown antialiasingDropdown;
+    public Button applyButton;
 
     public GameSettings gameSettings;
 
@@ -24,12 +26,15 @@ public class SettingManager : MonoBehaviour {
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
         antialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
+        applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
+
 
         resolutions = Screen.resolutions;   //Saving all resolutions that the current monitor is able to display
         foreach(Resolution resolution in resolutions)
         {
             resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
         }
+        LoadSettings();
     }
 
 
@@ -54,13 +59,30 @@ public class SettingManager : MonoBehaviour {
         gameSettings.antialiasing = QualitySettings.antiAliasing = (int)Mathf.Pow(2f, antialiasingDropdown.value);
     }
 
+    public void OnApplyButtonClick()
+    {
+        SaveSettings();
+    }
+
     public void SaveSettings()
     {
-
+        string jsonData = JsonUtility.ToJson(gameSettings, true);
+        File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData); //In Windows, saving to "Appdata/LocalLow/HS_Harz_Musikvisualisierung" (foldername => company name in player settings)
     }
 
     public void LoadSettings()
     {
+        resolutionDropdown.RefreshShownValue();
+        //Check if there is a config file
+        if(File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+        {
+            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
 
+            antialiasingDropdown.value = gameSettings.antialiasing;
+            textureQualityDropdown.value = gameSettings.textureQuality;
+            resolutionDropdown.value = gameSettings.resolutionIndex;
+            fullscreenToggle.isOn = gameSettings.fullscreen;
+
+        }
     }
 }
