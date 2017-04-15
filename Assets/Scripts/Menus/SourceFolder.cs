@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
+<<<<<<< HEAD
+=======
+//using UnityEditor;
+>>>>>>> a05195286ce135fec3adaa4b0e9f004bb8268c93
 using System;
 
 public class SourceFolder : MonoBehaviour {
