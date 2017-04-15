@@ -32,7 +32,7 @@ public class MenuFunctions : MonoBehaviour {
 	public static List<String> searchFiles;
     public static string pathF;
 
-    public void getInput(string s)
+    public void GetInput(string s)
     {
         if (s == "")
         {
@@ -40,9 +40,35 @@ public class MenuFunctions : MonoBehaviour {
         }
         else
         {
+			// Reset results
+			searchDirs = new List<String> ();
+			searchFiles = new List<String> ();
+
 			// Get results
-			searchDirs = new List<String> ( Directory.GetDirectories (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
-			searchFiles = new List<String> ( Directory.GetFiles (@SourceFolder.currentPath, "*" + s + "*", SearchOption.AllDirectories) );
+			string path = SourceFolder.currentPath;
+			string pattern = "*" + s + "*";
+			GetResults (path, pattern);
+
+			// Remove hidden files and folders
+			searchDirs = SourceFolder.RemoveHidden (searchDirs);
+			searchFiles = SourceFolder.RemoveHidden (searchFiles);
         }
-    } 
+    }
+
+	private void GetResults (string folder, string pattern)
+	{
+		foreach (string file in Directory.GetFiles (folder, pattern))
+		{
+			searchFiles.Add (file);
+		}
+		foreach (string subDir in Directory.GetDirectories (folder))
+		{
+			try {
+				//searchDirs.Add (subDir);
+				GetResults (subDir, pattern);
+			} catch {
+				print (subDir);
+			}
+		}
+	}
 }

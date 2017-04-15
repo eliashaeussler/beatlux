@@ -6,21 +6,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEditor;
+using System.IO;
 
 public class Playlist : MonoBehaviour {
 
-	// Database connection
-	private SqliteConnection db;
-
-	// Playlists
-	public List<PlaylistObj> playlists;
-
-	// Playlist List GameObject
-	public GameObject playlist;
+	// Reference to transformation
+	public static Transform trans;
 
 	// Dialog reference
-	public Dialog dialog;
+	public GameObject dialogRef;
+	public static Dialog dialog;
+
+	// Database connection
+	public static SqliteConnection db;
+
+	// Playlists
+	public static List<PlaylistObj> playlists;
+
+	// Playlist List GameObject
+	public static GameObject playlist;
 
 	// Active playlist
 	public static PlaylistObj activePlaylist;
@@ -32,10 +36,12 @@ public class Playlist : MonoBehaviour {
 
 	void Start ()
 	{
-		// Create new dialog
-		GameObject d = GameObject.Find ("Canvas").transform.Find ("Dialog").gameObject;
-		GameObject dW = d.transform.Find ("DialogWrapper").gameObject;
-		dialog = new Dialog (d, dW);
+		// Set references
+		trans = transform;
+		playlist = GameObject.Find ("PlaylistContent");
+
+		// Set dialog
+		dialog = new Dialog (dialogRef);
 
 		// Connect to database
 		DbConnect ();
@@ -52,7 +58,7 @@ public class Playlist : MonoBehaviour {
 
 
 
-	void Display ()
+	public static void Display ()
 	{
 		// Remove all GameObjects
 		foreach (Transform pl in playlist.transform) {
@@ -90,7 +96,7 @@ public class Playlist : MonoBehaviour {
 				Text textFile = goFileText.GetComponent<Text> ();
 
 				// Text settings
-				textFile.text = f.Name;
+				textFile.text = Path.GetFileName (f.Path);
 
 				// Hide GameObject
 				file.SetActive (false);
@@ -98,12 +104,12 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	private GameObject DisplayPlaylist (PlaylistObj playlist)
+	public static GameObject DisplayPlaylist (PlaylistObj playlist)
 	{
 		return DisplayPlaylist (playlist, null);
 	}
 
-	private GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
+	public static GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
 	{
 		if (playlist != null)
 		{
@@ -115,7 +121,7 @@ public class Playlist : MonoBehaviour {
 
 			// Create GameOject
 			GameObject gameObject = new GameObject (name);
-			gameObject.transform.SetParent (this.playlist.transform);
+			gameObject.transform.SetParent (Playlist.playlist.transform);
 
 			// Add Layout Element to GameObject
 			LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
@@ -327,7 +333,7 @@ public class Playlist : MonoBehaviour {
 		return null;
 	}
 
-	void ToggleFiles (GameObject gameObject)
+	public static void ToggleFiles (GameObject gameObject)
 	{
 		// Get playlist
 		PlaylistObj playlist = FindPlaylist (gameObject);
@@ -342,7 +348,7 @@ public class Playlist : MonoBehaviour {
 			foreach (FileObj f in p.Files)
 			{
 				// Get GameObject for current file
-				GameObject file = this.playlist.transform.Find ("#" + p.ID + "." + f.ID).gameObject;
+				GameObject file = Playlist.playlist.transform.Find ("#" + p.ID + "." + f.ID).gameObject;
 
 				// Toggle files for GameObject
 				if (file != null) {
@@ -356,7 +362,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Change arrows
-			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Text>();
+			Text arr = Playlist.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Text>();
 			if (p != playlist) {
 				arr.text = "";
 			}
@@ -369,7 +375,7 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	public long NewPlaylist (string name)
+	public static long NewPlaylist (string name)
 	{
 		if (name.Length > 0)
 		{
@@ -389,7 +395,7 @@ public class Playlist : MonoBehaviour {
 		return (long) Database.Constants.QueryFailed;
 	}
 
-	bool Delete (GameObject gameObject)
+	public static bool Delete (GameObject gameObject)
 	{
 		// Get file
 		PlaylistObj playlist = FindPlaylist (gameObject);
@@ -413,7 +419,7 @@ public class Playlist : MonoBehaviour {
 		return deleted;
 	}
 
-	PlaylistObj FindPlaylist (GameObject gameObject)
+	public static PlaylistObj FindPlaylist (GameObject gameObject)
 	{
 		if (gameObject != null)
 		{
@@ -428,7 +434,7 @@ public class Playlist : MonoBehaviour {
 		return null;
 	}
 
-	FileObj FindFile (GameObject gameObject)
+	public static FileObj FindFile (GameObject gameObject)
 	{
 		if (gameObject != null)
 		{
@@ -448,11 +454,11 @@ public class Playlist : MonoBehaviour {
 		return null;
 	}
 
-	public void ShowDialog (string type) {
+	public static void ShowDialog (string type) {
 		ShowDialog (type, null);
 	}
 
-	public void ShowDialog (string type, GameObject obj)
+	public static void ShowDialog (string type, GameObject obj)
 	{
 		if (dialog != null)
 		{
@@ -589,7 +595,7 @@ public class Playlist : MonoBehaviour {
 		return;
 	}
 
-	public void HideDialog ()
+	public static void HideDialog ()
 	{
 		if (dialog != null) dialog.HideDialog ();
 	}
@@ -598,7 +604,7 @@ public class Playlist : MonoBehaviour {
 
 	//-- DATABASE METHODS
 
-	void Load ()
+	public static void Load ()
 	{
 		if (DbConnect ())
 		{
@@ -631,26 +637,10 @@ public class Playlist : MonoBehaviour {
 				List<FileObj> files = new List<FileObj> ();
 				foreach (string id in fileIDs)
 				{
-					// Send database query
-					SqliteCommand cmd2 = new SqliteCommand (db);
-					cmd2.CommandText = "SELECT id,name,path FROM file WHERE id = '" + id + "'";
-					SqliteDataReader fileReader = cmd2.ExecuteReader ();
-
-					// Read and add file
-					while (fileReader.Read ())
-					{
-						FileObj file = new FileObj ();
-
-						file.ID = fileReader.GetInt64 (0);
-						file.Name = fileReader.GetString (1);
-						file.Path = fileReader.GetString (2);
-
+					FileObj file = GetFile (Int64.Parse (id), false);
+					if (file != null) {
 						files.Add (file);
 					}
-
-					// Close reader
-					fileReader.Close ();
-					cmd2.Dispose ();
 				}
 
 				// Set files
@@ -669,7 +659,7 @@ public class Playlist : MonoBehaviour {
 		}
 	}
 
-	long Create (PlaylistObj playlist)
+	public static long Create (PlaylistObj playlist)
 	{
 		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
 		{
@@ -682,7 +672,7 @@ public class Playlist : MonoBehaviour {
 			foreach (FileObj file in playlist.Files)
 			{
 				// Query statement
-				sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
+				sql = "SELECT id FROM file WHERE path = '" + file.Path + "'";
 				cmd = new SqliteCommand (sql, db);
 
 				// Get sql results
@@ -703,9 +693,8 @@ public class Playlist : MonoBehaviour {
 				if (count == 0)
 				{
 					// Query statement
-					sql = "INSERT INTO file (name,path) VALUES(" +
-						"'" + file.Name + "'," +
-						"'" + file.Path + "'); SELECT last_insert_rowid()";
+					sql = "INSERT INTO file (path) VALUES('" + file.Path + "'); " +
+						"SELECT last_insert_rowid()";
 					cmd = new SqliteCommand (sql, db);
 
 					// Execute statement
@@ -749,7 +738,7 @@ public class Playlist : MonoBehaviour {
 		return (long) Database.Constants.QueryFailed;
 	}
 
-	bool Edit(PlaylistObj playlist)
+	public static bool Edit(PlaylistObj playlist)
 	{
 		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
 		{
@@ -780,7 +769,7 @@ public class Playlist : MonoBehaviour {
 		return false;
 	}
 
-	bool AddFile (FileObj file, PlaylistObj playlist)
+	public static bool AddFile (FileObj file, PlaylistObj playlist)
 	{
 		if (DbConnect () && file != null && playlist != null)
 		{
@@ -788,7 +777,7 @@ public class Playlist : MonoBehaviour {
 			file.ID = 0;
 
 			// Update file ID: Query statement
-			string sql = "SELECT id FROM file WHERE path = '" + file.Path + "' AND name = '" + file.Name + "'";
+			string sql = "SELECT id FROM file WHERE path = '" + file.Path + "'";
 			SqliteCommand cmd = new SqliteCommand (sql, db);
 
 			// Get sql results
@@ -807,9 +796,8 @@ public class Playlist : MonoBehaviour {
 			if (!(file.ID > 0))
 			{
 				// Query statement
-				sql = "INSERT INTO file (name,path) VALUES (" +
-					"'" + file.Name + "', " +
-					"'" + file.Path + "'); SELECT last_insert_rowid()";
+				sql = "INSERT INTO file (path) VALUES ('" + file.Path + "'); " +
+					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, db);
 
 				// Send query
@@ -846,7 +834,73 @@ public class Playlist : MonoBehaviour {
 		return false;
 	}
 
-	bool DeletePlaylist (PlaylistObj playlist)
+	public static FileObj GetFile (long id, bool closeConnection)
+	{
+		if (DbConnect ())
+		{
+			// Send database query
+			SqliteCommand cmd = new SqliteCommand (db);
+			cmd.CommandText = "SELECT id,path FROM file WHERE id = '" + id.ToString () + "'";
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			FileObj file = null;
+
+			// Read and add file
+			while (reader.Read ()) {
+				file = new FileObj ();
+
+				file.ID = reader.GetInt64 (0);
+				file.Path = reader.GetString (1);
+			}
+
+			// Close reader
+			reader.Close ();
+			cmd.Dispose ();
+			if (closeConnection) DbClose ();
+
+			return file;
+		}
+
+		// Close database connection
+		if (closeConnection) DbClose ();
+
+		return null;
+	}
+
+	public static FileObj GetFile (string path)
+	{
+		if (DbConnect ())
+		{
+			// Send database query
+			SqliteCommand cmd = new SqliteCommand (db);
+			cmd.CommandText = "SELECT id,path FROM file WHERE path = '" + path + "'";
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			FileObj file = null;
+
+			// Read and add file
+			while (reader.Read ()) {
+				file = new FileObj ();
+
+				file.ID = reader.GetInt64 (0);
+				file.Path = reader.GetString (1);
+			}
+
+			// Close reader
+			reader.Close ();
+			cmd.Dispose ();
+			DbClose ();
+
+			return file;
+		}
+
+		// Close database connection
+		DbClose ();
+
+		return null;
+	}
+
+	public static bool DeletePlaylist (PlaylistObj playlist)
 	{
 		if (DbConnect () && playlist != null)
 		{
@@ -870,7 +924,7 @@ public class Playlist : MonoBehaviour {
 		return false;
 	}
 
-	bool DeleteFile (PlaylistObj playlist, FileObj file)
+	public static bool DeleteFile (PlaylistObj playlist, FileObj file)
 	{
 		if (DbConnect () && playlist != null && file != null && playlist.Files.Contains (file))
 		{
@@ -928,7 +982,7 @@ public class Playlist : MonoBehaviour {
 
 	//-- DATABASE CONNECTION
 
-	bool DbConnect ()
+	public static bool DbConnect ()
 	{
 		if (db == null) {
 			db = Database.GetConnection ();
@@ -937,7 +991,7 @@ public class Playlist : MonoBehaviour {
 		return db != null;
 	}
 
-	void DbClose ()
+	public static void DbClose ()
 	{
 		// Close database
 		Database.Close ();
@@ -950,7 +1004,7 @@ public class Playlist : MonoBehaviour {
 
 	//-- HELPER METHODS
 
-	string FormatFileIDs (List<String> fileIDs)
+	public static string FormatFileIDs (List<String> fileIDs)
 	{
 		// Create FileObj list
 		List<FileObj> files = new List<FileObj> (fileIDs.Count);
@@ -963,7 +1017,7 @@ public class Playlist : MonoBehaviour {
 		return FormatFileIDs (files);
 	}
 
-	string FormatFileIDs (List<FileObj> files)
+	public static string FormatFileIDs (List<FileObj> files)
 	{
 		// Output
 		string output = "NULL";

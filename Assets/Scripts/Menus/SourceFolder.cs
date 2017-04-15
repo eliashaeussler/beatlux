@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
-using UnityEditor;
 using System;
 
 public class SourceFolder : MonoBehaviour {
@@ -50,8 +49,8 @@ public class SourceFolder : MonoBehaviour {
 		currentPath = pathFolder;
 
 		// Get files and folders
-		List<String> directories = new List<String> (Directory.GetDirectories(currentPath));
-		List<String> files = new List<String> (Directory.GetFiles(currentPath));
+		List<String> directories = GetDirs (currentPath, true);
+		List<String> files = GetFiles (currentPath, true);
 
 		// Show files and folders
 		display (directories, files, false);
@@ -59,7 +58,7 @@ public class SourceFolder : MonoBehaviour {
 
 
 	// init creates all the objects
-	void display (List<String> directories, List<String> files, bool fromSearch)
+	public void display (List<String> directories, List<String> files, bool fromSearch)
 	{
 		// deletes all previous created objects
 		if (i >= 0) {
@@ -77,7 +76,8 @@ public class SourceFolder : MonoBehaviour {
 			GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
 
 		// Scroll to top
-		GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
+		if (!fromSearch)
+			GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 
 		// Combine directories and folders
 		List<String> results = new List<String> (directories);
@@ -104,17 +104,36 @@ public class SourceFolder : MonoBehaviour {
 			folderObject.AddComponent<EventTrigger> ();
 			EventTrigger.Entry entry = new EventTrigger.Entry ();
 			entry.eventID = EventTriggerType.PointerDown;
+			string dir = s;
 
 			if (i <= lastDirectory)
 			{
-				string dir = s;
 				entry.callback.AddListener ((eventData) => {
 					init (dir);
 				});
 			}
 			else
 			{
-				// TODO file onclick
+				entry.callback.AddListener ((eventData) => {
+
+					// Get file object if available
+					FileObj file = Playlist.GetFile (dir);
+
+					// TODO workaround: add file to active playlist
+					if (Playlist.activePlaylist != null)
+					{
+						if (file == null) {
+							file = new FileObj (dir);
+						}
+
+						bool added = Playlist.AddFile (file, Playlist.activePlaylist);
+						if (added) {
+							Playlist.Load ();
+							Playlist.Display ();
+						}
+					}
+
+				});
 			}
 
 			folderObject.GetComponent<EventTrigger> ().triggers.Add (entry);
@@ -129,13 +148,61 @@ public class SourceFolder : MonoBehaviour {
 
 	}
 
-	public void HistoryBack()
+	public void HistoryBack ()
 	{
 		// Clear search input
 		GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
 
 		// Display file contents
-		init (Path.GetFullPath(Path.Combine(@currentPath, @"..")));
+		init (Path.GetFullPath (Path.Combine (@currentPath, @"..")));
+	}
+
+	private List<String> GetDirs (string folder, bool cleaned)
+	{
+		List<String> elements = new List<String> ();
+		foreach (string subDir in Directory.GetDirectories (folder))
+		{
+			try {
+				// Try to get files inside sub dir
+				Directory.GetFiles (subDir);
+
+				// Add sub dir to list
+				elements.Add (subDir);
+			} catch {}
+		}
+
+		// Remove hidden folders
+		if (cleaned) elements = RemoveHidden (elements);
+
+		return elements;
+	}
+
+	private List<String> GetFiles (string folder, bool cleaned)
+	{
+		List<String> elements = new List<String> ();
+		foreach (string file in Directory.GetFiles (folder)) {
+			elements.Add (file);
+		}
+
+		// Remove hidden files
+		if (cleaned) elements = RemoveHidden (elements);
+
+		return elements;
+	}
+
+	public static List<String> RemoveHidden (List<String> list)
+	{
+		for (int i=0; i < list.Count; i++)
+		{
+			string file = Path.GetFileName (list[i]);
+
+			if (file.StartsWith (".")) {
+				list.RemoveAt (i);
+				i = -1;
+			}
+		}
+
+		return list;
 	}
 
 }

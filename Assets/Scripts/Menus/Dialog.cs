@@ -15,11 +15,11 @@ public class Dialog {
 
 
 
-	public Dialog (GameObject dialog, GameObject wrapper)
+	public Dialog (GameObject dialog)
 	{
 		// Set wrapper
 		this.dialog = dialog;
-		this.wrapper = wrapper;
+		this.wrapper = dialog.transform.Find ("DialogWrapper").gameObject;
 
 		// Get UI components
 		main = wrapper.transform.Find ("Main");
