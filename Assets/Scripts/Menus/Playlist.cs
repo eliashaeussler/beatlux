@@ -6,11 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-<<<<<<< HEAD
 using System.IO;
-=======
-//using UnityEditor;
->>>>>>> a05195286ce135fec3adaa4b0e9f004bb8268c93
 
 public class Playlist : MonoBehaviour {
 
