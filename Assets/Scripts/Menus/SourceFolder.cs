@@ -116,8 +116,11 @@ public class SourceFolder : MonoBehaviour {
 			{
 				entry.callback.AddListener ((eventData) => {
 
+					// Get reference to playlist object
+					Playlist pl = Camera.main.GetComponent <Playlist> ();
+
 					// Get file object if available
-					FileObj file = Playlist.GetFile (dir);
+					FileObj file = pl.GetFile (dir);
 
 					// TODO workaround: add file to active playlist
 					if (Playlist.activePlaylist != null)
@@ -126,10 +129,10 @@ public class SourceFolder : MonoBehaviour {
 							file = new FileObj (dir);
 						}
 
-						bool added = Playlist.AddFile (file, Playlist.activePlaylist);
+						bool added = pl.AddFile (file, Playlist.activePlaylist);
 						if (added) {
-							Playlist.Load ();
-							Playlist.Display ();
+							pl.Load ();
+							pl.Display ();
 						}
 					}
 
