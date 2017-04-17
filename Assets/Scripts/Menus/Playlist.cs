@@ -84,7 +84,7 @@ public class Playlist : MonoBehaviour {
 			events.triggers.Add (evtClick);
 
 			evtClick.callback.AddListener ((eventData) => {
-				ToggleFiles(playlist);
+				ToggleFiles (playlist);
 			});
 
 			// Add files
@@ -141,6 +141,9 @@ public class Playlist : MonoBehaviour {
 			hlg.childForceExpandWidth = false;
 			hlg.childForceExpandHeight = false;
 			hlg.childAlignment = TextAnchor.MiddleLeft;
+
+			// Add Drop Handler script
+			gameObject.AddComponent <DropHandler> ();
 
 
 			// Create arrow text GameObject
@@ -335,11 +338,16 @@ public class Playlist : MonoBehaviour {
 
 	public void ToggleFiles (GameObject gameObject)
 	{
+		ToggleFiles (gameObject, false);
+	}
+
+	public void ToggleFiles (GameObject gameObject, bool forceOpen)
+	{
 		// Get playlist
 		PlaylistObj playlist = FindPlaylist (gameObject);
 
 		// Set playlist as active playlist
-		activePlaylist = playlist;
+		if (!forceOpen) activePlaylist = playlist;
 
 		// Show or hide playlist files
 		bool opened = false;
@@ -353,7 +361,7 @@ public class Playlist : MonoBehaviour {
 				// Toggle files for GameObject
 				if (file != null) {
 					if (p == playlist) {
-						file.SetActive (!file.activeSelf);
+						file.SetActive (!forceOpen ? !file.activeSelf : true);
 						opened = file.activeSelf;
 					} else {
 						file.SetActive (false);
@@ -363,14 +371,14 @@ public class Playlist : MonoBehaviour {
 
 			// Change arrows
 			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Text>();
-			if (p != playlist) {
+			if (!forceOpen && p != playlist) {
 				arr.text = "";
 			}
 		}
 
 		// Change arrow image
 		Text arrow = gameObject.transform.Find ("Arrow").GetComponent<Text> ();
-		if (arrow != null) {
+		if (!forceOpen && arrow != null) {
 			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
 		}
 	}
@@ -413,6 +421,9 @@ public class Playlist : MonoBehaviour {
 
 				// Unset active playlist
 				if (playlist == activePlaylist) activePlaylist = null;
+			} else {
+				// Remove files from playlist
+				playlist.Files.Remove (file);
 			}
 		}
 

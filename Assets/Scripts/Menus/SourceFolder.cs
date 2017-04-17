@@ -90,8 +90,10 @@ public class SourceFolder : MonoBehaviour {
 		// for each folder and file an object is created
 		foreach (string s in results)
 		{
+			i++;
+
 			// creates a gameobject with a recttransform to position it
-			folderObject = new GameObject(i++.ToString ());
+			folderObject = new GameObject(s);
 			folderObject.transform.SetParent(gameObject.transform);
 			RectTransform trans = folderObject.AddComponent<RectTransform>();
 
@@ -99,6 +101,15 @@ public class SourceFolder : MonoBehaviour {
 			LayoutElement layoutElement = folderObject.AddComponent<LayoutElement> ();
 			layoutElement.minHeight = 30;
 			layoutElement.preferredHeight = 30;
+
+			if (i > lastDirectory)
+			{
+				// Add Canvas Group
+				CanvasGroup cgr = folderObject.AddComponent<CanvasGroup> ();
+
+				// Add Drag Handler
+				folderObject.AddComponent<DragHandler> ();
+			}
 
 			// creates and adds an eventtrigger so the text is clickable
 			folderObject.AddComponent<EventTrigger> ();
@@ -122,19 +133,7 @@ public class SourceFolder : MonoBehaviour {
 					// Get file object if available
 					FileObj file = pl.GetFile (dir);
 
-					// TODO workaround: add file to active playlist
-					if (Playlist.activePlaylist != null)
-					{
-						if (file == null) {
-							file = new FileObj (dir);
-						}
-
-						bool added = pl.AddFile (file, Playlist.activePlaylist);
-						if (added) {
-							pl.Load ();
-							pl.Display ();
-						}
-					}
+					// TODO insert file into database (if not already exists), then set file as pl.activeFile
 
 				});
 			}
