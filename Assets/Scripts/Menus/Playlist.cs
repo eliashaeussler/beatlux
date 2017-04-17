@@ -970,6 +970,8 @@ public class Playlist : MonoBehaviour {
 
 				return result > 0;
 			}
+
+			// TODO remove file if no other playlist contains it
 		}
 
 		// Close database connection

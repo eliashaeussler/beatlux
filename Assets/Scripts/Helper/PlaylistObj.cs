@@ -14,4 +14,10 @@ public class PlaylistObj {
 		this.ID = 0;
 		this.Files = new List<FileObj> ();
 	}
+
+	public override bool Equals (object obj)
+	{
+		PlaylistObj rhs = (PlaylistObj) obj;
+		return rhs != null && this.Name == rhs.Name;
+	}
 }
