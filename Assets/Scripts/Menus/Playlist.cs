@@ -10,11 +10,7 @@ using System.IO;
 
 public class Playlist : MonoBehaviour {
 
-	// Reference to transformation
-	public Transform trans;
-
 	// Dialog reference
-	public GameObject dialogRef;
 	public Dialog dialog;
 
 	// Database connection
@@ -36,13 +32,6 @@ public class Playlist : MonoBehaviour {
 
 	public void Start ()
 	{
-		// Set references
-		trans = transform;
-		playlist = GameObject.Find ("PlaylistContent");
-
-		// Set dialog
-		dialog = new Dialog (dialogRef);
-
 		// Connect to database
 		DbConnect ();
 
@@ -503,7 +492,7 @@ public class Playlist : MonoBehaviour {
 				
 				// UI elements
 				heading.text = "Neue Playlist erstellen";
-				inputField = dialog.AddInputField ("", "Wie soll die neue Playlist heißen?");
+				inputField = dialog.GetInputField ("", "Wie soll die neue Playlist heißen?");
 				inputText = inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();
 
 				// Events
@@ -539,7 +528,7 @@ public class Playlist : MonoBehaviour {
 				{
 					// UI elements
 					heading.text = "Playlist bearbeiten";
-					inputField = dialog.AddInputField (playlist.Name, playlist.Name);
+					inputField = dialog.GetInputField (playlist.Name, playlist.Name);
 					inputText = inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();
 
 					// Events
@@ -572,7 +561,7 @@ public class Playlist : MonoBehaviour {
 				{
 					// UI elements
 					heading.text = "Playlist löschen";
-					text = dialog.AddText ("Playlist \"" + playlist.Name + "\" endgültig löschen?");
+					text = dialog.GetText ("Playlist \"" + playlist.Name + "\" endgültig löschen?");
 
 					// Events
 					buttonOK.onClick.AddListener (delegate {

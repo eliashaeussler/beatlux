@@ -102,14 +102,9 @@ public class SourceFolder : MonoBehaviour {
 			layoutElement.minHeight = 30;
 			layoutElement.preferredHeight = 30;
 
+			// Add Drag Handler
 			if (i > lastDirectory)
-			{
-				// Add Canvas Group
-				CanvasGroup cgr = folderObject.AddComponent<CanvasGroup> ();
-
-				// Add Drag Handler
 				folderObject.AddComponent<DragHandler> ();
-			}
 
 			// creates and adds an eventtrigger so the text is clickable
 			folderObject.AddComponent<EventTrigger> ();

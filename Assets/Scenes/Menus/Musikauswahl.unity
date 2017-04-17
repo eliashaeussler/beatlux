@@ -886,6 +886,7 @@ GameObject:
   - 124: {fileID: 451189742}
   - 81: {fileID: 451189741}
   - 114: {fileID: 451189740}
+  - 114: {fileID: 451189746}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -905,9 +906,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f72d8b71f1b244afbf5e071cc93145a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trans: {fileID: 0}
-  dialogRef: {fileID: 93541496}
-  playlist: {fileID: 0}
+  dialog: {fileID: 451189746}
+  playlist: {fileID: 390605514}
 --- !u!81 &451189741
 AudioListener:
   m_ObjectHideFlags: 0
@@ -981,6 +981,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &451189746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 451189739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8000fd088333e43a7971c21bc676e670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialog: {fileID: 93541496}
+  wrapper: {fileID: 136185179}
 --- !u!1 &500565237
 GameObject:
   m_ObjectHideFlags: 0
@@ -4143,7 +4156,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: 8000fd088333e43a7971c21bc676e670, type: 3}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+SubmitEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:

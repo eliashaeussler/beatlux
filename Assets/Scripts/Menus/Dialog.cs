@@ -2,11 +2,11 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Dialog {
+public class Dialog : MonoBehaviour {
 
-	// Dialog
-	public GameObject dialog { get; set; }
-	public GameObject wrapper { get; set; }
+	// Game Objects
+	public GameObject dialog;
+	public GameObject wrapper;
 
 	// UI elements
 	Transform main;
@@ -15,12 +15,8 @@ public class Dialog {
 
 
 
-	public Dialog (GameObject dialog)
+	void Start ()
 	{
-		// Set wrapper
-		this.dialog = dialog;
-		this.wrapper = dialog.transform.Find ("DialogWrapper").gameObject;
-
 		// Get UI components
 		main = wrapper.transform.Find ("Main");
 		inputField = main.Find ("InputField").gameObject.GetComponent<InputField> ();
@@ -29,7 +25,7 @@ public class Dialog {
 
 
 
-	public InputField AddInputField (string input, string placeholder)
+	public InputField GetInputField (string input, string placeholder)
 	{
 		if (dialog != null && wrapper != null && inputField != null)
 		{
@@ -51,7 +47,7 @@ public class Dialog {
 		return null;
 	}
 
-	public Text AddText (string content)
+	public Text GetText (string content)
 	{
 		if (dialog != null && wrapper != null && text != null)
 		{
