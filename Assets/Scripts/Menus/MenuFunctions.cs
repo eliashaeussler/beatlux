@@ -37,7 +37,8 @@ public class MenuFunctions : MonoBehaviour {
     {
         if (s == "")
         {
-            pathF = @SourceFolder.mainPath;
+			pathF = @SourceFolder.mainPath;
+			Invoke ("HideProgress", 0.01f);
         }
         else
         {
@@ -45,9 +46,23 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs = new List<String> ();
 			searchFiles = new List<String> ();
 
-			if (s.Length >= 3) {
-				Thread thread = new Thread (new ThreadStart (delegate { GetResults(s); }));
+			if (s.Length >= 3)
+			{
+				ThreadStart start = delegate {
+
+					// Get search results
+					GetResults (s);
+
+					// Hide progress
+					MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+				};
+
+				Thread thread = new Thread (start) { IsBackground = true };
 				thread.Start ();
+			}
+			else
+			{
+				Invoke ("HideProgress", 0.01f);
 			}
         }
     }
@@ -87,5 +102,10 @@ public class MenuFunctions : MonoBehaviour {
 				}
 			}
 		} catch {}
+	}
+
+	public void HideProgress ()
+	{
+		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
 	}
 }
