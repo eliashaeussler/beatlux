@@ -47,56 +47,58 @@ public class Playlist : MonoBehaviour {
 	public void Display ()
 	{
 		// Remove all GameObjects
-		foreach (Transform pl in playlist.transform) {
-			DestroyImmediate (pl.gameObject);
+		for (int i=0; i < playlist.transform.childCount; i++) {
+			GameObject.Destroy (playlist.transform.GetChild (i).gameObject);
 		}
 
 		foreach (PlaylistObj p in playlists)
 		{
-			// Create GameOject
-			GameObject playlist = DisplayPlaylist (p);
-			GameObject goText = playlist.transform.Find ("Main/Text").gameObject;
-			Text textPlaylist = goText.GetComponent<Text> ();
-
-			// Text settings
-			textPlaylist.text = p.Name;
-
-			// Create Event Triggers
-			EventTrigger events = playlist.AddComponent<EventTrigger> ();
-
-			// Add Click Event
-			EventTrigger.Entry evtClick = new EventTrigger.Entry ();
-			evtClick.eventID = EventTriggerType.PointerClick;
-			events.triggers.Add (evtClick);
-
-			PlaylistObj pl = p;
-			evtClick.callback.AddListener ((eventData) => {
-				ToggleFiles (pl);
-			});
+			DisplayPlaylist (p);
 
 			// Add files
-			foreach (FileObj f in p.Files)
-			{
-				// Create GameObject
-				GameObject file = DisplayPlaylist (p, f);
-				GameObject goFileText = file.transform.Find ("Text").gameObject;
-				Text textFile = goFileText.GetComponent<Text> ();
-
-				// Text settings
-				textFile.text = Path.GetFileName (f.Path);
+			foreach (FileObj f in p.Files) {
+				DisplayFile (p, f);
 			}
 
 			// Hide playlist files
-			if (playlist.transform.Find ("Contents") != null)
-				playlist.transform.Find ("Contents").gameObject.SetActive (false);
+			if (playlist.transform.Find ("#" + p.ID + "/Contents") != null)
+				playlist.transform.Find ("#" + p.ID + "/Contents").gameObject.SetActive (false);
 		}
 	}
 
-	public GameObject DisplayPlaylist (PlaylistObj playlist) {
-		return DisplayPlaylist (playlist, null);
+	public void DisplayPlaylist (PlaylistObj playlist)
+	{
+		// Create GameObject
+		GameObject gameObject = DisplayPlaylistOrFile (playlist, null);
+		Text text = gameObject.transform.Find ("Main/Text").gameObject.GetComponent<Text> ();
+
+		// Text settings
+		text.text = playlist.Name;
+
+		// Create Event Triggers
+		EventTrigger events = gameObject.AddComponent<EventTrigger> ();
+
+		// Add Click Event
+		EventTrigger.Entry evtClick = new EventTrigger.Entry ();
+		evtClick.eventID = EventTriggerType.PointerClick;
+		events.triggers.Add (evtClick);
+
+		evtClick.callback.AddListener ((eventData) => {
+			ToggleFiles (playlist);
+		});
 	}
 
-	public GameObject DisplayPlaylist (PlaylistObj playlist, FileObj file)
+	public void DisplayFile (PlaylistObj playlist, FileObj file)
+	{
+		// Create GameObject
+		GameObject gameObject = DisplayPlaylistOrFile (playlist, file);
+		Text text = gameObject.transform.Find ("Text").gameObject.GetComponent<Text> ();
+
+		// Text settings
+		text.text = Path.GetFileName (file.Path);
+	}
+
+	public GameObject DisplayPlaylistOrFile (PlaylistObj playlist, FileObj file)
 	{
 		if (playlist != null)
 		{
@@ -123,7 +125,7 @@ public class Playlist : MonoBehaviour {
 			gameObject.transform.SetParent (parent);
 
 			// Add Vertical Layout Group
-			if (!contentsExists) {
+			if (!contentsExists || file == null) {
 				VerticalLayoutGroup vlg = (file == null ? gameObject : main).AddComponent<VerticalLayoutGroup> ();
 				vlg.spacing = 20;
 				vlg.childForceExpandWidth = true;
@@ -173,7 +175,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			if (playlist.Equals(activePlaylist)) {
+			if (playlist.Equals(activePlaylist) && file == null) {
 				mainTextArrow.text = IconFont.DROPDOWN_CLOSED;
 			}
 
@@ -850,6 +852,9 @@ public class Playlist : MonoBehaviour {
 				// Close database connection
 				cmd.Dispose ();
 				DbClose ();
+
+				// Add file to interface
+				DisplayFile (playlist, file);
 
 				return result > 0;
 			}

@@ -51,7 +51,6 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		drop = null;
 
 		Playlist pl = Camera.main.GetComponent <Playlist> ();
-		pl.Display ();
 		pl.ToggleFiles (playlist, true);
 	}
 }
