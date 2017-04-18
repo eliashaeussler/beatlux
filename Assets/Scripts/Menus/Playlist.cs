@@ -165,6 +165,9 @@ public class Playlist : MonoBehaviour {
 			mainHlg.childForceExpandHeight = false;
 			mainHlg.childAlignment = TextAnchor.MiddleLeft;
 
+			// Set padding right of Horizontal Layout Group
+			mainHlg.padding = new RectOffset (0, (file == null ? 65 : 30), 0, 0);
+
 			// Add Drop Handler script
 			if (file == null) gameObject.AddComponent <DropHandler> ();
 
