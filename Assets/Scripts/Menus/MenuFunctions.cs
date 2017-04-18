@@ -4,7 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System;
-using System.Text;
+using System.Threading;
 
 public class MenuFunctions : MonoBehaviour {
     
@@ -45,20 +45,25 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs = new List<String> ();
 			searchFiles = new List<String> ();
 
-			if (s.Length >= 3)
-			{
-				// Get results
-				string path = SourceFolder.currentPath;
-				GetResults (path, s);
-
-				// Remove hidden files and folders
-				searchDirs = SourceFolder.RemoveHidden (searchDirs);
-				searchFiles = SourceFolder.RemoveHidden (searchFiles);
+			if (s.Length >= 3) {
+				Thread thread = new Thread (new ThreadStart (delegate { GetResults(s); }));
+				thread.Start ();
 			}
         }
     }
 
-	private void GetResults (string folder, string pattern)
+	private void GetResults (string pattern)
+	{
+		// Get results
+		string path = SourceFolder.currentPath;
+		Search (path, pattern);
+
+		// Remove hidden files and folders
+		searchDirs = SourceFolder.RemoveHidden (searchDirs);
+		searchFiles = SourceFolder.RemoveHidden (searchFiles);
+	}
+
+	private void Search (string folder, string pattern)
 	{
 		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
 			searchDirs.Add (folder);
@@ -68,9 +73,9 @@ public class MenuFunctions : MonoBehaviour {
 			foreach (string item in Directory.GetFileSystemEntries (folder))
 			{
 				if (Directory.Exists (item)) {
-					
+
 					// Jump into sub directory
-					GetResults (item, pattern);
+					Search (item, pattern);
 
 				} else {
 
@@ -82,18 +87,5 @@ public class MenuFunctions : MonoBehaviour {
 				}
 			}
 		} catch {}
-
-//		foreach (string file in Directory.GetFiles (folder, pattern))
-//		{
-//			searchFiles.Add (file);
-//		}
-//		foreach (string subDir in Directory.GetDirectories (folder))
-//		{
-//			try {
-//				GetResults (subDir, pattern);
-//			} catch {
-//				print (subDir);
-//			}
-//		}
 	}
 }

@@ -26,16 +26,18 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		cloned = Instantiate<GameObject> (item);
 		cloned.transform.SetParent (transform.parent);
 		cloned.transform.SetSiblingIndex (transform.GetSiblingIndex ());
+
+		// Update pivot
+		transform.GetComponent<RectTransform> ().pivot = Vector2.up;
+
+		// Set canvas as parent
+		transform.SetParent (GameObject.Find ("Canvas").transform);
 	}
 
 	public void OnDrag (PointerEventData eventData)
 	{
-		// Update transformations
-		transform.GetComponent<RectTransform> ().pivot = Vector2.up;
+		// Update position
 		transform.position = new Vector3 (Input.mousePosition.x + 20, Input.mousePosition.y - 20, Input.mousePosition.z);
-
-		// Set canvas as parent
-		transform.SetParent (GameObject.Find ("Canvas").transform);
 	}
 
 	public void OnEndDrag (PointerEventData eventData)
@@ -54,13 +56,5 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		transform.GetComponent<RectTransform> ().pivot = startPivot;
 		transform.position = startPos;
 		transform.SetSiblingIndex (startIndex);
-	}
-
-	public static void End (DropHandler drop, PlaylistObj playlist)
-	{
-		drop = null;
-
-		Playlist pl = Camera.main.GetComponent <Playlist> ();
-		pl.ToggleFiles (playlist, true);
 	}
 }

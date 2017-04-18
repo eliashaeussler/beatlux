@@ -184,11 +184,11 @@ public class Playlist : MonoBehaviour {
 
 			// Font settings
 			mainTextArrow.font = IconFont.font;
-			mainTextArrow.fontSize = 30;
+			mainTextArrow.fontSize = 20;
 
 			// Add Layout Element
 			LayoutElement mainLayoutElementArrow = mainArrow.AddComponent<LayoutElement> ();
-			mainLayoutElementArrow.minWidth = 30;
+			mainLayoutElementArrow.minWidth = 22;
 
 
 			// Create text GameObject
