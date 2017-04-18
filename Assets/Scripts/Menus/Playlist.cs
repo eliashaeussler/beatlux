@@ -374,7 +374,8 @@ public class Playlist : MonoBehaviour {
 		foreach (PlaylistObj p in playlists)
 		{
 			// Get GameObject for current file
-			GameObject main = this.playlist.transform.Find ("#" + p.ID + "/Contents").gameObject;
+			Transform contents = this.playlist.transform.Find ("#" + p.ID + "/Contents");
+			GameObject main = contents != null ? contents.gameObject : null;
 
 			// Toggle files for GameObject
 			if (main != null) {

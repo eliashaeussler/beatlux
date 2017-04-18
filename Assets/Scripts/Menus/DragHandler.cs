@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 	public static GameObject item;
+	private GameObject cloned;
 	private Vector3 startPos;
 	private Vector2 startPivot;
 	private int startIndex;
@@ -20,6 +21,11 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		startPivot = gameObject.GetComponent<RectTransform> ().pivot;
 		startParent = transform.parent;
 		startIndex = transform.GetSiblingIndex ();
+
+		// Clone element
+		cloned = Instantiate<GameObject> (item);
+		cloned.transform.SetParent (transform.parent);
+		cloned.transform.SetSiblingIndex (transform.GetSiblingIndex ());
 	}
 
 	public void OnDrag (PointerEventData eventData)
@@ -36,6 +42,10 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	{
 		// Reset element
 		item = null;
+
+		// Remove cloned element
+		GameObject.DestroyImmediate (cloned);
+		cloned = null;
 
 		// Reset parent
 		transform.SetParent (startParent);
