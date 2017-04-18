@@ -36,10 +36,7 @@ public class Playlist : MonoBehaviour {
 		DbConnect ();
 
 		// Select playlists from database
-		Load ();
-
-		// Display playlists
-		Display ();
+		Load (true);
 
 		// Close database connection
 		DbClose ();
@@ -51,14 +48,14 @@ public class Playlist : MonoBehaviour {
 	{
 		// Remove all GameObjects
 		foreach (Transform pl in playlist.transform) {
-			Destroy (pl.gameObject);
+			DestroyImmediate (pl.gameObject);
 		}
 
 		foreach (PlaylistObj p in playlists)
 		{
 			// Create GameOject
 			GameObject playlist = DisplayPlaylist (p);
-			GameObject goText = playlist.transform.Find ("Text").gameObject;
+			GameObject goText = playlist.transform.Find ("Main/Text").gameObject;
 			Text textPlaylist = goText.GetComponent<Text> ();
 
 			// Text settings
@@ -72,8 +69,9 @@ public class Playlist : MonoBehaviour {
 			evtClick.eventID = EventTriggerType.PointerClick;
 			events.triggers.Add (evtClick);
 
+			PlaylistObj pl = p;
 			evtClick.callback.AddListener ((eventData) => {
-				ToggleFiles (playlist);
+				ToggleFiles (pl);
 			});
 
 			// Add files
@@ -86,15 +84,15 @@ public class Playlist : MonoBehaviour {
 
 				// Text settings
 				textFile.text = Path.GetFileName (f.Path);
-
-				// Hide GameObject
-				file.SetActive (false);
 			}
+
+			// Hide playlist files
+			if (playlist.transform.Find ("Contents") != null)
+				playlist.transform.Find ("Contents").gameObject.SetActive (false);
 		}
 	}
 
-	public GameObject DisplayPlaylist (PlaylistObj playlist)
-	{
+	public GameObject DisplayPlaylist (PlaylistObj playlist) {
 		return DisplayPlaylist (playlist, null);
 	}
 
@@ -102,67 +100,101 @@ public class Playlist : MonoBehaviour {
 	{
 		if (playlist != null)
 		{
-			// Construct name
-			string name = "#" + playlist.ID;
-			if (file != null && playlist.Files.Contains (file)) {
-				name += "." + file.ID;
+			// Set name
+			string name = "#" + playlist.ID + (file != null ? ("." + file.ID) : "");
+
+			// Create main GameObject
+			GameObject main = new GameObject ("Main");
+			if (file != null) main.name = "Contents";
+
+			// Check if Contents GameObject already exists
+			bool contentsExists = this.playlist.transform.Find ("#" + playlist.ID + "/Contents") != null;
+			if (contentsExists && file != null) {
+				DestroyImmediate (main);
+				main = this.playlist.transform.Find ("#" + playlist.ID + "/Contents").gameObject;
 			}
+
+			// Set parent of GameObject
+			Transform parent = this.playlist.transform;
+			if (file != null) parent = main.transform;
 
 			// Create GameOject
 			GameObject gameObject = new GameObject (name);
-			gameObject.transform.SetParent (this.playlist.transform);
+			gameObject.transform.SetParent (parent);
+
+			// Add Vertical Layout Group
+			if (!contentsExists) {
+				VerticalLayoutGroup vlg = (file == null ? gameObject : main).AddComponent<VerticalLayoutGroup> ();
+				vlg.spacing = 20;
+				vlg.childForceExpandWidth = true;
+				vlg.childForceExpandHeight = false;
+			}
+
+
+			// Set GameObject for return
+			GameObject goReturn = gameObject;
+
+			// Set parent of main GameObject
+			parent = gameObject.transform;
+			if (file != null) parent = this.playlist.transform.Find ("#" + playlist.ID);
+			main.transform.SetParent (parent);
+
+
+			// Change GameObjects if file is displayed to inherit from different GameObject
+			if (file != null) main = gameObject;
+
 
 			// Add Layout Element to GameObject
-			LayoutElement goLayout = gameObject.AddComponent<LayoutElement> ();
-			goLayout.minHeight = 30;
-			goLayout.preferredHeight = goLayout.minHeight;
+			LayoutElement mainLayout = main.AddComponent<LayoutElement> ();
+			mainLayout.minHeight = 30;
+			mainLayout.preferredHeight = mainLayout.minHeight;
 
 			// Add image to GameObject
-			Image goImg = gameObject.AddComponent<Image> ();
-			goImg.color = Color.clear;
+			Image mainImg = main.AddComponent<Image> ();
+			mainImg.color = Color.clear;
 
 			// Set transformations
-			goImg.rectTransform.pivot = Vector2.up;
+			mainImg.rectTransform.pivot = Vector2.up;
 
 			// Add Horizontal Layout Group
-			HorizontalLayoutGroup hlg = gameObject.AddComponent<HorizontalLayoutGroup> ();
-			hlg.spacing = 10;
-			hlg.childForceExpandWidth = false;
-			hlg.childForceExpandHeight = false;
-			hlg.childAlignment = TextAnchor.MiddleLeft;
+			HorizontalLayoutGroup mainHlg = main.AddComponent<HorizontalLayoutGroup> ();
+			mainHlg.spacing = 10;
+			mainHlg.childForceExpandWidth = false;
+			mainHlg.childForceExpandHeight = false;
+			mainHlg.childAlignment = TextAnchor.MiddleLeft;
 
 			// Add Drop Handler script
-			gameObject.AddComponent <DropHandler> ();
+			if (file == null) gameObject.AddComponent <DropHandler> ();
 
 
 			// Create arrow text GameObject
-			GameObject goArrow = new GameObject ("Arrow");
-			goArrow.transform.SetParent (gameObject.transform);
+			GameObject mainArrow = new GameObject ("Arrow");
+			mainArrow.transform.SetParent (main.transform);
 
 			// Add text
-			TextUnicode textArrow = goArrow.AddComponent<TextUnicode> ();
-			if (playlist.Equals(activePlaylist) && file == null) {
-				textArrow.text = IconFont.DROPDOWN_CLOSED;
+			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
+			if (playlist.Equals(activePlaylist)) {
+				mainTextArrow.text = IconFont.DROPDOWN_CLOSED;
 			}
 
 			// Set text alignment
-			textArrow.alignment = TextAnchor.MiddleLeft;
+			mainTextArrow.alignment = TextAnchor.MiddleLeft;
 
 			// Font settings
-			textArrow.font = IconFont.font;
-			textArrow.fontSize = 30;
+			mainTextArrow.font = IconFont.font;
+			mainTextArrow.fontSize = 30;
 
 			// Add Layout Element
-			LayoutElement layoutElementArrow = goArrow.AddComponent<LayoutElement> ();
-			layoutElementArrow.minWidth = 30;
+			LayoutElement mainLayoutElementArrow = mainArrow.AddComponent<LayoutElement> ();
+			mainLayoutElementArrow.minWidth = 30;
 
 
 			// Create text GameObject
-			GameObject goText = new GameObject ("Text");
-			goText.transform.SetParent (gameObject.transform);
+			GameObject mainText = new GameObject ("Text");
+			mainText.transform.SetParent (main.transform);
 
 			// Add text
-			Text text = goText.AddComponent<Text> ();
+			Text text = mainText.AddComponent<Text> ();
 
 			// Set text alignment
 			text.alignment = TextAnchor.MiddleLeft;
@@ -176,65 +208,65 @@ public class Playlist : MonoBehaviour {
 
 
 			if (file != null)
-			{	
+			{
 				// Create listening text GameObject
-				GameObject goListening = new GameObject ("Listening");
-				goListening.transform.SetParent (gameObject.transform);
+				GameObject mainListening = new GameObject ("Listening");
+				mainListening.transform.SetParent (main.transform);
 
 				// Add text
-				TextUnicode textListening = goListening.AddComponent<TextUnicode> ();
+				TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
 				if (playlist.Equals (activePlaylist) && file.Equals (activeFile)) {
-					textListening.text = IconFont.LISTENING;
+					mainTextListening.text = IconFont.LISTENING;
 				}
 
 				// Set text alignment
-				textListening.alignment = TextAnchor.MiddleRight;
+				mainTextListening.alignment = TextAnchor.MiddleRight;
 
 				// Font settings
-				textListening.font = IconFont.font;
-				textListening.fontSize = 30;
+				mainTextListening.font = IconFont.font;
+				mainTextListening.fontSize = 30;
 			}
 
 
 			// Create edit icons GameObject
-			GameObject goEditIcons = new GameObject ("Images");
-			goEditIcons.transform.SetParent (gameObject.transform);
+			GameObject editIcons = new GameObject ("Images");
+			editIcons.transform.SetParent (main.transform);
 
 			// Set transformations
-			RectTransform editIconsTrans = goEditIcons.AddComponent<RectTransform> ();
+			RectTransform editIconsTrans = editIcons.AddComponent<RectTransform> ();
 			editIconsTrans.anchoredPosition = Vector2.zero;
 			editIconsTrans.anchorMin = new Vector2 (1.0f, 0.5f);
 			editIconsTrans.anchorMax = new Vector2 (1.0f, 0.5f);
 			editIconsTrans.pivot = new Vector2 (1.0f, 0.5f);
 
 			// Add Layout Element
-			LayoutElement layoutElementEditIcons = goEditIcons.AddComponent<LayoutElement> ();
-			layoutElementEditIcons.ignoreLayout = true;
+			LayoutElement editIconslayoutElement = editIcons.AddComponent<LayoutElement> ();
+			editIconslayoutElement.ignoreLayout = true;
 
 			// Add Content Size Fitter
-			ContentSizeFitter csfEditIcons = goEditIcons.AddComponent<ContentSizeFitter> ();
-			csfEditIcons.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-			csfEditIcons.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+			ContentSizeFitter editIconsCsf = editIcons.AddComponent<ContentSizeFitter> ();
+			editIconsCsf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+			editIconsCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-			// Add Layout Group to GameObject
-			HorizontalLayoutGroup hlgImg = goEditIcons.AddComponent<HorizontalLayoutGroup> ();
-			hlgImg.childAlignment = TextAnchor.MiddleRight;
-			hlgImg.spacing = 5;
-			hlgImg.childForceExpandWidth = false;
-			hlgImg.childForceExpandHeight = false;
+			// Add Layout Group
+			HorizontalLayoutGroup editIconsHlgImg = editIcons.AddComponent<HorizontalLayoutGroup> ();
+			editIconsHlgImg.childAlignment = TextAnchor.MiddleRight;
+			editIconsHlgImg.spacing = 5;
+			editIconsHlgImg.childForceExpandWidth = false;
+			editIconsHlgImg.childForceExpandHeight = false;
 
 			// Disable edit icons GameObject
-			goEditIcons.SetActive (false);
+			editIcons.SetActive (false);
 
 
 			if (file == null)
 			{
 				// Create edit text GameObject
-				GameObject goEdit = new GameObject ("Edit");
-				goEdit.transform.SetParent (goEditIcons.transform);
+				GameObject edit = new GameObject ("Edit");
+				edit.transform.SetParent (editIcons.transform);
 
 				// Add text
-				TextUnicode editText = goEdit.AddComponent<TextUnicode> ();
+				TextUnicode editText = edit.AddComponent<TextUnicode> ();
 				editText.text = IconFont.EDIT;
 
 				// Set text alignment
@@ -248,25 +280,25 @@ public class Playlist : MonoBehaviour {
 				editText.fontSize = 30;
 
 				// Create edit text Event Trigger
-				EventTrigger evtTextEdit = goEdit.AddComponent<EventTrigger> ();
+				EventTrigger editEvtText = edit.AddComponent<EventTrigger> ();
 
 				// Add Edit Click Event
-				EventTrigger.Entry evtTextEditClick = new EventTrigger.Entry ();
-				evtTextEditClick.eventID = EventTriggerType.PointerClick;
-				evtTextEdit.triggers.Add (evtTextEditClick);
+				EventTrigger.Entry editEvtTextClick = new EventTrigger.Entry ();
+				editEvtTextClick.eventID = EventTriggerType.PointerClick;
+				editEvtText.triggers.Add (editEvtTextClick);
 
-				evtTextEditClick.callback.AddListener ((eventData) => {
+				editEvtTextClick.callback.AddListener ((eventData) => {
 					ShowDialog ("PL_EDIT", gameObject);
 				});
 			}
 
 
 			// Create delete text GameObject
-			GameObject goDelete = new GameObject ("Delete");
-			goDelete.transform.SetParent (goEditIcons.transform);
+			GameObject delete = new GameObject ("Delete");
+			delete.transform.SetParent (editIcons.transform);
 
 			// Add text
-			Text deleteText = goDelete.AddComponent<Text> ();
+			Text deleteText = delete.AddComponent<Text> ();
 			deleteText.text = IconFont.TRASH;
 
 			// Set text alignment
@@ -281,14 +313,14 @@ public class Playlist : MonoBehaviour {
 
 
 			// Create delete text Event Trigger
-			EventTrigger evtTextDel = goDelete.AddComponent<EventTrigger> ();
+			EventTrigger deleteEvtText = delete.AddComponent<EventTrigger> ();
 
 			// Add Delete Click Event
-			EventTrigger.Entry evtTextDelClick = new EventTrigger.Entry ();
-			evtTextDelClick.eventID = EventTriggerType.PointerClick;
-			evtTextDel.triggers.Add (evtTextDelClick);
+			EventTrigger.Entry deleteEvtTextClick = new EventTrigger.Entry ();
+			deleteEvtTextClick.eventID = EventTriggerType.PointerClick;
+			deleteEvtText.triggers.Add (deleteEvtTextClick);
 
-			evtTextDelClick.callback.AddListener ((eventData) => {
+			deleteEvtTextClick.callback.AddListener ((eventData) => {
 				if (FindFile (gameObject) == null) {
 					ShowDialog ("PL_DEL", gameObject);
 				} else {
@@ -306,7 +338,7 @@ public class Playlist : MonoBehaviour {
 			evtWrapper.triggers.Add (evtHover);
 
 			evtHover.callback.AddListener ((eventData) => {
-				goEditIcons.SetActive (true);
+				editIcons.SetActive (true);
 			});
 
 			// Add Hover Exit Event
@@ -315,26 +347,23 @@ public class Playlist : MonoBehaviour {
 			evtWrapper.triggers.Add (evtExit);
 
 			evtExit.callback.AddListener ((eventData) => {
-				goEditIcons.SetActive (false);
+				editIcons.SetActive (false);
 			});
 
 
-			return gameObject;
+			return goReturn;
 		}
 
 		return null;
 	}
 
-	public void ToggleFiles (GameObject gameObject)
+	public void ToggleFiles (PlaylistObj playlist)
 	{
-		ToggleFiles (gameObject, false);
+		ToggleFiles (playlist, false);
 	}
 
-	public void ToggleFiles (GameObject gameObject, bool forceOpen)
+	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
-		// Get playlist
-		PlaylistObj playlist = FindPlaylist (gameObject);
-
 		// Set playlist as active playlist
 		if (!forceOpen) activePlaylist = playlist;
 
@@ -342,31 +371,28 @@ public class Playlist : MonoBehaviour {
 		bool opened = false;
 		foreach (PlaylistObj p in playlists)
 		{
-			foreach (FileObj f in p.Files)
-			{
-				// Get GameObject for current file
-				GameObject file = this.playlist.transform.Find ("#" + p.ID + "." + f.ID).gameObject;
+			// Get GameObject for current file
+			GameObject main = this.playlist.transform.Find ("#" + p.ID + "/Contents").gameObject;
 
-				// Toggle files for GameObject
-				if (file != null) {
-					if (p == playlist) {
-						file.SetActive (!forceOpen ? !file.activeSelf : true);
-						opened = file.activeSelf;
-					} else {
-						file.SetActive (false);
-					}
+			// Toggle files for GameObject
+			if (main != null) {
+				if (p == playlist) {
+					main.SetActive (!forceOpen ? !main.activeSelf : true);
+					opened = main.activeSelf;
+				} else {
+					main.SetActive (false);
 				}
 			}
 
 			// Change arrows
-			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Arrow").GetComponent<Text>();
+			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Main/Arrow").GetComponent<Text>();
 			if (!forceOpen && p != playlist) {
 				arr.text = "";
 			}
 		}
 
 		// Change arrow image
-		Text arrow = gameObject.transform.Find ("Arrow").GetComponent<Text> ();
+		Text arrow = this.playlist.transform.Find ("#" + playlist.ID + "/Main/Arrow").GetComponent<Text> ();
 		if (!forceOpen && arrow != null) {
 			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
 		}
@@ -383,8 +409,7 @@ public class Playlist : MonoBehaviour {
 			long id = Create (playlist);
 
 			// Reload playlists
-			Load ();
-			Display ();
+			Load (true);
 
 			return id;
 		}
@@ -402,7 +427,7 @@ public class Playlist : MonoBehaviour {
 
 		if (deleted) {
 			// Remove from interface
-			Destroy (gameObject);
+			DestroyImmediate (gameObject);
 
 			if (file == null) {
 				// Remove from list
@@ -538,8 +563,7 @@ public class Playlist : MonoBehaviour {
 						bool edited = Edit (playlist);
 
 						if (edited) {
-							Load ();
-							Display ();
+							Load (true);
 						}
 
 						HideDialog ();
@@ -567,8 +591,7 @@ public class Playlist : MonoBehaviour {
 					buttonOK.onClick.AddListener (delegate {
 						
 						Delete (obj);
-						Load ();
-						Display ();
+						Load (true);
 						HideDialog ();
 					});
 				}
@@ -604,7 +627,7 @@ public class Playlist : MonoBehaviour {
 
 	//-- DATABASE METHODS
 
-	public void Load ()
+	public void Load (bool displayPlaylists)
 	{
 		if (DbConnect ())
 		{
@@ -656,6 +679,10 @@ public class Playlist : MonoBehaviour {
 
 			// Close database connection
 			DbClose ();
+
+			if (displayPlaylists) {
+				Display ();
+			}
 		}
 	}
 

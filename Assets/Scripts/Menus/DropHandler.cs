@@ -27,9 +27,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 
 			bool added = pl.AddFile (file, playlist);
 			if (added) {
-				pl.Load ();
-				pl.Display ();
-				pl.ToggleFiles (gameObject, true);
+				DragHandler.End (this, playlist);
 			}
 		}
 	}

@@ -29,7 +29,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		transform.position = new Vector3 (Input.mousePosition.x + 20, Input.mousePosition.y - 20, Input.mousePosition.z);
 
 		// Set canvas as parent
-		transform.parent = GameObject.Find ("Canvas").transform;
+		transform.SetParent (GameObject.Find ("Canvas").transform);
 	}
 
 	public void OnEndDrag (PointerEventData eventData)
@@ -38,11 +38,20 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		item = null;
 
 		// Reset parent
-		transform.parent = startParent;
+		transform.SetParent (startParent);
 
 		// Reset transformations
 		transform.GetComponent<RectTransform> ().pivot = startPivot;
 		transform.position = startPos;
 		transform.SetSiblingIndex (startIndex);
+	}
+
+	public static void End (DropHandler drop, PlaylistObj playlist)
+	{
+		drop = null;
+
+		Playlist pl = Camera.main.GetComponent <Playlist> ();
+		pl.Display ();
+		pl.ToggleFiles (playlist, true);
 	}
 }
