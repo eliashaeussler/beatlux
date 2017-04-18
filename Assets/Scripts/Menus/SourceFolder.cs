@@ -147,11 +147,20 @@ public class SourceFolder : MonoBehaviour {
 
 	public void HistoryBack ()
 	{
-		// Clear search input
-		GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
+		// Get user folder
+		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 
-		// Display file contents
-		init (Path.GetFullPath (Path.Combine (@currentPath, @"..")));
+		if (!Path.Equals (userPath, currentPath))
+		{
+			// Clear search input
+			GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
+
+			// Get new path
+			string path = Path.GetFullPath (Path.Combine (@currentPath, @".."));
+
+			// Display file contents
+			init (path);
+		}
 	}
 
 	private List<String> GetDirs (string folder, bool cleaned)

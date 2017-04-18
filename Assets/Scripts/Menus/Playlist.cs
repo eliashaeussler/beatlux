@@ -702,8 +702,11 @@ public class Playlist : MonoBehaviour {
 			foreach (FileObj file in playlist.Files)
 			{
 				// Query statement
-				sql = "SELECT id FROM file WHERE path = '" + file.Path + "'";
+				sql = "SELECT id FROM file WHERE path = @Path";
 				cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
 
 				// Get sql results
 				reader = cmd.ExecuteReader ();
@@ -723,9 +726,12 @@ public class Playlist : MonoBehaviour {
 				if (count == 0)
 				{
 					// Query statement
-					sql = "INSERT INTO file (path) VALUES('" + file.Path + "'); " +
+					sql = "INSERT INTO file (path) VALUES(@Path); " +
 						"SELECT last_insert_rowid()";
 					cmd = new SqliteCommand (sql, db);
+
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
 
 					// Execute statement
 					file.ID = (long) cmd.ExecuteScalar ();
@@ -739,10 +745,13 @@ public class Playlist : MonoBehaviour {
 			// Insert playlist into database
 			try
 			{
-				sql = "INSERT INTO playlist (name,files) VALUES(" +
-					"'" + playlist.Name + "'," +
-					files + "); SELECT last_insert_rowid()";
+				sql = "INSERT INTO playlist (name,files) VALUES(@Name, @Files); " +
+					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Name", playlist.Name));
+				cmd.Parameters.Add (new SqliteParameter ("Files", files));
 
 				// Execute insert statement and get ID
 				long id = (long) cmd.ExecuteScalar ();
@@ -775,11 +784,13 @@ public class Playlist : MonoBehaviour {
 			try
 			{
 				// Query statement
-				string sql = "UPDATE playlist SET " +
-					"name = '" + playlist.Name + "', " +
-					"files = " + FormatFileIDs (playlist.Files) + " " +
-					"WHERE id = '" + playlist.ID + "'";
+				string sql = "UPDATE playlist SET name = @Name, files = @Files WHERE id = @ID";
 				SqliteCommand cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Name", playlist.Name));
+				cmd.Parameters.Add (new SqliteParameter ("Files", FormatFileIDs (playlist.Files)));
+				cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 				// Result
 				int result = cmd.ExecuteNonQuery ();
@@ -807,8 +818,11 @@ public class Playlist : MonoBehaviour {
 			file.ID = 0;
 
 			// Update file ID: Query statement
-			string sql = "SELECT id FROM file WHERE path = '" + file.Path + "'";
+			string sql = "SELECT id FROM file WHERE path = @Path";
 			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
 
 			// Get sql results
 			SqliteDataReader reader = cmd.ExecuteReader ();
@@ -826,9 +840,12 @@ public class Playlist : MonoBehaviour {
 			if (!(file.ID > 0))
 			{
 				// Query statement
-				sql = "INSERT INTO file (path) VALUES ('" + file.Path + "'); " +
+				sql = "INSERT INTO file (path) VALUES (@Path); " +
 					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
 
 				// Send query
 				file.ID = (long) cmd.ExecuteScalar ();
@@ -844,8 +861,12 @@ public class Playlist : MonoBehaviour {
 				string files = FormatFileIDs (playlist.Files);
 
 				// Query statement
-				sql = "UPDATE playlist SET files = " + files + " WHERE id = '" + playlist.ID + "'";
+				sql = "UPDATE playlist SET files = @Files WHERE id = @ID";
 				cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Files", files));
+				cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 				// Result
 				int result = cmd.ExecuteNonQuery ();
@@ -873,9 +894,12 @@ public class Playlist : MonoBehaviour {
 		{
 			// Send database query
 			SqliteCommand cmd = new SqliteCommand (db);
-			cmd.CommandText = "SELECT id,path FROM file WHERE id = '" + id.ToString () + "'";
-			SqliteDataReader reader = cmd.ExecuteReader ();
+			cmd.CommandText = "SELECT id,path FROM file WHERE id = @ID";
 
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("ID", id));
+
+			SqliteDataReader reader = cmd.ExecuteReader ();
 			FileObj file = null;
 
 			// Read and add file
@@ -906,9 +930,12 @@ public class Playlist : MonoBehaviour {
 		{
 			// Send database query
 			SqliteCommand cmd = new SqliteCommand (db);
-			cmd.CommandText = "SELECT id,path FROM file WHERE path = '" + path + "'";
-			SqliteDataReader reader = cmd.ExecuteReader ();
+			cmd.CommandText = "SELECT id,path FROM file WHERE path = @File";
 
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("File", path));
+
+			SqliteDataReader reader = cmd.ExecuteReader ();
 			FileObj file = null;
 
 			// Read and add file
@@ -938,8 +965,11 @@ public class Playlist : MonoBehaviour {
 		if (DbConnect () && playlist != null)
 		{
 			// Query statement
-			string sql = "DELETE FROM playlist WHERE id = '" + playlist.ID + "'";
+			string sql = "DELETE FROM playlist WHERE id = @ID";
 			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 			// Result
 			int result = cmd.ExecuteNonQuery ();
@@ -962,8 +992,11 @@ public class Playlist : MonoBehaviour {
 		if (DbConnect () && playlist != null && file != null && playlist.Files.Contains (file))
 		{
 			// Select files of playlist
-			string sql = "SELECT files FROM playlist WHERE id = '" + playlist.ID + "'";
+			string sql = "SELECT files FROM playlist WHERE id = @ID";
 			SqliteCommand cmd = new SqliteCommand (sql, db);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 			// Get sql results
 			SqliteDataReader reader = cmd.ExecuteReader ();
@@ -989,10 +1022,12 @@ public class Playlist : MonoBehaviour {
 				string files = FormatFileIDs (fileIDs);
 
 				// Query statement
-				sql = "UPDATE playlist SET " +
-					"files = " + files + " " +
-					"WHERE id = '" + playlist.ID + "'";
+				sql = "UPDATE playlist SET files = @Files WHERE id = @ID";
 				cmd = new SqliteCommand (sql, db);
+
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Files", files));
+				cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 				// Result
 				int result = cmd.ExecuteNonQuery ();
@@ -1055,37 +1090,14 @@ public class Playlist : MonoBehaviour {
 	public string FormatFileIDs (List<FileObj> files)
 	{
 		// Output
-		string output = "NULL";
+		List<string> IDs = new List<string> ();
 
-		// Number of IDs
-		int IDcount = 0;
-
-		for (int i=0; i < files.Count; i++)
-		{
-			if (files [i].ID != 0)
-			{
-				// Insert starting apostrophe for sql query
-				if (IDcount == 0) {
-					output = "'";
-				}
-
-				// Insert ID
-				output += files [i].ID.ToString ();
-
-				// Insert comma
-				if (i != files.Count-1) {
-					output += ",";
-				}
-
-				IDcount++;
+		foreach (FileObj file in files) {
+			if (file.ID != 0) {
+				IDs.Add (file.ID.ToString ());
 			}
 		}
 
-		// Insert final apostrophe for sql query
-		if (IDcount > 0) {
-			output += "'";
-		}
-
-		return output;
+		return IDs.Count > 0 ? String.Join (",", IDs.ToArray ()) : null;
 	}
 }

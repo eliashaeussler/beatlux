@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 public class MenuFunctions : MonoBehaviour {
     
@@ -44,31 +45,55 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs = new List<String> ();
 			searchFiles = new List<String> ();
 
-			// Get results
-			string path = SourceFolder.currentPath;
-			string pattern = "*" + s + "*";
-			GetResults (path, pattern);
+			if (s.Length >= 3)
+			{
+				// Get results
+				string path = SourceFolder.currentPath;
+				GetResults (path, s);
 
-			// Remove hidden files and folders
-			searchDirs = SourceFolder.RemoveHidden (searchDirs);
-			searchFiles = SourceFolder.RemoveHidden (searchFiles);
+				// Remove hidden files and folders
+				searchDirs = SourceFolder.RemoveHidden (searchDirs);
+				searchFiles = SourceFolder.RemoveHidden (searchFiles);
+			}
         }
     }
 
 	private void GetResults (string folder, string pattern)
 	{
-		foreach (string file in Directory.GetFiles (folder, pattern))
-		{
-			searchFiles.Add (file);
+		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
+			searchDirs.Add (folder);
 		}
-		foreach (string subDir in Directory.GetDirectories (folder))
-		{
-			try {
-				//searchDirs.Add (subDir);
-				GetResults (subDir, pattern);
-			} catch {
-				print (subDir);
+
+		try {
+			foreach (string item in Directory.GetFileSystemEntries (folder))
+			{
+				if (Directory.Exists (item)) {
+					
+					// Jump into sub directory
+					GetResults (item, pattern);
+
+				} else {
+
+					// Add file if file name contains pattern
+					if (Path.GetFileName (item).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
+						searchFiles.Add (item);
+					}
+
+				}
 			}
-		}
+		} catch {}
+
+//		foreach (string file in Directory.GetFiles (folder, pattern))
+//		{
+//			searchFiles.Add (file);
+//		}
+//		foreach (string subDir in Directory.GetDirectories (folder))
+//		{
+//			try {
+//				GetResults (subDir, pattern);
+//			} catch {
+//				print (subDir);
+//			}
+//		}
 	}
 }
