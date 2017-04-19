@@ -22,12 +22,6 @@ public class Playlist : MonoBehaviour {
 	// Playlist List GameObject
 	public GameObject playlist;
 
-	// Active playlist
-	public static PlaylistObj activePlaylist;
-
-	// Active file
-	public static FileObj activeFile;
-
 
 
 	public void Start ()
@@ -178,7 +172,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			if (playlist.Equals(activePlaylist) && file == null) {
+			if (playlist.Equals(Settings.playlist) && file == null) {
 				mainTextArrow.text = IconFont.DROPDOWN_CLOSED;
 			}
 
@@ -220,7 +214,7 @@ public class Playlist : MonoBehaviour {
 
 				// Add text
 				TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
-				if (playlist.Equals (activePlaylist) && file.Equals (activeFile)) {
+				if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file)) {
 					mainTextListening.text = IconFont.LISTENING;
 				}
 
@@ -370,7 +364,7 @@ public class Playlist : MonoBehaviour {
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
 		// Set playlist as active playlist
-		if (!forceOpen) activePlaylist = playlist;
+		if (!forceOpen) Settings.playlist = playlist;
 
 		// Show or hide playlist files
 		bool opened = false;
@@ -440,7 +434,7 @@ public class Playlist : MonoBehaviour {
 				playlists.Remove (playlist);
 
 				// Unset active playlist
-				if (playlist == activePlaylist) activePlaylist = null;
+				if (playlist == Settings.playlist) Settings.playlist = null;
 			} else {
 				// Remove files from playlist
 				playlist.Files.Remove (file);

@@ -8,9 +8,9 @@ using System.Threading;
 
 public class MenuFunctions : MonoBehaviour {
     
-	public void startLevel(int level)
+	public void startLevel (int level)
     {
-        SceneManager.LoadScene(level);
+        SceneManager.LoadScene (level);
     }
 
     /**
@@ -26,7 +26,6 @@ public class MenuFunctions : MonoBehaviour {
         Debug.Log("Quitting App");
         Application.Quit();
 #endif
-        
     }
 
 	public static List<String> searchDirs;
@@ -46,24 +45,17 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs = new List<String> ();
 			searchFiles = new List<String> ();
 
-			if (s.Length >= 3)
-			{
-				ThreadStart start = delegate {
+			ThreadStart start = delegate {
 
-					// Get search results
-					GetResults (s);
+				// Get search results
+				GetResults (s);
 
-					// Hide progress
-					MainThreadDispatcher.Instance ().Enqueue (HideProgress);
-				};
+				// Hide progress
+				MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+			};
 
-				Thread thread = new Thread (start) { IsBackground = true };
-				thread.Start ();
-			}
-			else
-			{
-				Invoke ("HideProgress", 0.01f);
-			}
+			Thread thread = new Thread (start) { IsBackground = true };
+			thread.Start ();
         }
     }
 
