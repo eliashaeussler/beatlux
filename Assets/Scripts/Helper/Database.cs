@@ -3,6 +3,7 @@ using System.Collections;
 using Mono.Data.Sqlite;
 using System.Data;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Database class offers connection to the local database. It should be
@@ -71,6 +72,28 @@ public class Database {
 		instance = null;
 	}
 
+	public static void CreateTables ()
+	{
+		// SQL statements
+		string[] stm = {
+			"CREATE TABLE IF NOT EXISTS \"file\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT NOT NULL UNIQUE )",
+			"CREATE TABLE IF NOT EXISTS \"playlist\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `files` TEXT DEFAULT NULL )",
+			"CREATE TABLE IF NOT EXISTS \"visualization\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `buildNumber` INTEGER UNIQUE )",
+			"CREATE TABLE IF NOT EXISTS \"color_scheme\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `viz_id` INTEGER, `colors` TEXT, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
+		};
+
+		// Create tables
+		if (GetConnection () != null)
+		{
+			foreach (string sql in stm)
+			{
+				SqliteCommand cmd = new SqliteCommand (sql, con);
+				cmd.ExecuteNonQuery ();
+				cmd.Dispose ();
+			}
+		}
+	}
+
 
 
 	// Get instance (Singleton)
@@ -79,6 +102,7 @@ public class Database {
 		// Create instance if not exists
 		if (instance == null) {
 			instance = new Database ();
+			CreateTables ();
 		}
 
 		// Return database connection
