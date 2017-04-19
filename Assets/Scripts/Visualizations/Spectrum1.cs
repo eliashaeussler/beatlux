@@ -8,30 +8,52 @@ public class Spectrum1 : MonoBehaviour
 
 
     public GameObject prefab;
-    public int numberOfObjects = 20; //number of cubes that are generated when scene is started
-    public float radius = 5f;
+    public int numberOfObjects = 5; //number of cubes that are generated when scene is started
+    public int numberOfChains = 4;
+    public int numberOfCubes;
     public GameObject[] cubes;
-    public float newScale = 20; //scales the height of the cubes while changing
+    public int[] randSpec;
     public Material mat;
+    Color color = new Color(0,0,1,1);
+    int randomSpec;
 
 
 
 
     void Start()
     {
+
+        numberOfCubes = numberOfChains * numberOfObjects;
         mat = Resources.Load("CubeMaterial.mat", typeof(Material)) as Material;
         /**
          * Initializing the scene, creating a circle of cubes in the radius set above.
          **/
-        for (int i = 0; i < numberOfObjects; i++)
+        for (int i = 0; i < numberOfChains; i++)
         {
-            float angle = i * Mathf.PI * 2 / numberOfObjects;
-            Vector3 pos = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            Instantiate(prefab, pos, Quaternion.identity);
+            for (int j = 0; j < numberOfObjects; j++)
+            {
+                Vector3 pos = new Vector3(i*2, -10 + j * 3, 0);
+                Instantiate(prefab, pos, Quaternion.identity);
+
+            }
+           
         }
         cubes = GameObject.FindGameObjectsWithTag("Cubes");
-
+        randSpec = new int[cubes.Length];
+        for (int i = 0; i < cubes.Length; i++)
+        {
+            if(i % 5 == 0||i==0)
+            {
+                randSpec[i] = Random.Range(0, 200);
+            }
+            else
+            {
+                randSpec[i] = randSpec[i - 1] + 1;
+            }
+        }
     }
+
+
 
 
     
@@ -42,23 +64,22 @@ public class Spectrum1 : MonoBehaviour
         /**
          * Scaling the height of each cube, based on the value in the spectrum-array
          **/ 
-        for (int i = 0; i < numberOfObjects; i++)
+        for (int i = 0; i < numberOfCubes; i++)
         {
-            Vector3 previousScale = cubes[i].transform.localScale;
-            cubes[i].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[i] * 10));
 
-            if (spectrum[i] * newScale > 1.3)   //Only update the cube if the height is above set value (1.3)
+ 
+            if( i % 3 == 0)
             {
-                previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale, Time.deltaTime * 30);
-
+                Color color =new Color (0F, 0F,0.5F,0F);
+                cubes[i].GetComponent<Renderer>().material.SetColor("_ColorTint", color);
             }
-            else
+            if(i % 2 == 1)
             {
-                previousScale.y = 1;
-
+                Color color2 = new Color(0F, 0.8F, 0.5F, 0F);
+                cubes[i].GetComponent<Renderer>().material.SetColor("_RimColor", color2);
             }
-            cubes[i].transform.localScale = previousScale;
-            
+            cubes[i].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randSpec[i]] * 10));
+
         }
     }
 
