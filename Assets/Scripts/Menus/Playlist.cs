@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using System.IO;
 
 public class Playlist : MonoBehaviour {
@@ -41,8 +42,8 @@ public class Playlist : MonoBehaviour {
 	public void Display ()
 	{
 		// Remove all GameObjects
-		for (int i=0; i < playlist.transform.childCount; i++) {
-			GameObject.Destroy (playlist.transform.GetChild (i).gameObject);
+		for (int i=playlist.transform.childCount - 1; i >= 0; i--) {
+			GameObject.DestroyImmediate (playlist.transform.GetChild (i).gameObject);
 		}
 
 		foreach (PlaylistObj p in playlists)
@@ -109,10 +110,12 @@ public class Playlist : MonoBehaviour {
 			if (file != null) main.name = "Contents";
 
 			// Check if Contents GameObject already exists
-			bool contentsExists = this.playlist.transform.Find ("#" + playlist.ID + "/Contents") != null;
+			Transform contents = this.playlist.transform.Find ("#" + playlist.ID + "/Contents");
+			bool contentsExists = !ReferenceEquals (contents, null);
+
 			if (contentsExists && file != null) {
 				DestroyImmediate (main);
-				main = this.playlist.transform.Find ("#" + playlist.ID + "/Contents").gameObject;
+				main = contents.gameObject;
 			}
 
 			// Set parent of GameObject
@@ -193,6 +196,40 @@ public class Playlist : MonoBehaviour {
 			mainLayoutElementArrow.minWidth = 22;
 
 
+			if (file != null)
+			{
+				// Create listening text GameObject
+				GameObject mainListening = new GameObject ("Listening");
+				mainListening.transform.SetParent (main.transform);
+
+				// Add text
+				TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
+
+				if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file))
+				{
+					mainTextListening.text = IconFont.LISTENING;
+					mainTextListening.fontSize = 30;
+					mainTextListening.color = new Color (0.7f, 0.7f, 0.7f);
+				}
+				else
+				{
+					mainTextListening.text = IconFont.DROPDOWN_CLOSED;
+					mainTextListening.fontSize = 20;
+					mainTextListening.color = Color.gray;
+				}
+
+				// Set text alignment
+				mainTextListening.alignment = TextAnchor.MiddleLeft;
+
+				// Font settings
+				mainTextListening.font = IconFont.font;
+
+				// Add Layout Element
+				LayoutElement mainLayoutElementListening = mainListening.AddComponent<LayoutElement> ();
+				mainLayoutElementListening.minWidth = 32;
+			}
+
+
 			// Create text GameObject
 			GameObject mainText = new GameObject ("Text");
 			mainText.transform.SetParent (main.transform);
@@ -204,14 +241,20 @@ public class Playlist : MonoBehaviour {
 			text.alignment = TextAnchor.MiddleLeft;
 
 			// Set text color
-			text.color = file == null ? Color.white : Color.gray;
+			if (file == null) {
+				text.color = Color.white;
+			} else if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file)) {
+				text.color = new Color (0.7f, 0.7f, 0.7f);
+			} else {
+				text.color = Color.gray;
+			}
 
 			// Font settings
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.fontSize = 30;
 
 			// Set transformations
-			text.rectTransform.pivot = new Vector2 (0, 0.5f);
+			text.rectTransform.pivot = new Vector2 (0.5f, 0.5f);
 
 			// Add button
 			Button buttonText = mainText.AddComponent<Button> ();
@@ -220,27 +263,6 @@ public class Playlist : MonoBehaviour {
 			// Add animator
 			Animator animatorText = mainText.AddComponent<Animator> ();
 			animatorText.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
-
-
-			if (file != null)
-			{
-				// Create listening text GameObject
-				GameObject mainListening = new GameObject ("Listening");
-				mainListening.transform.SetParent (main.transform);
-
-				// Add text
-				TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
-				if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file)) {
-					mainTextListening.text = IconFont.LISTENING;
-				}
-
-				// Set text alignment
-				mainTextListening.alignment = TextAnchor.MiddleRight;
-
-				// Font settings
-				mainTextListening.font = IconFont.font;
-				mainTextListening.fontSize = 30;
-			}
 
 
 			// Create edit icons GameObject
@@ -526,6 +548,9 @@ public class Playlist : MonoBehaviour {
 			Button buttonCancel = footer.Find ("Button_Cancel").GetComponent<Button> ();
 			Text buttonCancelText = footer.Find ("Button_Cancel").Find ("Text").GetComponent<Text> ();
 
+			// Remove listener
+			buttonOK.onClick.RemoveAllListeners ();
+
 
 			switch (type) {
 
@@ -539,21 +564,29 @@ public class Playlist : MonoBehaviour {
 
 				// Events
 				buttonOK.onClick.AddListener (delegate {
+					
 					long id = NewPlaylist (inputText.text);
 
 					switch (id) {
+
 					case (long) Database.Constants.DuplicateFound:
+
 						// TODO
 						print("Bereits vorhanden.");
+
 						break;
 
 					case (long) Database.Constants.QueryFailed:
+						
 						// TODO
 						print("Fehlgeschlagen.");
+
 						break;
 
 					default:
+						
 						HideDialog ();
+
 						break;
 
 					}
@@ -575,8 +608,14 @@ public class Playlist : MonoBehaviour {
 
 					// Events
 					buttonOK.onClick.AddListener (delegate {
-						
+
+						// Update playlist objects
+						if (Settings.playlist != null && Settings.playlist.Equals (playlist)) {
+							Settings.playlist.Name = inputText.text;
+						}
 						playlist.Name = inputText.text;
+
+						// Update database
 						bool edited = Edit (playlist);
 
 						if (edited) {
@@ -791,7 +830,7 @@ public class Playlist : MonoBehaviour {
 		return (long) Database.Constants.QueryFailed;
 	}
 
-	public bool Edit(PlaylistObj playlist)
+	public bool Edit (PlaylistObj playlist)
 	{
 		if (DbConnect () && playlist != null && playlist.Name.Length > 0)
 		{
