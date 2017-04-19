@@ -192,9 +192,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1000011702810944, guid: d6dc85a1cb013a346842db0f1f4db978, type: 2}
   numberOfObjects: 5
+  numberOfChains: 4
+  numberOfCubes: 0
   cubes: []
-  newScale: 80
-  mat: {fileID: 2100000, guid: 1556ee811729d1541aa8228bec98c6f3, type: 2}
+  randSpec: 
 --- !u!82 &1878549228
 AudioSource:
   m_ObjectHideFlags: 0
