@@ -69,8 +69,8 @@ public class Playlist : MonoBehaviour {
 		// Text settings
 		text.text = playlist.Name;
 
-		// Create Event Triggers
-		EventTrigger events = gameObject.AddComponent<EventTrigger> ();
+		// Get Event Trigger
+		EventTrigger events = gameObject.GetComponent<EventTrigger> ();
 
 		// Add Click Event
 		EventTrigger.Entry evtClick = new EventTrigger.Entry ();
@@ -78,6 +78,11 @@ public class Playlist : MonoBehaviour {
 		events.triggers.Add (evtClick);
 
 		evtClick.callback.AddListener ((eventData) => {
+			ToggleFiles (playlist);
+		});
+
+		// Add Event to Button
+		gameObject.transform.Find ("Main/Text").gameObject.GetComponent<Button> ().onClick.AddListener (delegate {
 			ToggleFiles (playlist);
 		});
 	}
@@ -150,7 +155,7 @@ public class Playlist : MonoBehaviour {
 			mainImg.color = Color.clear;
 
 			// Set transformations
-			mainImg.rectTransform.pivot = Vector2.up;
+			mainImg.rectTransform.pivot = new Vector2(0, 0.5f);
 
 			// Add Horizontal Layout Group
 			HorizontalLayoutGroup mainHlg = main.AddComponent<HorizontalLayoutGroup> ();
@@ -205,6 +210,17 @@ public class Playlist : MonoBehaviour {
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.fontSize = 30;
 
+			// Set transformations
+			text.rectTransform.pivot = new Vector2 (0, 0.5f);
+
+			// Add button
+			Button buttonText = mainText.AddComponent<Button> ();
+			buttonText.transition = Selectable.Transition.Animation;
+
+			// Add animator
+			Animator animatorText = mainText.AddComponent<Animator> ();
+			animatorText.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
+
 
 			if (file != null)
 			{
@@ -234,9 +250,9 @@ public class Playlist : MonoBehaviour {
 			// Set transformations
 			RectTransform editIconsTrans = editIcons.AddComponent<RectTransform> ();
 			editIconsTrans.anchoredPosition = Vector2.zero;
-			editIconsTrans.anchorMin = new Vector2 (1.0f, 0.5f);
-			editIconsTrans.anchorMax = new Vector2 (1.0f, 0.5f);
-			editIconsTrans.pivot = new Vector2 (1.0f, 0.5f);
+			editIconsTrans.anchorMin = new Vector2 (1, 0.5f);
+			editIconsTrans.anchorMax = new Vector2 (1, 0.5f);
+			editIconsTrans.pivot = new Vector2 (1, 0.5f);
 
 			// Add Layout Element
 			LayoutElement editIconslayoutElement = editIcons.AddComponent<LayoutElement> ();
@@ -278,17 +294,18 @@ public class Playlist : MonoBehaviour {
 				editText.font = IconFont.font;
 				editText.fontSize = 30;
 
-				// Create edit text Event Trigger
-				EventTrigger editEvtText = edit.AddComponent<EventTrigger> ();
+				// Add button
+				Button buttonEditEvt = edit.AddComponent<Button> ();
+				buttonEditEvt.transition = Selectable.Transition.Animation;
 
-				// Add Edit Click Event
-				EventTrigger.Entry editEvtTextClick = new EventTrigger.Entry ();
-				editEvtTextClick.eventID = EventTriggerType.PointerClick;
-				editEvtText.triggers.Add (editEvtTextClick);
-
-				editEvtTextClick.callback.AddListener ((eventData) => {
+				// Add button onclick event
+				buttonEditEvt.onClick.AddListener (delegate {
 					ShowDialog ("PL_EDIT", gameObject);
 				});
+
+				// Add animator
+				Animator animatorEditEvt = edit.AddComponent<Animator> ();
+				animatorEditEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 			}
 
 
@@ -310,22 +327,22 @@ public class Playlist : MonoBehaviour {
 			deleteText.font = IconFont.font;
 			deleteText.fontSize = 30;
 
+			// Add button
+			Button buttonDeleteEvt = delete.AddComponent<Button> ();
+			buttonDeleteEvt.transition = Selectable.Transition.Animation;
 
-			// Create delete text Event Trigger
-			EventTrigger deleteEvtText = delete.AddComponent<EventTrigger> ();
-
-			// Add Delete Click Event
-			EventTrigger.Entry deleteEvtTextClick = new EventTrigger.Entry ();
-			deleteEvtTextClick.eventID = EventTriggerType.PointerClick;
-			deleteEvtText.triggers.Add (deleteEvtTextClick);
-
-			deleteEvtTextClick.callback.AddListener ((eventData) => {
+			// Add button onclick event
+			buttonDeleteEvt.onClick.AddListener (delegate {
 				if (FindFile (gameObject) == null) {
 					ShowDialog ("PL_DEL", gameObject);
 				} else {
 					Delete (gameObject);
 				}
 			});
+
+			// Add animator
+			Animator animatorDeleteEvt = delete.AddComponent<Animator> ();
+			animatorDeleteEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 
 
 			// Create GameObject Event Triggers

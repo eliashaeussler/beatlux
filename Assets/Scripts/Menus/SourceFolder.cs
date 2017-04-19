@@ -95,7 +95,9 @@ public class SourceFolder : MonoBehaviour {
 			// creates a gameobject with a recttransform to position it
 			folderObject = new GameObject(s);
 			folderObject.transform.SetParent(gameObject.transform);
+
 			RectTransform trans = folderObject.AddComponent<RectTransform>();
+			trans.pivot = new Vector2 (0, 0.5f);
 
 			// Add Layout Element
 			LayoutElement layoutElement = folderObject.AddComponent<LayoutElement> ();
@@ -103,24 +105,22 @@ public class SourceFolder : MonoBehaviour {
 			layoutElement.preferredHeight = 30;
 
 			// Add Drag Handler
-			if (i > lastDirectory)
-				folderObject.AddComponent<DragHandler> ();
+			if (i > lastDirectory) folderObject.AddComponent<DragHandler> ();
 
-			// creates and adds an eventtrigger so the text is clickable
-			folderObject.AddComponent<EventTrigger> ();
-			EventTrigger.Entry entry = new EventTrigger.Entry ();
-			entry.eventID = EventTriggerType.PointerDown;
+			// creates and adds an button so the text is clickable
+			Button button = folderObject.AddComponent<Button> ();
+			button.transition = Selectable.Transition.Animation;
+
 			string dir = s;
-
 			if (i <= lastDirectory)
 			{
-				entry.callback.AddListener ((eventData) => {
+				button.onClick.AddListener (delegate {
 					init (dir);
 				});
 			}
 			else
 			{
-				entry.callback.AddListener ((eventData) => {
+				button.onClick.AddListener (delegate {
 
 					// Get reference to playlist object
 					Playlist pl = Camera.main.GetComponent <Playlist> ();
@@ -133,7 +133,9 @@ public class SourceFolder : MonoBehaviour {
 				});
 			}
 
-			folderObject.GetComponent<EventTrigger> ().triggers.Add (entry);
+			// Add animator
+			Animator animator = folderObject.AddComponent<Animator> ();
+			animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 
 			// adds a text to the gameobjects which is filled and modified 
 			Text text = folderObject.AddComponent<Text> ();
