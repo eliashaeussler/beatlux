@@ -170,10 +170,10 @@ GameObject:
   - 124: {fileID: 1878549230}
   - 81: {fileID: 1878549229}
   - 82: {fileID: 1878549228}
-  - 114: {fileID: 1878549227}
   - 54: {fileID: 1878549236}
   - 114: {fileID: 1878549235}
   - 114: {fileID: 1878549234}
+  - 114: {fileID: 1878549227}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -184,20 +184,21 @@ GameObject:
 --- !u!114 &1878549227
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114337447177653336, guid: 2775fb0011ecc4c889ead563931d089f,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1878549226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 942d87aa44203dd4783304023a6b152b, type: 3}
+  m_Script: {fileID: 11500000, guid: 55eb3b5a4b4012a4e99bf8709485ad21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1000011702810944, guid: d6dc85a1cb013a346842db0f1f4db978, type: 2}
-  numberOfObjects: 5
-  numberOfChains: 4
-  numberOfCubes: 0
+  ketten: {fileID: 1000014147244504, guid: b91ccc18fd8524c40a869339fabc2f39, type: 2}
+  haenger: {fileID: 1000010930697782, guid: 74438ffef5dbb034a82df7e9d957e227, type: 2}
+  numKetten: 100
+  numHaenger: 60
+  ketAr: []
   cubes: []
+  haengAr: []
   randSpec: 
 --- !u!82 &1878549228
 AudioSource:
