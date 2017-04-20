@@ -91,6 +91,7 @@ public class MenuFunctions : MonoBehaviour {
 		string[] files = Directory.GetFiles (folder).Where (x =>
 			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
 			&& Path.GetFileName (x).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0
+			&& SourceFolder.SupportedFormats.Contains (System.IO.Path.GetExtension (x))
 		).ToArray ();
 
 		// Add file if file name contains pattern

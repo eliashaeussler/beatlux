@@ -8,6 +8,16 @@ using System;
 using System.Linq;
 
 public class SourceFolder : MonoBehaviour {
+
+	public static string[] SupportedFormats = {
+		".mp3",
+		".ogg",
+		".wav",
+		".aif",
+		".aiff"
+	};
+
+
 	
 	void Start ()
 	{
@@ -23,7 +33,7 @@ public class SourceFolder : MonoBehaviour {
 
 	public static void Initialize ()
 	{
-		Initialize (Settings.CurrentPath);
+		Initialize (Settings.CurrentPath ?? Settings.MainPath);
 	}
 
 	public static void Initialize (string Path)
@@ -45,14 +55,8 @@ public class SourceFolder : MonoBehaviour {
 		// deletes all previous created objects
 		DestroyAll ();
 
-		if (!FromSearch)
-		{
-			// Clear search input
-//			GameObject.Find ("FileSearch/Input").gameObject.GetComponent<InputField> ().text = "";
-
-			// Scroll to top
-			GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
-		}
+		// Scroll to top
+		if (!FromSearch) GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 
 		// Combine directories and folders
 		List<string> results = new List<string> (Directories);
@@ -129,9 +133,6 @@ public class SourceFolder : MonoBehaviour {
 
 		if (!Path.Equals (userPath, Settings.CurrentPath))
 		{
-			// Clear search input
-//			GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
-
 			// Get new path
 			string path = Path.GetFullPath (Path.Combine (Settings.CurrentPath, @".."));
 
@@ -175,6 +176,7 @@ public class SourceFolder : MonoBehaviour {
 		// Get files
 		string[] files = Directory.GetFiles (Path).Where (x =>
 			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
+			&& SupportedFormats.Contains (System.IO.Path.GetExtension (x))
 		).ToArray ();
 
 		List<string> elements = new List<string> ();
