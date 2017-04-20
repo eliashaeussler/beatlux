@@ -5,39 +5,36 @@ using System.IO;
 using System.Collections.Generic;
 using System;
 using System.Threading;
+using System.Linq;
 
 public class MenuFunctions : MonoBehaviour {
     
-	public void startLevel (int level)
-    {
-        SceneManager.LoadScene (level);
-    }
-
-    /**
-    If started through Unity Editor, end play
-        If Started through Build Application, Quit Application
-    **/
-    public void end()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        Debug.Log("Quitting Editor");
-#else
-        Debug.Log("Quitting App");
-        Application.Quit();
-#endif
-    }
-
 	public static List<String> searchDirs;
 	public static List<String> searchFiles;
-    public static string pathF;
+	public static bool Searching;
 
-    public void GetInput(string s)
+	private BackgroundThread thread;
+
+
+
+	public void StartLevel (int level) {
+        SceneManager.LoadScene (level);
+    }
+		
+    public void Quit ()
     {
-        if (s == "")
+		Application.Quit ();
+    }
+
+	public void GetInput (string s)
+    {
+		Searching = s.Length > 0;
+
+        if (!Searching)
         {
-			pathF = @SourceFolder.mainPath;
+			// Search done
 			Invoke ("HideProgress", 0.01f);
+			SourceFolder.Initialize ();
         }
         else
         {
@@ -45,29 +42,43 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs = new List<String> ();
 			searchFiles = new List<String> ();
 
-			ThreadStart start = delegate {
+			// Dispose current thread
+			if (thread != null && thread.IsBusy) {
+				thread.Abort ();
+				thread.Dispose ();
+			}
+
+			// Initalize thread
+			thread = new BackgroundThread ();
+			thread.WorkerSupportsCancellation = true;
+			thread.DoWork += delegate {
+
+				// Destroy elements
+				MainThreadDispatcher.Instance ().Enqueue (SourceFolder.DestroyAll);
 
 				// Get search results
 				GetResults (s);
 
+				// Display search results
+				MainThreadDispatcher.Instance ().Enqueue (delegate {
+					SourceFolder.Display (searchDirs, searchFiles, true);
+				});
+
 				// Hide progress
 				MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+
 			};
 
-			Thread thread = new Thread (start) { IsBackground = true };
-			thread.Start ();
+			// Run thread
+			thread.RunWorkerAsync ();
         }
     }
 
 	private void GetResults (string pattern)
 	{
 		// Get results
-		string path = SourceFolder.currentPath;
+		string path = SourceFolder.CurrentPath;
 		Search (path, pattern);
-
-		// Remove hidden files and folders
-		searchDirs = SourceFolder.RemoveHidden (searchDirs);
-		searchFiles = SourceFolder.RemoveHidden (searchFiles);
 	}
 
 	private void Search (string folder, string pattern)
@@ -76,24 +87,26 @@ public class MenuFunctions : MonoBehaviour {
 			searchDirs.Add (folder);
 		}
 
-		try {
-			foreach (string item in Directory.GetFileSystemEntries (folder))
-			{
-				if (Directory.Exists (item)) {
+		// Get files
+		string[] files = Directory.GetFiles (folder).Where (x =>
+			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
+			&& Path.GetFileName (x).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0
+		).ToArray ();
 
-					// Jump into sub directory
-					Search (item, pattern);
+		// Add file if file name contains pattern
+		foreach (string file in files) {
+			searchFiles.Add (file);
+		}
 
-				} else {
+		// Get directories
+		string[] dirs = Directory.GetDirectories (folder).Where (x =>
+			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
+		).ToArray ();
 
-					// Add file if file name contains pattern
-					if (Path.GetFileName (item).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
-						searchFiles.Add (item);
-					}
-
-				}
-			}
-		} catch {}
+		// Jump into sub directory
+		foreach (string dir in dirs) {
+			Search (dir, pattern);
+		}
 	}
 
 	public void HideProgress ()

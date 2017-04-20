@@ -5,71 +5,48 @@ using UnityEngine.UI;
 using System.IO;
 using UnityEngine.EventSystems;
 using System;
+using System.Linq;
 
 public class SourceFolder : MonoBehaviour {
 	
-	public static string currentPath;
-	public static string mainPath;
-	int i;
+	public static string CurrentPath;
+	public static string MainPath;
 
 
-	// Use this for initialization
+
 	void Start ()
 	{
 		// Set main path
-		mainPath = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
-		currentPath = mainPath;
+		MainPath = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
+		CurrentPath = MainPath;
 
 		// Display files and folders for main path
-		init (mainPath);
+		Initialize (MainPath);
 	}
 
-	// Update is called once per frame
-	void Update ()
+	public static void Initialize ()
 	{
-		// If the search entry is deleted, init() is called and the strings are set to null so update wont be called 
-		if (MenuFunctions.pathF != null)
-		{
-			init (currentPath);
-			MenuFunctions.pathF = null;
-			MenuFunctions.searchDirs = null;
-		}
-
-		// If something was searched 
-		else if (MenuFunctions.searchDirs != null)
-		{
-			display (MenuFunctions.searchDirs, MenuFunctions.searchFiles, true);
-		}
+		Initialize (CurrentPath);
 	}
 
-
-	public void init (string pathFolder)
+	public static void Initialize (string pathFolder)
 	{
 		// path and objects are initialised
-		currentPath = pathFolder;
+		CurrentPath = pathFolder;
 
 		// Get files and folders
-		List<String> directories = GetDirs (currentPath, true);
-		List<String> files = GetFiles (currentPath, true);
+		List<string> directories = GetDirs (CurrentPath, true);
+		List<string> files = GetFiles (CurrentPath, true);
 
 		// Show files and folders
-		display (directories, files, false);
+		Display (directories, files, false);
 	}
 
 
-	// init creates all the objects
-	public void display (List<String> directories, List<String> files, bool fromSearch)
+	public static void Display (List<string> directories, List<string> files, bool fromSearch)
 	{
 		// deletes all previous created objects
-		if (i >= 0) {
-			Transform entries = GameObject.Find ("FileContent").transform;
-			foreach (Transform t in entries.transform) {
-				Destroy (t.gameObject);
-			}
-		}
-
-		// Reset file index
-		i = 0;
+		DestroyAll ();
 
 		// Clear search input
 		if (!fromSearch)
@@ -80,23 +57,23 @@ public class SourceFolder : MonoBehaviour {
 			GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 
 		// Combine directories and folders
-		List<String> results = new List<String> (directories);
+		List<string> results = new List<string> (directories);
 		int lastDirectory = results.Count;
 		results.AddRange (files);
 
-		GameObject gameObject = GameObject.Find("FileContent");
+		GameObject gameObject = GameObject.Find ("FileContent");
 		GameObject folderObject;
 
 		// for each folder and file an object is created
-		foreach (string s in results)
-		{
-			i++;
+		for (int i = 0; i < results.Count; i++) {
+			// Current dir
+			string dir = results [i];
 
 			// creates a gameobject with a recttransform to position it
-			folderObject = new GameObject(s);
-			folderObject.transform.SetParent(gameObject.transform);
+			folderObject = new GameObject (dir);
+			folderObject.transform.SetParent (gameObject.transform);
 
-			RectTransform trans = folderObject.AddComponent<RectTransform>();
+			RectTransform trans = folderObject.AddComponent<RectTransform> ();
 			trans.pivot = new Vector2 (0, 0.5f);
 
 			// Add Layout Element
@@ -105,21 +82,19 @@ public class SourceFolder : MonoBehaviour {
 			layoutElement.preferredHeight = 30;
 
 			// Add Drag Handler
-			if (i > lastDirectory) folderObject.AddComponent<DragHandler> ();
+			if (i > lastDirectory)
+				folderObject.AddComponent<DragHandler> ();
 
 			// creates and adds an button so the text is clickable
 			Button button = folderObject.AddComponent<Button> ();
 			button.transition = Selectable.Transition.Animation;
 
-			string dir = s;
-			if (i <= lastDirectory)
-			{
+			string currentDir = dir;
+			if (i <= lastDirectory) {
 				button.onClick.AddListener (delegate {
-					init (dir);
+					Initialize (currentDir);
 				});
-			}
-			else
-			{
+			} else {
 				button.onClick.AddListener (delegate {
 
 					// Get reference to playlist object
@@ -141,10 +116,9 @@ public class SourceFolder : MonoBehaviour {
 			Text text = folderObject.AddComponent<Text> ();
 			text.color = Color.white;
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-			text.text = Path.GetFileName (s);
+			text.text = Path.GetFileName (dir);
 			text.fontSize = 30;
 		}
-
 	}
 
 	public void HistoryBack ()
@@ -152,65 +126,62 @@ public class SourceFolder : MonoBehaviour {
 		// Get user folder
 		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 
-		if (!Path.Equals (userPath, currentPath))
+		if (!Path.Equals (userPath, CurrentPath))
 		{
 			// Clear search input
 			GameObject.Find ("FileSearch").transform.Find ("Input").gameObject.GetComponent<InputField> ().text = "";
 
 			// Get new path
-			string path = Path.GetFullPath (Path.Combine (@currentPath, @".."));
+			string path = Path.GetFullPath (Path.Combine (CurrentPath, @".."));
 
 			// Display file contents
-			init (path);
+			Initialize (path);
 		}
 	}
 
-	private List<String> GetDirs (string folder, bool cleaned)
+	public static void DestroyAll ()
 	{
-		List<String> elements = new List<String> ();
-		foreach (string subDir in Directory.GetDirectories (folder))
+		Transform entries = GameObject.Find ("FileContent").transform;
+		for (int i=entries.childCount - 1; i >= 0; i--) {
+			GameObject.DestroyImmediate (entries.GetChild (i).gameObject);
+		}
+	}
+
+	public static  List<string> GetDirs (string folder, bool cleaned)
+	{
+		// Get directories
+		string[] dirs = Directory.GetDirectories (folder).Where (x =>
+			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
+		).ToArray ();
+
+		List<string> elements = new List<string> ();
+		foreach (string subDir in dirs)
 		{
 			try {
 				// Try to get files inside sub dir
-				Directory.GetFiles (subDir);
+				@Directory.GetFiles (subDir);
 
 				// Add sub dir to list
 				elements.Add (subDir);
 			} catch {}
 		}
 
-		// Remove hidden folders
-		if (cleaned) elements = RemoveHidden (elements);
-
 		return elements;
 	}
 
-	private List<String> GetFiles (string folder, bool cleaned)
+	public static List<string> GetFiles (string folder, bool cleaned)
 	{
-		List<String> elements = new List<String> ();
-		foreach (string file in Directory.GetFiles (folder)) {
+		// Get files
+		string[] files = Directory.GetFiles (folder).Where (x =>
+			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
+		).ToArray ();
+
+		List<string> elements = new List<string> ();
+		foreach (string file in files) {
 			elements.Add (file);
 		}
 
-		// Remove hidden files
-		if (cleaned) elements = RemoveHidden (elements);
-
 		return elements;
-	}
-
-	public static List<String> RemoveHidden (List<String> list)
-	{
-		for (int i=0; i < list.Count; i++)
-		{
-			string file = Path.GetFileName (list[i]);
-
-			if (file.StartsWith (".")) {
-				list.RemoveAt (i);
-				i = -1;
-			}
-		}
-
-		return list;
 	}
 
 }

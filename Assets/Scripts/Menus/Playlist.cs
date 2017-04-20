@@ -572,14 +572,14 @@ public class Playlist : MonoBehaviour {
 					case (long) Database.Constants.DuplicateFound:
 
 						// TODO
-						print("Bereits vorhanden.");
+						print ("Bereits vorhanden.");
 
 						break;
 
 					case (long) Database.Constants.QueryFailed:
 						
 						// TODO
-						print("Fehlgeschlagen.");
+						print ("Fehlgeschlagen.");
 
 						break;
 
@@ -620,6 +620,9 @@ public class Playlist : MonoBehaviour {
 
 						if (edited) {
 							Load (true);
+						} else {
+							// TODO
+							print ("Fehlgeschlagen.");
 						}
 
 						HideDialog ();
