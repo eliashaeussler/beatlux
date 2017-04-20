@@ -176,7 +176,7 @@ public class SourceFolder : MonoBehaviour {
 		// Get files
 		string[] files = Directory.GetFiles (Path).Where (x =>
 			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
-			&& SupportedFormats.Contains (System.IO.Path.GetExtension (x))
+			&& IsSupportedFile (x)
 		).ToArray ();
 
 		List<string> elements = new List<string> ();
@@ -185,6 +185,11 @@ public class SourceFolder : MonoBehaviour {
 		}
 
 		return elements;
+	}
+
+	public static bool IsSupportedFile (string file)
+	{
+		return SupportedFormats.Contains (Path.GetExtension (file).ToLower ());
 	}
 
 }
