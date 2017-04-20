@@ -77,7 +77,7 @@ public class MenuFunctions : MonoBehaviour {
 	private void GetResults (string pattern)
 	{
 		// Get results
-		string path = SourceFolder.CurrentPath;
+		string path = Settings.CurrentPath;
 		Search (path, pattern);
 	}
 

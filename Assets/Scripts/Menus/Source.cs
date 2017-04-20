@@ -18,7 +18,7 @@ public class Source : MonoBehaviour {
 
 	void Update ()
 	{
-        text.text = SourceFolder.CurrentPath;
-    }
+        text.text = Settings.CurrentPath;
+	}
 
 }

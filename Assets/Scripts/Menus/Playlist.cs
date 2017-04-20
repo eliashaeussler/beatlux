@@ -56,7 +56,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Hide playlist files
-			if (playlist.transform.Find ("#" + p.ID + "/Contents") != null)
+			if (playlist.transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.OpenedPlaylist))
 				playlist.transform.Find ("#" + p.ID + "/Contents").gameObject.SetActive (false);
 		}
 	}
@@ -180,8 +180,10 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			if (playlist.Equals(Settings.playlist) && file == null) {
-				mainTextArrow.text = IconFont.DROPDOWN_CLOSED;
+			if (playlist.Equals(Settings.activePlaylist) && file == null) {
+				mainTextArrow.text = playlist.Equals(Settings.OpenedPlaylist)
+					? IconFont.DROPDOWN_OPENED
+					: IconFont.DROPDOWN_CLOSED;
 			}
 
 			// Set text alignment
@@ -205,7 +207,7 @@ public class Playlist : MonoBehaviour {
 				// Add text
 				TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
 
-				if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file))
+				if (playlist.Equals (Settings.activePlaylist) && file.Equals (Settings.activeFile))
 				{
 					mainTextListening.text = IconFont.LISTENING;
 					mainTextListening.fontSize = 30;
@@ -243,7 +245,7 @@ public class Playlist : MonoBehaviour {
 			// Set text color
 			if (file == null) {
 				text.color = Color.white;
-			} else if (playlist.Equals (Settings.playlist) && file.Equals (Settings.file)) {
+			} else if (playlist.Equals (Settings.activePlaylist) && file.Equals (Settings.activeFile)) {
 				text.color = new Color (0.7f, 0.7f, 0.7f);
 			} else {
 				text.color = Color.gray;
@@ -403,7 +405,7 @@ public class Playlist : MonoBehaviour {
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
 		// Set playlist as active playlist
-		if (!forceOpen) Settings.playlist = playlist;
+		if (!forceOpen) Settings.activePlaylist = playlist;
 
 		// Show or hide playlist files
 		bool opened = false;
@@ -413,18 +415,28 @@ public class Playlist : MonoBehaviour {
 			Transform contents = this.playlist.transform.Find ("#" + p.ID + "/Contents");
 			GameObject main = contents != null ? contents.gameObject : null;
 
+			// Get arrow
+			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Main/Arrow").GetComponent<Text>();
+
 			// Toggle files for GameObject
-			if (main != null) {
-				if (p == playlist) {
+			if (main != null)
+			{
+				if (p == playlist)
+				{
 					main.SetActive (!forceOpen ? !main.activeSelf : true);
 					opened = main.activeSelf;
-				} else {
+				}
+				else
+				{
 					main.SetActive (false);
+
+					if (arr.text == IconFont.DROPDOWN_OPENED) {
+						arr.text = IconFont.DROPDOWN_CLOSED;
+					}
 				}
 			}
 
 			// Change arrows
-			Text arr = this.playlist.transform.Find ("#" + p.ID).transform.Find ("Main/Arrow").GetComponent<Text>();
 			if (!forceOpen && p != playlist) {
 				arr.text = "";
 			}
@@ -435,6 +447,9 @@ public class Playlist : MonoBehaviour {
 		if (!forceOpen && arrow != null) {
 			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
 		}
+
+		// Set opened playlist
+		Settings.OpenedPlaylist = opened ? playlist : null;
 	}
 
 	public long NewPlaylist (string name)
@@ -473,7 +488,7 @@ public class Playlist : MonoBehaviour {
 				playlists.Remove (playlist);
 
 				// Unset active playlist
-				if (playlist == Settings.playlist) Settings.playlist = null;
+				if (playlist == Settings.activePlaylist) Settings.activePlaylist = null;
 			} else {
 				// Remove files from playlist
 				playlist.Files.Remove (file);
@@ -610,8 +625,8 @@ public class Playlist : MonoBehaviour {
 					buttonOK.onClick.AddListener (delegate {
 
 						// Update playlist objects
-						if (Settings.playlist != null && Settings.playlist.Equals (playlist)) {
-							Settings.playlist.Name = inputText.text;
+						if (Settings.activePlaylist != null && Settings.activePlaylist.Equals (playlist)) {
+							Settings.activePlaylist.Name = inputText.text;
 						}
 						playlist.Name = inputText.text;
 
