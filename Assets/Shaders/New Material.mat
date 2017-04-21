@@ -133,13 +133,13 @@ Material:
       second: {r: 1, g: 1, b: 1, a: 1}
     - first:
         name: _ColorTint
-      second: {r: 0.072, g: 1, b: 1, a: 1}
+      second: {r: 0.9310727, g: 1, b: 0.074117675, a: 1}
     - first:
         name: _EmissionColor
       second: {r: 0.18009673, g: 0.02906899, b: 0.49588227, a: 1}
     - first:
         name: _RimColor
-      second: {r: 1, g: 0.037931025, b: 0.037931025, a: 1}
+      second: {r: 0.81433076, g: 0.9485294, b: 0.035978694, a: 1}
     - first:
         name: _SpecColor
       second: {r: 0.2, g: 0.2, b: 0.2, a: 1}
