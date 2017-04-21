@@ -3,14 +3,16 @@ using System.Collections;
 
 public class VisualizationObj {
 
-	public long ID { get; set; }
+	public int Id { get; set; }
 	public string Name { get; set; }
 	public Color[] ColorSchemes { get; set; }
+    public int VizId { get; set; }
 
 	public VisualizationObj ()
 	{
-		ID = 0;
+		Id = 0;
 		Name = "";
-		ColorSchemes = new Color[] { };
+		ColorSchemes = new Color[]{};
+        VizId = 0;
 	}
 }

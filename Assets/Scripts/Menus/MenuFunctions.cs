@@ -114,4 +114,52 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
 	}
+
+    // gets the current selected color from the picker
+    public static int num2;
+    public static Color color;
+    public void GetColor()
+    {
+        color = HexColorField.ColorGet;
+        GameObject obj = GameObject.Find("ColorPicker");
+        obj.SetActive(false);
+
+    }
+
+    // gets the current selected lvl
+    public void GetLvl()
+    {
+        if (ColorShow.VizId != 0)
+        {
+            Application.LoadLevel(ColorShow.VizId);
+        }
+
+    }
+
+    public static string stri = "";
+    public static int num = 0;
+
+    public void GetData(string s)
+    {
+        stri = s;
+        GameObject ob = GameObject.Find("BackgroundImg");
+        ob.SetActive(false);
+    }
+
+    public static string viz = "";
+    public static List<DataObj> cloneList;
+
+    public void GetViz(string o)
+    {
+
+        if (o != "")
+        {
+            viz = o;
+        }
+        else
+        {
+            viz = null;
+        }
+
+    }
 }
