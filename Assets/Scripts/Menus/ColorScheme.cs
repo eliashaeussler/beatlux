@@ -40,16 +40,16 @@ public class ColorScheme : MonoBehaviour {
 			// Load color schemes from database
 			Load ();
 
+			// Remove all GameObjects
+			for (int i = transform.childCount - 1; i >= 0; i--) {
+				GameObject.DestroyImmediate (transform.GetChild (i).gameObject);
+			}
+
 			if (ColorSchemes != null && ColorSchemes.Count > 0)
 			{
 				// Set opened color scheme
 				if (Settings.OpenedColorScheme == null && Settings.ActiveColorScheme != null) {
 					Settings.OpenedColorScheme = Settings.ActiveColorScheme;
-				}
-
-				// Remove all GameObjects
-				for (int i = transform.childCount - 1; i >= 0; i--) {
-					GameObject.DestroyImmediate (transform.GetChild (i).gameObject);
 				}
 
 				foreach (ColorSchemeObj cs in ColorSchemes)
