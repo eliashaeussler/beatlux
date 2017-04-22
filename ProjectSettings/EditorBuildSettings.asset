@@ -8,9 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menus/MainMenu.unity
   - enabled: 1
-    path: Assets/Scenes/Menus/Musikauswahl.unity
+    path: Assets/Scenes/Menus/MusicMenu.unity
   - enabled: 1
-    path: Assets/Scenes/Menus/VisEinstellen.unity
+    path: Assets/Scenes/Menus/VizMenu.unity
   - enabled: 1
     path: Assets/Scenes/Visualizations/Divided.unity
   - enabled: 1

@@ -8,25 +8,52 @@ using System.Threading;
 using System.Linq;
 
 public class MenuFunctions : MonoBehaviour {
-    
-	public static List<String> searchDirs;
-	public static List<String> searchFiles;
-	public static bool Searching;
 
+	public static List<String> sDirs;
+	public static List<String> sFiles;
+	public static bool Searching;
 	private BackgroundThread thread;
 
+	public static List<VisualizationObj> tempViz;
 
 
-	public void StartLevel (int level) {
-        SceneManager.LoadScene (level);
+
+	public void StartLevel (int level)
+	{
+		if (Application.CanStreamedLevelBeLoaded (level)) {
+			SceneManager.LoadScene (level);
+		}
     }
+
+	public void StartVisualization ()
+	{
+		// Set active elements
+		Settings.ActivePlaylist = Settings.OpenedPlaylist;
+		Settings.ActiveVisualization = Settings.OpenedVisualization;
+		Settings.ActiveColorScheme = Settings.OpenedColorScheme;
+
+		// Reset opened elements
+		Settings.OpenedPlaylist = null;
+		Settings.OpenedVisualization = null;
+		Settings.OpenedColorScheme = null;
+
+		// Start visualization level
+		if (Settings.ActiveVisualization != null && Application.CanStreamedLevelBeLoaded (Settings.ActiveVisualization.BuildNumber)) {
+			StartLevel (Settings.ActiveVisualization.BuildNumber);
+		} else {
+			StartLevel (Settings.Visualizations.First ().BuildNumber);
+		}
+	}
 		
-    public void Quit ()
-    {
+    public void Quit () {
 		Application.Quit ();
     }
 
-	public void GetInput (string s)
+
+
+	//-- FILE SEARCH
+
+	public void SearchFiles (string s)
     {
 		Searching = s.Length > 0;
 
@@ -39,8 +66,8 @@ public class MenuFunctions : MonoBehaviour {
         else
         {
 			// Reset results
-			searchDirs = new List<String> ();
-			searchFiles = new List<String> ();
+			sDirs = new List<String> ();
+			sFiles = new List<String> ();
 
 			// Dispose current thread
 			if (thread != null && thread.IsBusy) {
@@ -61,7 +88,7 @@ public class MenuFunctions : MonoBehaviour {
 
 				// Display search results
 				MainThreadDispatcher.Instance ().Enqueue (delegate {
-					SourceFolder.Display (searchDirs, searchFiles, true);
+					SourceFolder.Display (sDirs, sFiles, true);
 				});
 
 				// Hide progress
@@ -78,13 +105,13 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		// Get results
 		string path = Settings.CurrentPath;
-		Search (path, pattern);
+		FileSearch (path, pattern);
 	}
 
-	private void Search (string folder, string pattern)
+	private void FileSearch (string folder, string pattern)
 	{
 		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
-			searchDirs.Add (folder);
+			sDirs.Add (folder);
 		}
 
 		// Get files
@@ -96,7 +123,7 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Add file if file name contains pattern
 		foreach (string file in files) {
-			searchFiles.Add (file);
+			sFiles.Add (file);
 		}
 
 		// Get directories
@@ -106,60 +133,31 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Jump into sub directory
 		foreach (string dir in dirs) {
-			Search (dir, pattern);
+			FileSearch (dir, pattern);
 		}
 	}
 
-	public void HideProgress ()
-	{
+	public void HideProgress () {
 		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
 	}
 
-    // gets the current selected color from the picker
-    public static int num2;
-    public static Color color;
-    public void GetColor()
-    {
-        color = HexColorField.ColorGet;
-        GameObject obj = GameObject.Find("ColorPicker");
-        obj.SetActive(false);
 
-    }
 
-    // gets the current selected lvl
-    public void GetLvl()
-    {
-        if (ColorShow.VizId != 0)
-        {
-            Application.LoadLevel(ColorShow.VizId);
-        }
+	//-- VISUALIZATION SEARCH
 
-    }
+	public void SearchVisualizations (string s)
+	{
+		// Get Visualization object
+		Visualization viz = GameObject.Find ("VizContent").GetComponent<Visualization> ();
 
-    public static string stri = "";
-    public static int num = 0;
+		// Do search or reset
+		if (s.Length > 0) {
+			viz.Visualizations = tempViz.Where (x => x.Name.IndexOf (s, StringComparison.OrdinalIgnoreCase) >= 0).ToList ();
+		} else {
+			viz.Visualizations = tempViz;
+		}
 
-    public void GetData(string s)
-    {
-        stri = s;
-        GameObject ob = GameObject.Find("BackgroundImg");
-        ob.SetActive(false);
-    }
-
-    public static string viz = "";
-    public static List<DataObj> cloneList;
-
-    public void GetViz(string o)
-    {
-
-        if (o != "")
-        {
-            viz = o;
-        }
-        else
-        {
-            viz = null;
-        }
-
-    }
+		// Display visualizations
+		viz.Display ();
+	}
 }

@@ -47,6 +47,11 @@ public class Dialog : MonoBehaviour {
 		return null;
 	}
 
+	public Text GetInputText ()
+	{
+		return inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();;
+	}
+
 	public Text GetText (string content)
 	{
 		if (dialog != null && wrapper != null && text != null)

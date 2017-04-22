@@ -52,7 +52,7 @@ public class SourceFolder : MonoBehaviour {
 
 	public static void Display (List<string> Directories, List<string> Files, bool FromSearch)
 	{
-		// deletes all previous created objects
+		// Delete all previous created GameObjects
 		DestroyAll ();
 
 		// Scroll to top
@@ -63,34 +63,35 @@ public class SourceFolder : MonoBehaviour {
 		int lastDirectory = results.Count;
 		results.AddRange (Files);
 
+		// Get current GameObject
 		GameObject gameObject = GameObject.Find ("FileContent");
-		GameObject folderObject;
 
-		// for each folder and file an object is created
+		// Create item for ech entry in results
 		foreach (string item in results)
 		{
 			// Test if item is directory
 			bool isDir = Directory.Exists (item);
 
-			// creates a gameobject with a recttransform to position it
-			folderObject = new GameObject (item);
-			folderObject.transform.SetParent (gameObject.transform);
+			// Create GameObject
+			GameObject obj = new GameObject (item);
+			obj.transform.SetParent (gameObject.transform);
 
-			RectTransform trans = folderObject.AddComponent<RectTransform> ();
+			RectTransform trans = obj.AddComponent<RectTransform> ();
 			trans.pivot = new Vector2 (0, 0.5f);
 
 			// Add Layout Element
-			LayoutElement layoutElement = folderObject.AddComponent<LayoutElement> ();
+			LayoutElement layoutElement = obj.AddComponent<LayoutElement> ();
 			layoutElement.minHeight = 30;
 			layoutElement.preferredHeight = 30;
 
 			// Add Drag Handler
-			if (!isDir) folderObject.AddComponent<DragHandler> ();
+			if (!isDir) obj.AddComponent<DragHandler> ();
 
-			// creates and adds an button so the text is clickable
-			Button button = folderObject.AddComponent<Button> ();
+			// Add Button
+			Button button = obj.AddComponent<Button> ();
 			button.transition = Selectable.Transition.Animation;
 
+			// Add OnClick Handler
 			string currentItem = item;
 			if (isDir)
 			{
@@ -103,7 +104,7 @@ public class SourceFolder : MonoBehaviour {
 				button.onClick.AddListener (delegate {
 
 					// Get reference to playlist object
-					Playlist pl = Camera.main.GetComponent <Playlist> ();
+					Playlist pl = GameObject.Find ("PlaylistContent").GetComponent <Playlist> ();
 
 					// Get file object if available
 					FileObj file = pl.GetFile (currentItem);
@@ -113,12 +114,12 @@ public class SourceFolder : MonoBehaviour {
 				});
 			}
 
-			// Add animator
-			Animator animator = folderObject.AddComponent<Animator> ();
+			// Add Animator
+			Animator animator = obj.AddComponent<Animator> ();
 			animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 
-			// adds a text to the gameobjects which is filled and modified 
-			Text text = folderObject.AddComponent<Text> ();
+			// Add Text
+			Text text = obj.AddComponent<Text> ();
 			text.color = Color.white;
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.text = Path.GetFileName (item);

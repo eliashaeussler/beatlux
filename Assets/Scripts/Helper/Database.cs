@@ -17,17 +17,18 @@ using System.Collections.Generic;
 /// </summary>
 public class Database {
 
-	// Class instance
-	private static Database instance;
-
 	// Database name
-	private static string name = "beatlux";
+	private static string NAME = "beatlux.db";
 
-	// Database extension
-	private static string ext = "db";
+	// Class instance
+	private static Database Instance;
 
 	// Database connection
-	static SqliteConnection con;
+	public static SqliteConnection Connection;
+
+	//
+
+
 
 	// Enums for error handling
 	public enum Constants : long
@@ -42,44 +43,47 @@ public class Database {
 	private Database ()
 	{
 		// Path to database
-		string uri = "Data Source=" + Application.dataPath + "/" + name + "." + ext;
+		string uri = "Data Source=" + Application.dataPath + "/" + NAME;
 
 		// Connect to database
-		con = Connect (uri);
+		Connection = Connect (uri);
 	}
 
 	// Connect to dataabse
 	private SqliteConnection Connect (string uri)
 	{
 		// Connect to database
-		con = new SqliteConnection (uri);
+		Connection = new SqliteConnection (uri);
 
 		// Open database connection
-		con.Open();
+		Connection.Open ();
 
-		return con;
+		return Connection;
 	}
 
 	// Close database connection
 	public static void Close ()
 	{
 		// Close connection to database
-		if (con != null) {
-			con.Close ();
+		if (Connection != null) {
+			Connection.Close ();
 		}
 
 		// Reset instance
-		instance = null;
+		Instance = null;
+
+		// Reset database instance
+		Connection = null;
 	}
 
 	public static void CreateTables ()
 	{
 		// SQL statements
 		string[] stm = {
-			"CREATE TABLE IF NOT EXISTS \"file\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT NOT NULL UNIQUE )",
-			"CREATE TABLE IF NOT EXISTS \"playlist\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `files` TEXT DEFAULT NULL )",
-			"CREATE TABLE IF NOT EXISTS \"visualization\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `buildNumber` INTEGER UNIQUE )",
-			"CREATE TABLE IF NOT EXISTS \"color_scheme\" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `viz_id` INTEGER, `colors` TEXT, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
+			"CREATE TABLE IF NOT EXISTS `file` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT NOT NULL UNIQUE )",
+			"CREATE TABLE IF NOT EXISTS `playlist` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `files` TEXT DEFAULT NULL )",
+			"CREATE TABLE IF NOT EXISTS `visualization` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `colors` INTEGER NOT NULL DEFAULT 1, `buildNumber` INTEGER UNIQUE )",
+			"CREATE TABLE IF NOT EXISTS `color_scheme` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `viz_id` INTEGER, `colors` TEXT NOT NULL, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
 		};
 
 		// Create tables
@@ -87,7 +91,7 @@ public class Database {
 		{
 			foreach (string sql in stm)
 			{
-				SqliteCommand cmd = new SqliteCommand (sql, con);
+				SqliteCommand cmd = new SqliteCommand (sql, Connection);
 				cmd.ExecuteNonQuery ();
 				cmd.Dispose ();
 			}
@@ -100,12 +104,23 @@ public class Database {
 	public static SqliteConnection GetConnection ()
 	{
 		// Create instance if not exists
-		if (instance == null) {
-			instance = new Database ();
+		if (Instance == null) {
+			Instance = new Database ();
 			CreateTables ();
 		}
 
 		// Return database connection
-		return con;
+		return Connection;
+	}
+
+
+
+	public static bool Connect ()
+	{
+		if (Connection == null) {
+			Connection = Database.GetConnection ();
+		}
+
+		return Connection != null;
 	}
 }

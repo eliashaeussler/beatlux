@@ -7,7 +7,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 	public void OnDrop (PointerEventData eventData)
 	{
 		// Get reference to playlist object
-		Playlist pl = Camera.main.GetComponent <Playlist> ();
+		Playlist pl = GameObject.Find ("PlaylistContent").GetComponent <Playlist> ();
 
 		// Get file path
 		string dir = DragHandler.item.name;
@@ -26,9 +26,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 			}
 
 			bool added = pl.AddFile (file, playlist);
-			if (added) {
-				pl.ToggleFiles (playlist, true);
-			}
+			pl.ToggleFiles (playlist, true);
 		}
 	}
 }

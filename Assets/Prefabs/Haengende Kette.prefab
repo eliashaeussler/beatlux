@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010411142082}
   m_Layer: 0
-  m_Name: "H\xE4ngende Kette"
+  m_Name: Haengende Kette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

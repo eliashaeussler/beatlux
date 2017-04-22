@@ -3,16 +3,33 @@ using System.Collections;
 
 public class VisualizationObj {
 
-	public int Id { get; set; }
+	public long ID { get; set; }
 	public string Name { get; set; }
-	public Color[] ColorSchemes { get; set; }
-    public int VizId { get; set; }
+	public int Colors { get; set; }
+	public int BuildNumber { get; set; }
 
 	public VisualizationObj ()
 	{
-		Id = 0;
+		ID = 0;
 		Name = "";
-		ColorSchemes = new Color[]{};
-        VizId = 0;
+		Colors = 0;
+		BuildNumber = -1;
+	}
+
+	public VisualizationObj (string Name, int Colors, int BuildNumber)
+	{
+		this.ID = 0;
+		this.Name = Name;
+		this.Colors = Colors;
+		this.BuildNumber = BuildNumber;
+	}
+
+	public override bool Equals (object obj)
+	{
+		VisualizationObj rhs = (VisualizationObj) obj;
+		return rhs != null
+			&& this.Name == rhs.Name
+			&& this.Colors == rhs.Colors
+			&& this.BuildNumber == rhs.BuildNumber;
 	}
 }

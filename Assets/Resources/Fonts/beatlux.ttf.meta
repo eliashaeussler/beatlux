@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 68cf1afac7b58480d83a332837be8544
-timeCreated: 1491992370
+guid: 28a7c3dddfd3d416c873ff95a924f785
+timeCreated: 1492790506
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -11,7 +11,8 @@ TrueTypeFontImporter:
   includeFontData: 1
   fontNames:
   - beatlux
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 68cf1afac7b58480d83a332837be8544, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
