@@ -8,6 +8,7 @@ TagManager:
   - Bass
   - Hexes
   - Light
+  - LightDone
   layers:
   - Default
   - TransparentFX

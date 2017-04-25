@@ -17,9 +17,9 @@ public class KetteVersuch : MonoBehaviour
     //public int numberOfChains = 4; // number of chains that are generated
     //public int numberOfCubes; //int to display the total number of cubes
 
-    public GameObject[] ketAr; // array to save the cubes
+    public GameObject[][] ketAr; // array to save the cubes
     public GameObject[] cubes;
-    public GameObject[] haengAr;
+    public GameObject[][] haengAr;
     public int[] randSpec;  //array to save the random Range of Spectrum
 
     //Color color = new Color(0,0,1,1); // a color(test)
@@ -31,6 +31,9 @@ public class KetteVersuch : MonoBehaviour
 
     void Start()
     {
+        
+        ketAr = new GameObject[numKetten][];
+        haengAr = new GameObject[numHaenger][];
         //numberOfCubes = numberOfChains * numberOfObjects;
 
         /**
@@ -43,10 +46,22 @@ public class KetteVersuch : MonoBehaviour
 
         for (int i = 0; i < numKetten; i++)
         {
-                int posX = Random.Range(0, 200);
-                int posZ = Random.Range(0, 200);
-                Vector3 pos = new Vector3(posX, -10, posZ);
-                Instantiate(ketten, pos, Quaternion.identity);    
+            int posX = Random.Range(0, 200);
+            int posZ = Random.Range(0, 200);
+            Vector3 pos = new Vector3(posX, -10, posZ);
+            Instantiate(ketten, pos, Quaternion.identity);
+            GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+            for (int j = 0; j < lichter.Length; j++)
+            {
+
+                lichter[j].tag = "LightDone";
+                
+
+            }
+            ketAr[i] = lichter;
+            Debug.Log(ketAr[i].Length);
+
+
         }
 
 
@@ -56,10 +71,20 @@ public class KetteVersuch : MonoBehaviour
             int posZ = Random.Range(0, 200);
             Vector3 pos = new Vector3(posX, 20, posZ);
             Instantiate(haenger, pos, Quaternion.identity);
+            GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+            for (int j = 0; j < lichter.Length; j++)
+            {
+
+                lichter[j].tag = "LightDone";
+
+
+            }
+            haengAr[i] = lichter;
+            Debug.Log(haengAr[i].Length);
         }
 
         //save created cubes in array "cubes"
-        cubes = GameObject.FindGameObjectsWithTag("Light");
+        cubes = GameObject.FindGameObjectsWithTag("LightDone");
         //instantiate rndSpec with the length of "cubes"
         randSpec = new int[cubes.Length];
        
