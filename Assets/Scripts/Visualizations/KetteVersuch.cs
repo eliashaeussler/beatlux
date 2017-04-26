@@ -22,7 +22,13 @@ public class KetteVersuch : MonoBehaviour
     public GameObject[][] haengAr;
     public int[] randSpec;  //array to save the random Range of Spectrum
 
-    //Color color = new Color(0,0,1,1); // a color(test)
+    //Color color = new Color(0,0,1,1)
+
+    Color color1 = new Color (1,0,0,1);
+    Color color2 = new Color (0,1,0,1);
+    Color color3 = new Color (0,0,1,1);
+    Color color4 = new Color (1,1,0,1);
+    Color color5 = new Color (0,1,1,1);
 
     int randomSpec; //int for Spectrum
 
@@ -48,9 +54,104 @@ public class KetteVersuch : MonoBehaviour
         {
             int posX = Random.Range(0, 200);
             int posZ = Random.Range(0, 200);
+            int random = Random.Range(1, 5);
             Vector3 pos = new Vector3(posX, -10, posZ);
             Instantiate(ketten, pos, Quaternion.identity);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+
+
+            //random Farbvergabe fuer Lichter
+            if (random == 1)
+            {
+                for(int j = 0; j < lichter.Length; j++)
+                {
+                    if(j%2 == 0 || j == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
+                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
+                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                    }
+                }
+            }
+
+            if (random == 2)
+            {
+                for(int j = 0; j <lichter.Length; j++)
+                {
+                    if(j%2 == 0 || j == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
+                        lichter[j].GetComponent<Light>().color = color3 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
+                        lichter[j].GetComponent<Light>().color = color4 * 3;
+                    }
+                }
+            }
+
+            if (random == 3)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
+                    lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
+                    lichter[j].GetComponent<Light>().color = color5 * 3;
+                }
+            }
+
+            if (random == 4)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    int rand = Random.Range(0, 5);
+
+                    if(rand == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
+                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                    }
+                    else if (rand == 1)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
+                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                    }
+                    else if (rand == 2)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
+                        lichter[j].GetComponent<Light>().color = color3 * 3;
+                    }
+                    else if(rand == 3)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
+                        lichter[j].GetComponent<Light>().color = color4 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
+                        lichter[j].GetComponent<Light>().color = color5 * 3;
+                    }
+                }
+
+            }
+
+            Debug.Log(random);
+
+
             for (int j = 0; j < lichter.Length; j++)
             {
 
@@ -65,13 +166,113 @@ public class KetteVersuch : MonoBehaviour
         }
 
 
+
+
+
+
+
+
+
         for (int i = 0; i < numHaenger; i++)
         {
             int posX = Random.Range(0, 200);
             int posZ = Random.Range(0, 200);
+            int random = Random.Range(1, 5);
             Vector3 pos = new Vector3(posX, 20, posZ);
             Instantiate(haenger, pos, Quaternion.identity);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+
+            //random Farbvergabe fuer Lichter
+            if (random == 1)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    if (j % 2 == 0 || j == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
+                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
+                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                    }
+                }
+            }
+
+            if (random == 2)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    if (j % 2 == 0 || j == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
+                        lichter[j].GetComponent<Light>().color = color3 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
+                        lichter[j].GetComponent<Light>().color = color4 * 3;
+                    }
+                }
+            }
+
+            if (random == 3)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
+                    lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
+                    lichter[j].GetComponent<Light>().color = color5 * 3;
+                }
+            }
+
+            if (random == 4)
+            {
+                for (int j = 0; j < lichter.Length; j++)
+                {
+                    int rand = Random.Range(0, 5);
+
+                    if (rand == 0)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
+                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                    }
+                    else if (rand == 1)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
+                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                    }
+                    else if (rand == 2)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
+                        lichter[j].GetComponent<Light>().color = color3 * 3;
+                    }
+                    else if (rand == 3)
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
+                        lichter[j].GetComponent<Light>().color = color4 * 3;
+                    }
+                    else
+                    {
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
+                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
+                        lichter[j].GetComponent<Light>().color = color5 * 3;
+                    }
+                }
+
+            }
+
+            Debug.Log(random);
+
             for (int j = 0; j < lichter.Length; j++)
             {
 
