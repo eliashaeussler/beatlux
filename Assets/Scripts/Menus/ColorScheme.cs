@@ -23,12 +23,16 @@ public class ColorScheme : MonoBehaviour {
 
 	// Current selected color
 	public static GameObject ActiveColor;
+	public static int ActiveColorID;
 
 
 
 	void Start ()
 	{
-		// Started by Visualization.cs
+		// Add listener for Color Picker
+		PickerObj.onValueChanged.AddListener (col => {
+			UpdateColor (Settings.OpenedColorScheme, ActiveColorID, col);
+		});
 	}
 
 
@@ -372,20 +376,13 @@ public class ColorScheme : MonoBehaviour {
 				
 				// Set active color
 				ActiveColor = image;
+				ActiveColorID = id;
 
 				// Set current color
 				PickerObj.CurrentColor = colorScheme.Colors [id];
 
-				// Remove alle event handlers
-				PickerObj.onValueChanged.RemoveAllListeners ();
-
 				// Show color picker
 				ColorPicker.SetActive (true);
-
-				// Add event handler
-				PickerObj.onValueChanged.AddListener (col => {
-					UpdateColor (colorScheme, id, col);
-				});
 
 			});
 		}
