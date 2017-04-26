@@ -28,20 +28,32 @@ public class MenuFunctions : MonoBehaviour {
 	public void StartVisualization ()
 	{
 		// Set active elements
-		Settings.ActivePlaylist = Settings.OpenedPlaylist;
-		Settings.ActiveVisualization = Settings.OpenedVisualization;
-		Settings.ActiveColorScheme = Settings.OpenedColorScheme;
+		if (Settings.Opened.Playlist != null) Settings.Active.Playlist = Settings.Opened.Playlist;
+		if (Settings.Opened.Visualization != null) Settings.Active.Visualization = Settings.Opened.Visualization;
+		if (Settings.Opened.ColorScheme != null) Settings.Active.ColorScheme = Settings.Opened.ColorScheme;
 
 		// Reset opened elements
-		Settings.OpenedPlaylist = null;
-		Settings.OpenedVisualization = null;
-		Settings.OpenedColorScheme = null;
+		Settings.Opened.Playlist = null;
+		Settings.Opened.Visualization = null;
+		Settings.Opened.ColorScheme = null;
+
+		// Set default visualization
+		if (Settings.Active.Visualization == null) {
+			Settings.Active.Visualization = Settings.Defaults.Visualization;
+		}
+
+		// Set default color scheme
+		if (Settings.Active.ColorScheme == null && Settings.Active.Visualization != null) {
+			Settings.Active.ColorScheme = GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().GetDefault ();
+		}
 
 		// Start visualization level
-		if (Settings.ActiveVisualization != null && Application.CanStreamedLevelBeLoaded (Settings.ActiveVisualization.BuildNumber)) {
-			StartLevel (Settings.ActiveVisualization.BuildNumber);
+		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber)) {
+			StartLevel (Settings.Active.Visualization.BuildNumber);
+		} else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber)) {
+			StartLevel (Settings.Defaults.Visualization.BuildNumber);
 		} else {
-			StartLevel (Settings.Visualizations.First ().BuildNumber);
+			// TODO dialog
 		}
 	}
 		
@@ -104,7 +116,7 @@ public class MenuFunctions : MonoBehaviour {
 	private void GetResults (string pattern)
 	{
 		// Get results
-		string path = Settings.CurrentPath;
+		string path = Settings.Source.Current;
 		FileSearch (path, pattern);
 	}
 

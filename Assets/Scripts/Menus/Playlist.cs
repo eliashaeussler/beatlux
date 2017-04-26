@@ -26,8 +26,8 @@ public class Playlist : MonoBehaviour {
 		Load ();
 
 		// Set opened playlist
-		if (Settings.OpenedPlaylist == null && Settings.ActivePlaylist != null) {
-			Settings.OpenedPlaylist = Settings.ActivePlaylist;
+		if (Settings.Opened.Playlist == null && Settings.Active.Playlist != null) {
+			Settings.Opened.Playlist = Settings.Active.Playlist;
 		}
 
 		// Display playlists
@@ -57,7 +57,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Hide playlist files
-			if (transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.OpenedPlaylist))
+			if (transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.Opened.Playlist))
 				transform.Find ("#" + p.ID + "/Contents").gameObject.SetActive (false);
 		}
 	}
@@ -136,6 +136,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 
+
 			// Set GameObject for return
 			GameObject goReturn = gameObject;
 
@@ -183,7 +184,7 @@ public class Playlist : MonoBehaviour {
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
 
 			if (file == null) {
-				mainTextArrow.text = playlist.Equals (Settings.OpenedPlaylist)
+				mainTextArrow.text = playlist.Equals (Settings.Opened.Playlist)
 					? IconFont.DROPDOWN_OPENED
 					: IconFont.DROPDOWN_CLOSED;
 			}
@@ -207,7 +208,7 @@ public class Playlist : MonoBehaviour {
 			// Add text
 			TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
 
-			if (playlist.Equals (Settings.ActivePlaylist) && (file == null || (file != null && file.Equals (Settings.ActiveFile))))
+			if (playlist.Equals (Settings.Active.Playlist) && (file == null || (file != null && file.Equals (Settings.Active.File))))
 			{
 				mainTextListening.text = IconFont.LISTENING;
 				mainTextListening.fontSize = 30;
@@ -244,7 +245,7 @@ public class Playlist : MonoBehaviour {
 			// Set text color
 			if (file == null) {
 				text.color = Color.white;
-			} else if (playlist.Equals (Settings.ActivePlaylist) && file.Equals (Settings.ActiveFile)) {
+			} else if (playlist.Equals (Settings.Active.Playlist) && file.Equals (Settings.Active.File)) {
 				text.color = new Color (0.7f, 0.7f, 0.7f);
 			} else {
 				text.color = Color.gray;
@@ -267,7 +268,7 @@ public class Playlist : MonoBehaviour {
 
 
 			// Add listening element
-			if (file == null && playlist.Equals (Settings.ActivePlaylist))
+			if (file == null && playlist.Equals (Settings.Active.Playlist))
 				mainListening.transform.SetParent (main.transform);
 
 
@@ -412,7 +413,7 @@ public class Playlist : MonoBehaviour {
 		{
 			// Set playlist as active playlist
 			if (!forceOpen)
-				Settings.OpenedPlaylist = playlist;
+				Settings.Opened.Playlist = playlist;
 
 			// Show or hide playlist files
 			bool opened = false;
@@ -456,7 +457,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Set opened playlist
-			Settings.OpenedPlaylist = opened ? playlist : null;
+			Settings.Opened.Playlist = opened ? playlist : null;
 
 			// Scroll to top if scrollbar is hidden
 			ScrollToTop ();
@@ -505,8 +506,8 @@ public class Playlist : MonoBehaviour {
 				Playlists.Remove (playlist);
 
 				// Unset active and opened playlist
-				if (playlist.Equals (Settings.ActivePlaylist)) Settings.ActivePlaylist = null;
-				if (playlist.Equals (Settings.OpenedPlaylist)) Settings.OpenedPlaylist = null;
+				if (playlist.Equals (Settings.Active.Playlist)) Settings.Active.Playlist = null;
+				if (playlist.Equals (Settings.Opened.Playlist)) Settings.Opened.Playlist = null;
 			} else {
 				// Remove files from playlist
 				playlist.Files.Remove (file);
@@ -651,8 +652,8 @@ public class Playlist : MonoBehaviour {
 					buttonOK.onClick.AddListener (delegate {
 
 						// Update playlist objects
-						if (Settings.ActivePlaylist != null && Settings.ActivePlaylist.Equals (playlist)) {
-							Settings.ActivePlaylist.Name = inputText.text;
+						if (Settings.Active.Playlist != null && Settings.Active.Playlist.Equals (playlist)) {
+							Settings.Active.Playlist.Name = inputText.text;
 						}
 						playlist.Name = inputText.text;
 

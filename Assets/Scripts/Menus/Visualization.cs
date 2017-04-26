@@ -14,6 +14,9 @@ public class Visualization : MonoBehaviour {
 	// Color schemes
     public List<VisualizationObj> Visualizations = new List<VisualizationObj> ();
 
+	// Color scheme object
+	public ColorScheme ColorSchemes;
+
 
 
 	void Start ()
@@ -25,15 +28,15 @@ public class Visualization : MonoBehaviour {
 		Load ();
 
 		// Set opened visualization
-		if (Settings.OpenedVisualization == null && Settings.ActiveVisualization != null) {
-			Settings.OpenedVisualization = Settings.ActiveVisualization;
+		if (Settings.Opened.Visualization == null && Settings.Active.Visualization != null) {
+			Settings.Opened.Visualization = Settings.Active.Visualization;
 		}
 
 		// Display visualizations
 		Display ();
 
 		// Display color schemes
-		GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().Display ();
+		ColorSchemes.Display ();
 
         // Close database connection
         Database.Close ();
@@ -77,7 +80,7 @@ public class Visualization : MonoBehaviour {
 
 				// Add text
 				TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-				mainTextArrow.text = viz.Equals (Settings.OpenedVisualization) ? IconFont.DROPDOWN_CLOSED : "";
+				mainTextArrow.text = viz.Equals (Settings.Opened.Visualization) ? IconFont.DROPDOWN_CLOSED : "";
 
 				// Set text alignment
 				mainTextArrow.alignment = TextAnchor.MiddleLeft;
@@ -110,9 +113,9 @@ public class Visualization : MonoBehaviour {
 				VisualizationObj currentViz = viz;
 				button.onClick.AddListener (delegate {
 
-					Settings.OpenedVisualization = currentViz;
-					Settings.OpenedColorScheme = null;
-					GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().Display ();
+					Settings.Opened.Visualization = currentViz;
+					Settings.Opened.ColorScheme = null;
+					ColorSchemes.Display ();
 					Display ();
 
 				});
@@ -129,7 +132,7 @@ public class Visualization : MonoBehaviour {
 				// Add text
 				TextUnicode mainTextActive = mainActive.AddComponent<TextUnicode> ();
 
-				if (viz.Equals (Settings.ActiveVisualization))
+				if (viz.Equals (Settings.Active.Visualization))
 				{
 					mainTextActive.text = IconFont.VISUALIZATION;
 					mainTextActive.fontSize = 30;

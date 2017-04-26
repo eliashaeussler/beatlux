@@ -22,28 +22,28 @@ public class SourceFolder : MonoBehaviour {
 	void Start ()
 	{
 		// Set main path
-		Settings.MainPath = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
+		Settings.Source.Main = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
 
 		// Set current path
-		if (Settings.CurrentPath == null) Settings.CurrentPath = Settings.MainPath;
+		if (Settings.Source.Current == null) Settings.Source.Current = Settings.Source.Main;
 
 		// Display files and folders for main path
-		Initialize (Directory.Exists (Settings.CurrentPath) ? Settings.CurrentPath : Settings.MainPath);
+		Initialize (Directory.Exists (Settings.Source.Current) ? Settings.Source.Current : Settings.Source.Main);
 	}
 
 	public static void Initialize ()
 	{
-		Initialize (Settings.CurrentPath ?? Settings.MainPath);
+		Initialize (Settings.Source.Current ?? Settings.Source.Main);
 	}
 
 	public static void Initialize (string Path)
 	{
 		// path and objects are initialised
-		Settings.CurrentPath = Path;
+		Settings.Source.Current = Path;
 
 		// Get files and folders
-		List<string> directories = GetDirs (Settings.CurrentPath);
-		List<string> files = GetFiles (Settings.CurrentPath);
+		List<string> directories = GetDirs (Settings.Source.Current);
+		List<string> files = GetFiles (Settings.Source.Current);
 
 		// Show files and folders
 		Display (directories, files, false);
@@ -132,10 +132,10 @@ public class SourceFolder : MonoBehaviour {
 		// Get user folder
 		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 
-		if (!Path.Equals (userPath, Settings.CurrentPath))
+		if (!Path.Equals (userPath, Settings.Source.Current))
 		{
 			// Get new path
-			string path = Path.GetFullPath (Path.Combine (Settings.CurrentPath, @".."));
+			string path = Path.GetFullPath (Path.Combine (Settings.Source.Current, @".."));
 
 			// Display file contents
 			Initialize (path);

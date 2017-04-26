@@ -12,12 +12,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menus/VizMenu.unity
   - enabled: 1
-    path: Assets/Scenes/Visualizations/Divided.unity
+    path: Assets/Scenes/Visualizations/LogoVisualisation.unity
   - enabled: 1
     path: Assets/Scenes/Visualizations/Hexagons.unity
   - enabled: 1
     path: Assets/Scenes/Visualizations/Kette.unity
-  - enabled: 1
-    path: Assets/Scenes/Visualizations/LogoVisualisation.unity
   - enabled: 1
     path: Assets/Scenes/Visualizations/Spectrum.unity

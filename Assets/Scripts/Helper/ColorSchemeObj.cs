@@ -22,9 +22,17 @@ public class ColorSchemeObj {
 		this.Visualization = Visualization;
 		ID = 0;
 
-		Colors = new Color [Visualization.Colors];
-		for (int i = 0; i < Colors.Length; i++)
-			Colors [i] = Color.white;
+		// Set colors
+		if (Settings.Defaults.Colors.ContainsKey (Visualization.Name))
+		{
+			Colors = Settings.Defaults.Colors [Visualization.Name];
+		}
+		else
+		{
+			Colors = new Color [Visualization.Colors];
+			for (int i = 0; i < Colors.Length; i++)
+				Colors [i] = Color.white;
+		}
 	}
 
 	public override bool Equals (object obj)

@@ -31,7 +31,7 @@ public class ColorScheme : MonoBehaviour {
 	{
 		// Add listener for Color Picker
 		PickerObj.onValueChanged.AddListener (col => {
-			UpdateColor (Settings.OpenedColorScheme, ActiveColorID, col);
+			UpdateColor (Settings.Opened.ColorScheme, ActiveColorID, col);
 		});
 	}
 
@@ -41,21 +41,24 @@ public class ColorScheme : MonoBehaviour {
 	{
 		if (Database.Connect ())
 		{
-			// Load color schemes from database
-			Load ();
-
 			// Remove all GameObjects
 			for (int i = transform.childCount - 1; i >= 0; i--) {
 				GameObject.DestroyImmediate (transform.GetChild (i).gameObject);
 			}
 
+			// Set opened color scheme
+			if (Settings.Opened.ColorScheme == null && Settings.Active.ColorScheme != null) {
+				Settings.Opened.ColorScheme = Settings.Active.ColorScheme;
+			}
+
+			// Insert default color scheme
+			InsertDefault ();
+
+			// Load color schemes from database
+			Load ();
+
 			if (ColorSchemes != null && ColorSchemes.Count > 0)
 			{
-				// Set opened color scheme
-				if (Settings.OpenedColorScheme == null && Settings.ActiveColorScheme != null) {
-					Settings.OpenedColorScheme = Settings.ActiveColorScheme;
-				}
-
 				foreach (ColorSchemeObj cs in ColorSchemes)
 				{
 					// Display color scheme
@@ -67,7 +70,7 @@ public class ColorScheme : MonoBehaviour {
 					}
 
 					// Hide colors
-					if (transform.Find ("#" + cs.ID + "/Contents") != null && !cs.Equals (Settings.OpenedColorScheme))
+					if (transform.Find ("#" + cs.ID + "/Contents") != null && !cs.Equals (Settings.Opened.ColorScheme))
 						transform.Find ("#" + cs.ID + "/Contents").gameObject.SetActive (false);
 				}
 			}
@@ -128,7 +131,7 @@ public class ColorScheme : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			mainTextArrow.text = colorScheme.Equals (Settings.OpenedColorScheme)
+			mainTextArrow.text = colorScheme.Equals (Settings.Opened.ColorScheme)
 				? IconFont.DROPDOWN_OPENED
 				: IconFont.DROPDOWN_CLOSED;
 
@@ -186,7 +189,7 @@ public class ColorScheme : MonoBehaviour {
 			// Add text
 			TextUnicode mainTextActive = mainActive.AddComponent<TextUnicode> ();
 
-			if (colorScheme.Equals (Settings.ActiveColorScheme))
+			if (colorScheme.Equals (Settings.Active.ColorScheme))
 			{
 				mainTextActive.text = IconFont.VISUALIZATION;
 				mainTextActive.fontSize = 30;
@@ -204,121 +207,124 @@ public class ColorScheme : MonoBehaviour {
 			mainLayoutElementListening.preferredWidth = 40;
 
 
-			// Create edit icons GameObject
-			GameObject editIcons = new GameObject ("Images");
-			editIcons.transform.SetParent (main.transform);
+			if (colorScheme.Name != Settings.Opened.Visualization.Name)
+			{
+				// Create edit icons GameObject
+				GameObject editIcons = new GameObject ("Images");
+				editIcons.transform.SetParent (main.transform);
 
-			// Set transformations
-			RectTransform editIconsTrans = editIcons.AddComponent<RectTransform> ();
-			editIconsTrans.anchoredPosition = Vector2.zero;
-			editIconsTrans.anchorMin = new Vector2 (1, 0.5f);
-			editIconsTrans.anchorMax = new Vector2 (1, 0.5f);
-			editIconsTrans.pivot = new Vector2 (1, 0.5f);
+				// Set transformations
+				RectTransform editIconsTrans = editIcons.AddComponent<RectTransform> ();
+				editIconsTrans.anchoredPosition = Vector2.zero;
+				editIconsTrans.anchorMin = new Vector2 (1, 0.5f);
+				editIconsTrans.anchorMax = new Vector2 (1, 0.5f);
+				editIconsTrans.pivot = new Vector2 (1, 0.5f);
 
-			// Add Layout Element
-			LayoutElement editIconslayoutElement = editIcons.AddComponent<LayoutElement> ();
-			editIconslayoutElement.ignoreLayout = true;
+				// Add Layout Element
+				LayoutElement editIconslayoutElement = editIcons.AddComponent<LayoutElement> ();
+				editIconslayoutElement.ignoreLayout = true;
 
-			// Add Content Size Fitter
-			ContentSizeFitter editIconsCsf = editIcons.AddComponent<ContentSizeFitter> ();
-			editIconsCsf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-			editIconsCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+				// Add Content Size Fitter
+				ContentSizeFitter editIconsCsf = editIcons.AddComponent<ContentSizeFitter> ();
+				editIconsCsf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+				editIconsCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-			// Add Layout Group
-			HorizontalLayoutGroup editIconsHlgImg = editIcons.AddComponent<HorizontalLayoutGroup> ();
-			editIconsHlgImg.childAlignment = TextAnchor.MiddleRight;
-			editIconsHlgImg.spacing = 5;
-			editIconsHlgImg.childForceExpandWidth = false;
-			editIconsHlgImg.childForceExpandHeight = false;
+				// Add Layout Group
+				HorizontalLayoutGroup editIconsHlgImg = editIcons.AddComponent<HorizontalLayoutGroup> ();
+				editIconsHlgImg.childAlignment = TextAnchor.MiddleRight;
+				editIconsHlgImg.spacing = 5;
+				editIconsHlgImg.childForceExpandWidth = false;
+				editIconsHlgImg.childForceExpandHeight = false;
 
-			// Disable edit icons GameObject
-			editIcons.SetActive (false);
-
-
-			// Create edit text GameObject
-			GameObject edit = new GameObject ("Edit");
-			edit.transform.SetParent (editIcons.transform);
-
-			// Add text
-			TextUnicode editText = edit.AddComponent<TextUnicode> ();
-			editText.text = IconFont.EDIT;
-
-			// Set text alignment
-			editText.alignment = TextAnchor.MiddleRight;
-
-			// Set transformations
-			editText.rectTransform.sizeDelta = new Vector2 (20, 30);
-
-			// Font settings
-			editText.font = IconFont.font;
-			editText.fontSize = 30;
-
-			// Add button
-			Button buttonEditEvt = edit.AddComponent<Button> ();
-			buttonEditEvt.transition = Selectable.Transition.Animation;
-
-			// Add button onclick event
-			buttonEditEvt.onClick.AddListener (delegate {
-				ShowDialog ("CS_EDIT", gameObject);
-			});
-
-			// Add animator
-			Animator animatorEditEvt = edit.AddComponent<Animator> ();
-			animatorEditEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
-
-
-			// Create delete text GameObject
-			GameObject delete = new GameObject ("Delete");
-			delete.transform.SetParent (editIcons.transform);
-
-			// Add text
-			Text deleteText = delete.AddComponent<Text> ();
-			deleteText.text = IconFont.TRASH;
-
-			// Set text alignment
-			deleteText.alignment = TextAnchor.MiddleRight;
-
-			// Set transformations
-			deleteText.rectTransform.sizeDelta = new Vector2 (20, 30);
-
-			// Font settings
-			deleteText.font = IconFont.font;
-			deleteText.fontSize = 30;
-
-			// Add button
-			Button buttonDeleteEvt = delete.AddComponent<Button> ();
-			buttonDeleteEvt.transition = Selectable.Transition.Animation;
-
-			// Add button onclick event
-			buttonDeleteEvt.onClick.AddListener (delegate {
-				ShowDialog ("CS_DEL", gameObject);
-			});
-
-			// Add animator
-			Animator animatorDeleteEvt = delete.AddComponent<Animator> ();
-			animatorDeleteEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
-
-
-			// Create GameObject Event Triggers
-			EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
-
-			// Add Hover Enter Event
-			EventTrigger.Entry evtHover = new EventTrigger.Entry ();
-			evtHover.eventID = EventTriggerType.PointerEnter;
-			evtWrapper.triggers.Add (evtHover);
-
-			evtHover.callback.AddListener ((eventData) => {
-				editIcons.SetActive (true);
-			});
-
-			// Add Hover Exit Event
-			EventTrigger.Entry evtExit = new EventTrigger.Entry ();
-			evtExit.eventID = EventTriggerType.PointerExit;
-			evtWrapper.triggers.Add (evtExit);
-
-			evtExit.callback.AddListener ((eventData) => {
+				// Disable edit icons GameObject
 				editIcons.SetActive (false);
-			});
+
+
+				// Create edit text GameObject
+				GameObject edit = new GameObject ("Edit");
+				edit.transform.SetParent (editIcons.transform);
+
+				// Add text
+				TextUnicode editText = edit.AddComponent<TextUnicode> ();
+				editText.text = IconFont.EDIT;
+
+				// Set text alignment
+				editText.alignment = TextAnchor.MiddleRight;
+
+				// Set transformations
+				editText.rectTransform.sizeDelta = new Vector2 (20, 30);
+
+				// Font settings
+				editText.font = IconFont.font;
+				editText.fontSize = 30;
+
+				// Add button
+				Button buttonEditEvt = edit.AddComponent<Button> ();
+				buttonEditEvt.transition = Selectable.Transition.Animation;
+
+				// Add button onclick event
+				buttonEditEvt.onClick.AddListener (delegate {
+					ShowDialog ("CS_EDIT", gameObject);
+				});
+
+				// Add animator
+				Animator animatorEditEvt = edit.AddComponent<Animator> ();
+				animatorEditEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
+
+
+				// Create delete text GameObject
+				GameObject delete = new GameObject ("Delete");
+				delete.transform.SetParent (editIcons.transform);
+
+				// Add text
+				Text deleteText = delete.AddComponent<Text> ();
+				deleteText.text = IconFont.TRASH;
+
+				// Set text alignment
+				deleteText.alignment = TextAnchor.MiddleRight;
+
+				// Set transformations
+				deleteText.rectTransform.sizeDelta = new Vector2 (20, 30);
+
+				// Font settings
+				deleteText.font = IconFont.font;
+				deleteText.fontSize = 30;
+
+				// Add button
+				Button buttonDeleteEvt = delete.AddComponent<Button> ();
+				buttonDeleteEvt.transition = Selectable.Transition.Animation;
+
+				// Add button onclick event
+				buttonDeleteEvt.onClick.AddListener (delegate {
+					ShowDialog ("CS_DEL", gameObject);
+				});
+
+				// Add animator
+				Animator animatorDeleteEvt = delete.AddComponent<Animator> ();
+				animatorDeleteEvt.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
+
+
+				// Create GameObject Event Triggers
+				EventTrigger evtWrapper = gameObject.AddComponent<EventTrigger> ();
+
+				// Add Hover Enter Event
+				EventTrigger.Entry evtHover = new EventTrigger.Entry ();
+				evtHover.eventID = EventTriggerType.PointerEnter;
+				evtWrapper.triggers.Add (evtHover);
+
+				evtHover.callback.AddListener ((eventData) => {
+					editIcons.SetActive (true);
+				});
+
+				// Add Hover Exit Event
+				EventTrigger.Entry evtExit = new EventTrigger.Entry ();
+				evtExit.eventID = EventTriggerType.PointerExit;
+				evtWrapper.triggers.Add (evtExit);
+
+				evtExit.callback.AddListener ((eventData) => {
+					editIcons.SetActive (false);
+				});
+			}
 
 
 			// Add Event Trigger
@@ -342,7 +348,7 @@ public class ColorScheme : MonoBehaviour {
 			GridLayoutGroup glg = contents.AddComponent<GridLayoutGroup> ();
 
 			// Set Grid Layout
-			glg.cellSize = new Vector2 (58.5f, 58.5f);
+			glg.cellSize = new Vector2 (53.5f, 53.5f);
 			glg.spacing = new Vector2 (25, 25);
 			glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
 			glg.constraintCount = 10;
@@ -364,27 +370,30 @@ public class ColorScheme : MonoBehaviour {
 			Image img = image.AddComponent<Image> ();
 			img.color = color;
 
-			// Add Event Trigger
-			EventTrigger trigger = image.AddComponent<EventTrigger> ();
+			if (colorScheme.Name != Settings.Opened.Visualization.Name)
+			{
+				// Add Event Trigger
+				EventTrigger trigger = image.AddComponent<EventTrigger> ();
 
-			// Add Click Event
-			EventTrigger.Entry evtClick = new EventTrigger.Entry ();
-			evtClick.eventID = EventTriggerType.PointerClick;
-			trigger.triggers.Add (evtClick);
+				// Add Click Event
+				EventTrigger.Entry evtClick = new EventTrigger.Entry ();
+				evtClick.eventID = EventTriggerType.PointerClick;
+				trigger.triggers.Add (evtClick);
 
-			evtClick.callback.AddListener ((eventData) => {
+				evtClick.callback.AddListener ((eventData) => {
 				
-				// Set active color
-				ActiveColor = image;
-				ActiveColorID = id;
+					// Set active color
+					ActiveColor = image;
+					ActiveColorID = id;
 
-				// Set current color
-				PickerObj.CurrentColor = colorScheme.Colors [id];
+					// Set current color
+					PickerObj.CurrentColor = colorScheme.Colors [id];
 
-				// Show color picker
-				ColorPicker.SetActive (true);
+					// Show color picker
+					ColorPicker.SetActive (true);
 
-			});
+				});
+			}
 		}
 	}
 
@@ -396,7 +405,7 @@ public class ColorScheme : MonoBehaviour {
 	public void ToggleColors (ColorSchemeObj colorScheme, bool forceOpen)
 	{
 		// Set color scheme as active color scheme
-		if (!forceOpen) Settings.OpenedColorScheme = colorScheme;
+		if (!forceOpen) Settings.Opened.ColorScheme = colorScheme;
 
 		// Show or hide colors
 		bool opened = false;
@@ -440,7 +449,7 @@ public class ColorScheme : MonoBehaviour {
 		}
 
 		// Set opened and selected color scheme
-		Settings.OpenedColorScheme = opened ? colorScheme : null;
+		Settings.Opened.ColorScheme = opened ? colorScheme : null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();
@@ -458,7 +467,7 @@ public class ColorScheme : MonoBehaviour {
 		if (name.Length > 0)
 		{
 			// Create color scheme object
-			ColorSchemeObj colorScheme = new ColorSchemeObj (name, Settings.OpenedVisualization);
+			ColorSchemeObj colorScheme = new ColorSchemeObj (name, Settings.Opened.Visualization);
 
 			// Create object in database
 			long id = Create (colorScheme);
@@ -484,13 +493,22 @@ public class ColorScheme : MonoBehaviour {
 			ColorSchemes.Remove (colorScheme);
 
 			// Unset active and opened color scheme
-			if (colorScheme.Equals (Settings.ActiveColorScheme)) Settings.ActiveColorScheme = null;
-			if (colorScheme.Equals (Settings.OpenedColorScheme)) Settings.OpenedColorScheme = null;
+			if (colorScheme.Equals (Settings.Active.ColorScheme)) Settings.Active.ColorScheme = null;
+			if (colorScheme.Equals (Settings.Opened.ColorScheme)) Settings.Opened.ColorScheme = null;
 
 			return true;
 		}
 
 		return false;
+	}
+
+	public ColorSchemeObj GetDefault ()
+	{
+		if (Settings.Active.Visualization != null) {
+			return ColorSchemes.Find (x => x.Name == Settings.Active.Visualization.Name);
+		}
+
+		return null;
 	}
 
 	public ColorSchemeObj FindColorScheme (GameObject gameObject)
@@ -563,7 +581,7 @@ public class ColorScheme : MonoBehaviour {
 			// New color scheme
 			case "CS_ADD":
 
-				if (Settings.OpenedVisualization != null)
+				if (Settings.Opened.Visualization != null)
 				{
 					// UI elements
 					heading.text = "Neues Farbschema erstellen";
@@ -628,8 +646,8 @@ public class ColorScheme : MonoBehaviour {
 					buttonOK.onClick.AddListener (delegate {
 
 						// Update color scheme objects
-						if (Settings.ActiveColorScheme != null && Settings.ActiveColorScheme.Equals (colorScheme)) {
-							Settings.ActiveColorScheme.Name = inputText.text;
+						if (Settings.Active.ColorScheme != null && Settings.Active.ColorScheme.Equals (colorScheme)) {
+							Settings.Active.ColorScheme.Name = inputText.text;
 						}
 						colorScheme.Name = inputText.text;
 
@@ -704,17 +722,68 @@ public class ColorScheme : MonoBehaviour {
 		}
 	}
 
-
-
-
     
 
 	//-- DATABASE METHODS
 
+	public void InsertDefault ()
+	{
+		if (Database.Connect () && Settings.Opened.Visualization != null && Settings.Opened.Visualization.ID > 0)
+		{
+			// Check if color scheme already exists
+			string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID";
+			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Opened.Visualization.Name));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
+
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			// Stop if color scheme already exists
+			while (reader.Read ())
+			{
+				cmd.Dispose ();
+				reader.Close ();
+				Database.Close ();
+
+				return;
+			}
+
+			// Dispose command
+			cmd.Dispose ();
+
+			// Insert default color scheme
+			sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
+			cmd = new SqliteCommand (sql, Database.Connection);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Opened.Visualization.Name));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
+
+			if (Settings.Defaults.Colors.ContainsKey (Settings.Opened.Visualization.Name))
+			{
+				// Set colors
+				Color[] colors = Settings.Defaults.Colors [Settings.Opened.Visualization.Name];
+				cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colors)));
+
+				// Execute insert statement
+				cmd.ExecuteNonQuery ();
+
+				// Dispose command
+				cmd.Dispose ();
+			}
+		}
+
+		// Close database connection
+		Database.Close ();
+	}
+
 	public void Load ()
     {
-		if (Database.Connect() && Settings.OpenedVisualization != null &&
-			Application.CanStreamedLevelBeLoaded (Settings.OpenedVisualization.BuildNumber))
+		if (Database.Connect() && Settings.Opened.Visualization != null &&
+			Application.CanStreamedLevelBeLoaded (Settings.Opened.Visualization.BuildNumber))
         {
             // Database command
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
@@ -724,7 +793,7 @@ public class ColorScheme : MonoBehaviour {
             cmd.CommandText = sql;
 
 			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.OpenedVisualization.ID));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
 
             // Get sql results
             SqliteDataReader reader = cmd.ExecuteReader ();
@@ -760,34 +829,43 @@ public class ColorScheme : MonoBehaviour {
 	{
 		if (Database.Connect () && colorScheme != null && colorScheme.Name.Length > 0)
 		{
-			// Insert color scheme into database
-			try
-			{
-				string sql = "INSERT INTO color_scheme (name,viz_id,colors) VALUES(@Name, @Viz_ID, @Colors); " +
-					"SELECT last_insert_rowid()";
-				SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+			// Check if color scheme name already exists
+			string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID";
+			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
 
-				// Add Parameters to statement
-				cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
-				cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
-				cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colorScheme.Colors)));
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
 
-				// Execute insert statement and get ID
-				long id = (long) cmd.ExecuteScalar ();
-
-				// Close database connection
+			// Exit if color scheme name already exists
+			SqliteDataReader reader = cmd.ExecuteReader ();
+			while (reader.Read ()) {
 				cmd.Dispose ();
-				Database.Close ();
-
-				return id;
-			}
-			catch (SqliteException)
-			{
-				// Close database connection
+				reader.Close ();
 				Database.Close ();
 
 				return (long) Database.Constants.DuplicateFound;
 			}
+			cmd.Dispose ();
+
+			// Insert color scheme into database
+			sql = "INSERT INTO color_scheme (name,viz_id,colors) VALUES (@Name, @Viz_ID, @Colors); " +
+				"SELECT last_insert_rowid()";
+			cmd = new SqliteCommand (sql, Database.Connection);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
+			cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colorScheme.Colors)));
+
+			// Execute insert statement and get ID
+			long id = (long) cmd.ExecuteScalar ();
+
+			// Close database connection
+			cmd.Dispose ();
+			Database.Close ();
+
+			return id;
 		}
 
 		// Close database connection
@@ -911,150 +989,5 @@ public class ColorScheme : MonoBehaviour {
 
 		return colors.ToArray ();
 	}
-
-
-
-
-
-
-
-    void ColorChange(int number)
-    {
-        ColorPicker.SetActive(true);
-//        MenuFunctions.num2xy = number;
-    }
-//
-//    void Save(int changedColor)
-//    {
-//
-//        foreach (int p in hash)
-//        {
-//
-//            int i = Math.Abs(p);
-//            while (i >= 10)
-//            {
-//                i /= 10;
-//            }
-//            if (i == changedColor)
-//            {
-//                colorSchemes[changedColor-1].ColorSchemes[p-(i*10)] = GameObject.Find("Image" + p).GetComponent<Image>().color;
-//                
-//            }
-//            
-//        }
-//        String combine = "";
-//        for(int count =0; count <colorSchemes[changedColor-1].ColorSchemes.Length; count++)
-//        {
-//            combine += colorSchemes[changedColor-1].ColorSchemes[count].r + "," + colorSchemes[changedColor-1].ColorSchemes[count].g + "," + colorSchemes[changedColor-1].ColorSchemes[count].b + ";";
-//        }
-//        string s = combine.Remove(combine.Length - 1);
-//
-//        if (DbConnect())
-//        {
-//            
-//            // Query statement
-//            string sql = "UPDATE color_scheme SET colors = @param1 WHERE id = @param2";
-//
-//
-//            SqliteCommand cmd2 = new SqliteCommand(sql, db);
-//            cmd2.Parameters.Add(new SqliteParameter("@param1",s));
-//            cmd2.Parameters.Add(new SqliteParameter("@param2",colorSchemes[changedColor - 1].ID));
-//
-//            // Result
-//            cmd2.ExecuteNonQuery();
-//            // Close database connection
-//            cmd2.Dispose();
-//            DbClose();
-//        }
-//    }
-//
-//    void Delete(int w)
-//    {
-//        if (DbConnect())
-//        {
-//            // Query statement
-//            string sql2 = "DELETE FROM color_scheme WHERE id = @param1";
-//
-//
-//            SqliteCommand cmd3 = new SqliteCommand(sql2, db);
-//            cmd3.Parameters.Add(new SqliteParameter("@param1",colorSchemes[w - 1].ID));
-//
-//            // Result
-//            cmd3.ExecuteNonQuery();
-//            // Close database connection
-//            cmd3.Dispose();
-//            DbClose();
-//        }
-//        Destroy(GameObject.Find("Visualisation" + w));
-//    }
-//
-//    void CannotDelete(int p)
-//    {
-//        if (DbConnect())
-//        {
-//            // Database command
-//            SqliteCommand cmd5 = new SqliteCommand(db);
-//
-//            // Query statement
-//            string sql3 = "SELECT viz_id FROM color_scheme WHERE viz_id = @param1";
-//            cmd5.CommandText = sql3;
-//            cmd5.Parameters.Add(new SqliteParameter("@param1",colorSchemes[p - 1].VizId));
-//
-//            // Get sql results
-//            SqliteDataReader reader2 = cmd5.ExecuteReader();
-//
-//            // Read sql results
-//            int count = 0;
-//            while (reader2.Read())
-//            {
-//
-//                int s = reader2.GetInt32(0);
-//                count++;
-//
-//            }
-//            if (count <= 1)
-//            {
-//                if (EditorUtility.DisplayDialog("Letztes Farbschema", "Das Farbschema \"" + colorSchemes[p-1].Name + "\" kann nicht gelöscht werden, da es das letzte Schema ist!", "OK"))
-//                {
-//                    check = false;
-//                }
-//            }
-//
-//            // Close reader
-//            reader2.Close();
-//            cmd5.Dispose();
-//
-//            // Close database connection
-//            DbClose();
-//        }
-//  
-//
-//    }
-//    
-//
-//    // call the input field
-//    void CreateNew(int w)
-//    {
-//        imag.SetActive(true);
-//        MenuFunctions.num = w;
-//
-//    }
-//    GameObject gObj;
-//    bool ToggleArrow(GameObject obj,GameObject obj2,bool active)
-//    {
-//        active = !active;
-//        if (active)
-//        {
-//            obj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/arrow-down");
-//            obj2.SetActive(true);
-//            
-//        }
-//        else
-//        {
-//            obj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/arrow-right");
-//            obj2.SetActive(false);
-//        }
-//        return active;
-//    }
 		 
 }
