@@ -4,65 +4,61 @@ using System.Collections;
 public class KetteVersuch : MonoBehaviour
 {
 
-
-
-
+    //Game Objects to store the needed Prefabs
     public GameObject ketten;
     public GameObject haenger;
 
+    //integers describing how many of the different Game Objects have to be created
     public int numKetten;
     public int numHaenger;
-
-    //public int numberOfObjects = 5; //number of cubes that are generated for one chain
-    //public int numberOfChains = 4; // number of chains that are generated
-    //public int numberOfCubes; //int to display the total number of cubes
-
-    public GameObject[][] ketAr; // array to save the cubes
-    public GameObject[] cubes;
+    
+    //arrays to store the lights of the different lightchains
+    public GameObject[][] ketAr;
     public GameObject[][] haengAr;
-    public int[][] randKet;  //array to save the random Range of Spectrum
+
+    //arrays to store the random range of spectrum displayed by the different lights
+    public int[][] randKet;
     public int[][] randHaeng;
 
-    //Color color = new Color(0,0,1,1)
-
+    //Colors
     Color color1 = new Color(1, 0, 0, 1);
     Color color2 = new Color(0, 1, 0, 1);
     Color color3 = new Color(0, 0, 1, 1);
     Color color4 = new Color(1, 1, 0, 1);
     Color color5 = new Color(0, 1, 1, 1);
 
-    int randomSpec; //int for Spectrum
-
-
 
 
     void Start()
     {
 
+        //initializing the arrays to store the lights
         ketAr = new GameObject[numKetten][];
         haengAr = new GameObject[numHaenger][];
-        //numberOfCubes = numberOfChains * numberOfObjects;
 
         /**
-         * creating chains of cubes
-         *  for every chain create numberOfObjects cubes
-         *  x Position of cube = chain number *2
-         *  y Position of cube = Cube number *3 -10
-         *  z position of cube = 0
+         *  creating the chains
+         *  assigning colors to lights
          **/
 
         for (int i = 0; i < numKetten; i++)
         {
+
+            //creating random numbers for x-Position, y-Position and type of coloring
             int posX = Random.Range(0, 200);
             int posZ = Random.Range(0, 200);
             int random = Random.Range(1, 5);
+
+            //Intantiating object and saving lights into an array
             Vector3 pos = new Vector3(posX, -10, posZ);
             Instantiate(ketten, pos, Quaternion.identity);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
 
 
-            //random Farbvergabe fuer Lichter
+            //assigning colors to chains
 
+
+            // chain with colors 1 and 2(alternating)
             if (random == 1)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -82,6 +78,8 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+
+            //chain with colors 3 and 4(alternating)
             if (random == 2)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -101,6 +99,7 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+            //chain with color 5
             if (random == 3)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -111,6 +110,8 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+
+            //chain with all colors(randomly)
             if (random == 4)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -153,7 +154,7 @@ public class KetteVersuch : MonoBehaviour
 
             Debug.Log(random);
 
-
+            //changing tags of light(necessary for sorting lights)
             for (int j = 0; j < lichter.Length; j++)
             {
 
@@ -161,6 +162,8 @@ public class KetteVersuch : MonoBehaviour
 
 
             }
+
+            //storing lights in ketAr
             ketAr[i] = lichter;
             Debug.Log(ketAr[i].Length);
 
@@ -170,21 +173,29 @@ public class KetteVersuch : MonoBehaviour
 
 
 
-
-
-
+       /**
+         *creating the hanging chains
+         *assigning colors to lights
+        */
 
 
         for (int i = 0; i < numHaenger; i++)
         {
+            //creating random numbers for x-Position, y-Position and type of coloring
             int posX = Random.Range(0, 200);
             int posZ = Random.Range(0, 200);
             int random = Random.Range(1, 5);
+
+            //Intantiating object and saving lights into an array
             Vector3 pos = new Vector3(posX, 20, posZ);
             Instantiate(haenger, pos, Quaternion.identity);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
 
-            //random Farbvergabe fuer Lichter
+
+            //assigning colors to chains
+
+
+            // chain with colors 1 and 2(alternating)
             if (random == 1)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -204,6 +215,8 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+
+            //chain with colors 3 and 4(alternating)
             if (random == 2)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -223,6 +236,8 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+
+            //chain with color 5
             if (random == 3)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -233,6 +248,8 @@ public class KetteVersuch : MonoBehaviour
                 }
             }
 
+
+            //chain with all colors(randomly)
             if (random == 4)
             {
                 for (int j = 0; j < lichter.Length; j++)
@@ -275,6 +292,7 @@ public class KetteVersuch : MonoBehaviour
 
             Debug.Log(random);
 
+            //changing tags of light(necessary for sorting lights)
             for (int j = 0; j < lichter.Length; j++)
             {
 
@@ -282,21 +300,21 @@ public class KetteVersuch : MonoBehaviour
 
 
             }
+
+            //storing lights in ketAr
             haengAr[i] = lichter;
             Debug.Log(haengAr[i].Length);
         }
 
-        //save created cubes in array "cubes"
-        //instantiate rndSpec with the length of "cubes"
-
+        
+        
+        
+        
+        //instantiate arrays to store which part of the spectrum is displayed by every light
         randKet = new int[ketAr.Length][];
         randHaeng = new int[haengAr.Length][];
         /*
          * get random numbers to determine the displayed spectrum of a chain
-         * for every element in randSpec:
-         * if i is dividable by 5 (Because of 5 Cubes per chain) or 0:
-         * save a random number between 0 and 200 at this place
-         * else the number of the previous element +1 
          **/
         for (int i = 0; i < ketAr.Length; i++)
         {
@@ -336,7 +354,7 @@ public class KetteVersuch : MonoBehaviour
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
 
         /**
-         * change the color and rim color of certain cubes(test)
+         * change the light intensity in reaction to the spectrum
          * change the rim Power(Glow) in reaction to the Spectrum
          **/
         for (int i = 0; i < ketAr.Length; i++)
