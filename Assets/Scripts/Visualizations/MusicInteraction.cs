@@ -16,12 +16,31 @@ public class MusicInteraction : MonoBehaviour
     {
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
 
-        /**
-         * Scaling the height of each cube, based on the value in the spectrum-array
-         */
-      
+        float[] samples = AudioListener.GetOutputData(1024, 0);
+
+        //Adding up all the samples, for approximate overall "volume"
+        float vol = 0;
+        foreach (float sample in samples)
+        {
+            if (sample >= 0)
+            {
+                vol += sample;
+            }
+            else vol -= sample;
+           
+            
+        }
         
-            Vector3 previousScale = transform.localScale;
+        
+       
+        //Rotate logo around the z-axis, based on time of the last frame and volume
+        transform.Rotate(0, 0, -(Time.deltaTime*vol));
+
+        /**
+         * Scaling the logo, based on the value in the spectrum-array
+         */
+
+        Vector3 previousScale = transform.localScale;
             int anzahl = 10;
             float average = 0;
             for(int i = 0; i< anzahl; i++)
@@ -30,7 +49,7 @@ public class MusicInteraction : MonoBehaviour
             }
             average = average / anzahl;
 
-            if (average * scale > 1)   //Only update the cube if the height is above set value (1.3)
+            if (average * scale > 1)   //Only update if the height is above set value (1)
             {
                 previousScale.y = Mathf.Lerp(previousScale.y, average * scale, Time.deltaTime * 30);
                 previousScale.x = Mathf.Lerp(previousScale.x, average * scale, Time.deltaTime * 30);
@@ -44,6 +63,6 @@ public class MusicInteraction : MonoBehaviour
             transform.localScale = previousScale;
 
             Debug.Log(previousScale);
-
+        
     }
 }
