@@ -4,7 +4,7 @@ using System.Collections;
 public class KetteVersuch : MonoBehaviour
 {
 
-    
+
 
 
     public GameObject ketten;
@@ -20,15 +20,16 @@ public class KetteVersuch : MonoBehaviour
     public GameObject[][] ketAr; // array to save the cubes
     public GameObject[] cubes;
     public GameObject[][] haengAr;
-    public int[] randSpec;  //array to save the random Range of Spectrum
+    public int[][] randKet;  //array to save the random Range of Spectrum
+    public int[][] randHaeng;
 
     //Color color = new Color(0,0,1,1)
 
-    Color color1 = new Color (1,0,0,1);
-    Color color2 = new Color (0,1,0,1);
-    Color color3 = new Color (0,0,1,1);
-    Color color4 = new Color (1,1,0,1);
-    Color color5 = new Color (0,1,1,1);
+    Color color1 = new Color(1, 0, 0, 1);
+    Color color2 = new Color(0, 1, 0, 1);
+    Color color3 = new Color(0, 0, 1, 1);
+    Color color4 = new Color(1, 1, 0, 1);
+    Color color5 = new Color(0, 1, 1, 1);
 
     int randomSpec; //int for Spectrum
 
@@ -37,7 +38,7 @@ public class KetteVersuch : MonoBehaviour
 
     void Start()
     {
-        
+
         ketAr = new GameObject[numKetten][];
         haengAr = new GameObject[numHaenger][];
         //numberOfCubes = numberOfChains * numberOfObjects;
@@ -61,11 +62,12 @@ public class KetteVersuch : MonoBehaviour
 
 
             //random Farbvergabe fuer Lichter
+
             if (random == 1)
             {
-                for(int j = 0; j < lichter.Length; j++)
+                for (int j = 0; j < lichter.Length; j++)
                 {
-                    if(j%2 == 0 || j == 0)
+                    if (j % 2 == 0 || j == 0)
                     {
                         lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
                         lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
@@ -82,9 +84,9 @@ public class KetteVersuch : MonoBehaviour
 
             if (random == 2)
             {
-                for(int j = 0; j <lichter.Length; j++)
+                for (int j = 0; j < lichter.Length; j++)
                 {
-                    if(j%2 == 0 || j == 0)
+                    if (j % 2 == 0 || j == 0)
                     {
                         lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
                         lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
@@ -115,7 +117,7 @@ public class KetteVersuch : MonoBehaviour
                 {
                     int rand = Random.Range(0, 5);
 
-                    if(rand == 0)
+                    if (rand == 0)
                     {
                         lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
                         lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
@@ -133,7 +135,7 @@ public class KetteVersuch : MonoBehaviour
                         lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
                         lichter[j].GetComponent<Light>().color = color3 * 3;
                     }
-                    else if(rand == 3)
+                    else if (rand == 3)
                     {
                         lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
                         lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
@@ -156,7 +158,7 @@ public class KetteVersuch : MonoBehaviour
             {
 
                 lichter[j].tag = "LightDone";
-                
+
 
             }
             ketAr[i] = lichter;
@@ -285,11 +287,10 @@ public class KetteVersuch : MonoBehaviour
         }
 
         //save created cubes in array "cubes"
-        cubes = GameObject.FindGameObjectsWithTag("LightDone");
         //instantiate rndSpec with the length of "cubes"
-        randSpec = new int[cubes.Length];
-       
-        
+
+        randKet = new int[ketAr.Length][];
+        randHaeng = new int[haengAr.Length][];
         /*
          * get random numbers to determine the displayed spectrum of a chain
          * for every element in randSpec:
@@ -297,23 +298,39 @@ public class KetteVersuch : MonoBehaviour
          * save a random number between 0 and 200 at this place
          * else the number of the previous element +1 
          **/
-        for (int i = 0; i < cubes.Length; i++)
+        for (int i = 0; i < ketAr.Length; i++)
         {
-            if(i % 5 == 0||i==0)
+            int rand = Random.Range(0, 200);
+            int[] zw = new int[ketAr[i].Length];
+
+            for (int j = 0; j < ketAr[i].Length; j++)
             {
-                randSpec[i] = Random.Range(0, 200);
+                zw[j] = rand;
+                rand++;
             }
-            else
-            {
-                randSpec[i] = randSpec[i - 1] + 1;
-            }
+            randKet[i] = zw;
         }
+
+        for (int i = 0; i < haengAr.Length; i++)
+        {
+            int rand = Random.Range(0, 200);
+            int[] zw = new int[haengAr[i].Length];
+
+            for (int j = 0; j < haengAr[i].Length; j++)
+            {
+                zw[j] = rand;
+                rand++;
+            }
+            randHaeng[i] = zw;
+        }
+
+
     }
 
 
 
 
-    
+
     void Update()
     {
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
@@ -321,19 +338,29 @@ public class KetteVersuch : MonoBehaviour
         /**
          * change the color and rim color of certain cubes(test)
          * change the rim Power(Glow) in reaction to the Spectrum
-         **/ 
-        for (int i = 0; i < cubes.Length; i++)
+         **/
+        for (int i = 0; i < ketAr.Length; i++)
         {
+            for (int j = 0; j < ketAr[i].Length; j++)
+            {
+                ketAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randKet[i][j]] * 10));
+                ketAr[i][j].GetComponent<Light>().intensity = spectrum[randKet[i][j]] * 10;
+                ketAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randKet[i][j]] * 10;
+            }
 
-            cubes[i].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randSpec[i]] * 10));
-            cubes[i].GetComponent<Light>().intensity = spectrum[randSpec[i]]*10;
-            cubes[i].GetComponent<Light>().bounceIntensity = spectrum[randSpec[i]]*10;
+
+        }
+
+        for (int i = 0; i < haengAr.Length; i++)
+        {
+            for (int j = 0; j < haengAr[i].Length; j++)
+            {
+                haengAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randHaeng[i][j]] * 10));
+                haengAr[i][j].GetComponent<Light>().intensity = spectrum[randHaeng[i][j]] * 10;
+                haengAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randHaeng[i][j]] * 10;
+            }
 
         }
 
     }
-
-
-   
-
 }
