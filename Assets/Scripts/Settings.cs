@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Settings {
 
-	//-- VISUALIZATIONS
+	// Available visualizations
 	public static VisualizationObj [] Visualizations = new VisualizationObj []
 	{
 		new VisualizationObj ("Bubbles",			4,	-1), // TODO: fix build number
@@ -26,9 +26,10 @@ public class Settings {
 	}
 
 	//-- OPENED ELEMENTS
-	public abstract class Opened
+	public abstract class Selected
 	{
 		public static PlaylistObj Playlist;
+		public static FileObj File;
 		public static VisualizationObj Visualization;
 		public static ColorSchemeObj ColorScheme;
 	}
@@ -43,7 +44,8 @@ public class Settings {
 	//-- DEFAULT SETTINGS
 	public abstract class Defaults
 	{
-		public static VisualizationObj Visualization = new VisualizationObj ("beatlux", 1, 5);
+		public static VisualizationObj Visualization = new VisualizationObj ("beatlux", 1, 3);
+
 
 		//-- DEFAULT COLORS
 		public static Dictionary<string, Color[]> Colors = new Dictionary<string, Color[]>
@@ -55,58 +57,84 @@ public class Settings {
 			},
 
 
-
 			// Bubbles
 			{
 				Settings.Visualizations [0].Name,
-				new Color [] {
-					new Color (243 / 255.0f,	233 / 255.0f,	177 / 255.0f),
-					new Color (172 / 255.0f,	231 / 255.0f,	243 / 255.0f),
-					new Color (243 / 255.0f,	205 / 255.0f,	233 / 255.0f),
-					new Color (190 / 255.0f,	255 / 255.0f,	252 / 255.0f)
+				new Color []
+				{
+					GetColor (243, 233, 177),
+					GetColor (172, 231, 243),
+					GetColor (243, 205, 233),
+					GetColor (190, 255, 252)
 				}
 			},
 
 			// Hexagons
 			{
 				Settings.Visualizations [1].Name,
-				new Color [] {
-					new Color ( 66 / 255.0f,	 70 / 255.0f,	110 / 255.0f),
-					new Color ( 58 / 255.0f,	 98 / 255.0f,	171 / 255.0f)
+				new Color []
+				{
+					GetColor (66, 70, 110),
+					GetColor (58, 98, 171)
 				}
 			},
 
 			// Lichterketten
 			{
 				Settings.Visualizations [2].Name,
-				new Color [] {
-					new Color (242 / 255.0f,	 80 / 255.0f,	166 / 255.0f),
-					new Color (242 / 255.0f,	209 / 255.0f,	 60 / 255.0f),
-					new Color ( 84 / 255.0f,	191 / 255.0f,	 60 / 255.0f),
-					new Color ( 37 / 255.0f,	176 / 255.0f,	217 / 255.0f),
-					new Color (242 / 255.0f,	 84 / 255.0f,	 44 / 255.0f)
+				new Color []
+				{
+					GetColor (242, 80, 166),
+					GetColor (242, 209, 60),
+					GetColor (84, 191, 60),
+					GetColor (37, 176, 217),
+					GetColor (242, 84, 44)
 				}
 			},
 
 			// Particle Fountains
 			{
 				Settings.Visualizations [3].Name,
-				new Color [] {
-					new Color (243 / 255.0f,	225 / 255.0f,	125 / 255.0f),
-					new Color (125 / 255.0f,	243 / 255.0f,	156 / 255.0f),
-					new Color (243 / 255.0f,	153 / 255.0f,	149 / 255.0f)
+				new Color []
+				{
+					GetColor (243, 225, 125),
+					GetColor (125, 243, 156),
+					GetColor (243, 153, 149)
 				}
 			},
 
 			// Spektrum
 			{
 				Settings.Visualizations [4].Name,
-				new Color [] {
-					new Color (  6 / 255.0f,	104 / 255.0f,	255 / 255.0f),
-					new Color (  0 / 255.0f,	242 / 255.0f,	255 / 255.0f),
-					new Color ( 27 / 255.0f,	240 / 255.0f,	 96 / 255.0f)
+				new Color []
+				{
+					GetColor (6, 104, 255),
+					GetColor (0, 242, 255),
+					GetColor (27, 240, 96)
 				}
 			}
 		};
+	}
+
+	//-- INPUT SETTINGS
+	public abstract class Input
+	{
+		public static int MaxLength = 30;
+		public static Color InfoColor = GetColor (250, 80, 80);
+	}
+
+
+
+	//-- HELPER METHODS
+	public static Color GetColor (int r, int g, int b)
+	{
+		if (r >= 0 && r <= 255 &&
+		    g >= 0 && g <= 255 &&
+		    b >= 0 && b <= 255) {
+
+			return new Color (r / 255.0f, g / 255.0f, b / 255.0f);
+		}
+
+		return Color.clear;
 	}
 }

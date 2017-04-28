@@ -35,7 +35,7 @@ public class ColorPicker : MonoBehaviour
             _alpha = value.a;
 
             RGBChanged();
-            
+
             SendChangedEvent();
         }
     }

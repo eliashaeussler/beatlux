@@ -28,8 +28,8 @@ public class Visualization : MonoBehaviour {
 		Load ();
 
 		// Set opened visualization
-		if (Settings.Opened.Visualization == null && Settings.Active.Visualization != null) {
-			Settings.Opened.Visualization = Settings.Active.Visualization;
+		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
+			Settings.Selected.Visualization = Settings.Active.Visualization;
 		}
 
 		// Display visualizations
@@ -80,7 +80,7 @@ public class Visualization : MonoBehaviour {
 
 				// Add text
 				TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-				mainTextArrow.text = viz.Equals (Settings.Opened.Visualization) ? IconFont.DROPDOWN_CLOSED : "";
+				mainTextArrow.text = viz.Equals (Settings.Selected.Visualization) ? IconFont.DROPDOWN_CLOSED : "";
 
 				// Set text alignment
 				mainTextArrow.alignment = TextAnchor.MiddleLeft;
@@ -113,8 +113,8 @@ public class Visualization : MonoBehaviour {
 				VisualizationObj currentViz = viz;
 				button.onClick.AddListener (delegate {
 
-					Settings.Opened.Visualization = currentViz;
-					Settings.Opened.ColorScheme = null;
+					Settings.Selected.Visualization = currentViz;
+					Settings.Selected.ColorScheme = null;
 					ColorSchemes.Display ();
 					Display ();
 
@@ -163,22 +163,25 @@ public class Visualization : MonoBehaviour {
 		{
 			foreach (VisualizationObj viz in Settings.Visualizations)
 			{
-				// Query statement
-				string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber)";
-				SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+				if (Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
+				{
+					// Query statement
+					string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber)";
+					SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
 
-				// Add Parameters to statement
-				cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
-				cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
-				cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+					cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
+					cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
 
-				// Execute insert statement
-				try {
-					cmd.ExecuteNonQuery ();
-				} catch {}
+					// Execute insert statement
+					try {
+						cmd.ExecuteNonQuery ();
+					} catch {}
 
-				// Dispose command
-				cmd.Dispose ();
+					// Dispose command
+					cmd.Dispose ();
+				}
 			}
 		}
 

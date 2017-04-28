@@ -25,9 +25,16 @@ public class Playlist : MonoBehaviour {
 		// Select playlists from database
 		Load ();
 
-		// Set opened playlist
-		if (Settings.Opened.Playlist == null && Settings.Active.Playlist != null) {
-			Settings.Opened.Playlist = Settings.Active.Playlist;
+		// Set selected playlist
+		if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null) {
+			Settings.Selected.Playlist = Settings.Active.Playlist;
+		}
+
+		// Set selected file
+		if (Settings.Selected.File == null && Settings.Active.File != null &&
+		    Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains (Settings.Active.File)) {
+
+			Settings.Selected.File = Settings.Active.File;
 		}
 
 		// Display playlists
@@ -57,7 +64,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Hide playlist files
-			if (transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.Opened.Playlist))
+			if (transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.Selected.Playlist))
 				transform.Find ("#" + p.ID + "/Contents").gameObject.SetActive (false);
 		}
 	}
@@ -97,6 +104,23 @@ public class Playlist : MonoBehaviour {
 
 		// Text settings
 		text.text = Path.GetFileName (file.Path);
+
+		// Get Event Trigger
+		EventTrigger events = gameObject.GetComponent<EventTrigger> ();
+
+		// Add Click Event
+		EventTrigger.Entry evtClick = new EventTrigger.Entry ();
+		evtClick.eventID = EventTriggerType.PointerClick;
+		events.triggers.Add (evtClick);
+
+		evtClick.callback.AddListener ((eventData) => {
+			UpdateSelectedFile (file);
+		});
+
+		// Add Event to Button
+		gameObject.transform.Find ("Text").gameObject.GetComponent<Button> ().onClick.AddListener (delegate {
+			UpdateSelectedFile (file);
+		});
 	}
 
 	public GameObject DisplayPlaylistOrFile (PlaylistObj playlist, FileObj file)
@@ -150,6 +174,7 @@ public class Playlist : MonoBehaviour {
 			if (file != null) main = gameObject;
 
 
+
 			// Add Layout Element to GameObject
 			LayoutElement mainLayout = main.AddComponent<LayoutElement> ();
 			mainLayout.minHeight = 30;
@@ -184,7 +209,7 @@ public class Playlist : MonoBehaviour {
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
 
 			if (file == null) {
-				mainTextArrow.text = playlist.Equals (Settings.Opened.Playlist)
+				mainTextArrow.text = playlist.Equals (Settings.Selected.Playlist)
 					? IconFont.DROPDOWN_OPENED
 					: IconFont.DROPDOWN_CLOSED;
 			}
@@ -214,7 +239,7 @@ public class Playlist : MonoBehaviour {
 				mainTextListening.fontSize = 30;
 				mainTextListening.color = file == null ? Color.white : new Color (0.7f, 0.7f, 0.7f);
 			}
-			else if (file != null)
+			else if (file != null && file.Equals (Settings.Selected.File))
 			{
 				mainTextListening.text = IconFont.DROPDOWN_CLOSED;
 				mainTextListening.fontSize = 20;
@@ -222,7 +247,7 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Set text alignment
-			mainTextListening.alignment = TextAnchor.MiddleRight;
+			mainTextListening.alignment = file == null ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
 
 			// Font settings
 			mainTextListening.font = IconFont.font;
@@ -230,7 +255,6 @@ public class Playlist : MonoBehaviour {
 			// Add Layout Element
 			LayoutElement mainLayoutElementListening = mainListening.AddComponent<LayoutElement> ();
 			mainLayoutElementListening.minWidth = file == null ? 40 : 32;
-
 
 			// Create text GameObject
 			GameObject mainText = new GameObject ("Text");
@@ -268,8 +292,7 @@ public class Playlist : MonoBehaviour {
 
 
 			// Add listening element
-			if (file == null && playlist.Equals (Settings.Active.Playlist))
-				mainListening.transform.SetParent (main.transform);
+			if (file == null) mainListening.transform.SetParent (main.transform);
 
 
 			// Create edit icons GameObject
@@ -413,7 +436,7 @@ public class Playlist : MonoBehaviour {
 		{
 			// Set playlist as active playlist
 			if (!forceOpen)
-				Settings.Opened.Playlist = playlist;
+				Settings.Selected.Playlist = playlist;
 
 			// Show or hide playlist files
 			bool opened = false;
@@ -457,18 +480,40 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Set opened playlist
-			Settings.Opened.Playlist = opened ? playlist : null;
+			Settings.Selected.Playlist = opened ? playlist : null;
+
+			// Unset selected file
+			if (!opened) Settings.Selected.File = null;
 
 			// Scroll to top if scrollbar is hidden
 			ScrollToTop ();
+		} 
+		else
+		{
+			// Change arrow icon
+			Text arrow = transform.Find ("#" + playlist.ID + "/Main/Arrow").GetComponent<Text> ();
+			if (arrow != null) arrow.text = IconFont.DROPDOWN_CLOSED;
+			// TODO funktioniert noch nicht
 		}
+	}
+
+	public void UpdateSelectedFile (FileObj file)
+	{
+		// Update selected file
+		Settings.Selected.File = file;
+
+		// Re-display files and playlists
+		Display ();
 	}
 
 	public void ScrollToTop ()
 	{
-		// TODO funktioniert noch nicht richtig
-		if (!gameObject.transform.parent.Find ("Scrollbar").gameObject.activeSelf)
-			gameObject.transform.parent.gameObject.GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
+		// Force canvas to update elements
+		Canvas.ForceUpdateCanvases ();
+
+		// Scroll to top if scrollbar is not visible
+		if (transform.GetComponent<RectTransform> ().sizeDelta.y < 0)
+			gameObject.transform.parent.GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 	}
 
 	public long NewPlaylist (string name)
@@ -482,13 +527,16 @@ public class Playlist : MonoBehaviour {
 			long id = Create (playlist);
 
 			// Reload playlists
-			Load ();
-			Display ();
+			if (id > 0)
+			{
+				Load ();
+				Display ();
+			}
 
 			return id;
 		}
 
-		return (long) Database.Constants.QueryFailed;
+		return (long) Database.Constants.EmptyInputValue;
 	}
 
 	public bool Delete (GameObject gameObject)
@@ -501,13 +549,23 @@ public class Playlist : MonoBehaviour {
 
 		if (deleted)
 		{
-			if (file == null) {
+			// Unset selected file
+			if (playlist.Files.Contains (Settings.Selected.File) && (file == null || file.Equals (Settings.Selected.File))) {
+				Settings.Selected.File = null;
+			}
+
+			// Delete extant files
+			FileObj [] files = file == null ? playlist.Files.ToArray () : new FileObj [] { file };
+			foreach (FileObj f in files) DeleteExtantFile (f, playlist);
+
+			if (file == null)
+			{
 				// Remove from list
 				Playlists.Remove (playlist);
 
 				// Unset active and opened playlist
 				if (playlist.Equals (Settings.Active.Playlist)) Settings.Active.Playlist = null;
-				if (playlist.Equals (Settings.Opened.Playlist)) Settings.Opened.Playlist = null;
+				if (playlist.Equals (Settings.Selected.Playlist)) Settings.Selected.Playlist = null;
 			} else {
 				// Remove files from playlist
 				playlist.Files.Remove (file);
@@ -571,27 +629,12 @@ public class Playlist : MonoBehaviour {
 			// Playlist object
 			PlaylistObj playlist = FindPlaylist (obj);
 
-			// Content elements
-			Transform header = Dialog.wrapper.transform.Find ("Header");
-			Transform main = Dialog.wrapper.transform.Find ("Main");
-			Transform footer = Dialog.wrapper.transform.Find ("Footer");
-
-			// Header elements
-			Text heading = header.Find ("Heading").GetComponent<Text> ();
-
-			// Main elements
-			Text text;
-			InputField inputField;
-			Text inputText;
-
-			// Footer elements
-			Button buttonOK = footer.Find ("Button_OK").GetComponent<Button> ();
-			Text buttonOKText = footer.Find ("Button_OK").Find ("Text").GetComponent<Text> ();
-			Button buttonCancel = footer.Find ("Button_Cancel").GetComponent<Button> ();
-			Text buttonCancelText = footer.Find ("Button_Cancel").Find ("Text").GetComponent<Text> ();
+			// Button
+			Button button = Dialog.ButtonOK;
+			Text buttonText = Dialog.GetButtonText ();
 
 			// Remove listener
-			buttonOK.onClick.RemoveAllListeners ();
+			button.onClick.RemoveAllListeners ();
 
 
 			switch (type) {
@@ -600,38 +643,43 @@ public class Playlist : MonoBehaviour {
 			case "PL_ADD":
 				
 				// UI elements
-				heading.text = "Neue Playlist erstellen";
-				inputField = Dialog.GetInputField ("", "Wie soll die neue Playlist heißen?");
-				inputText = Dialog.GetInputText ();
+				Dialog.SetHeading ("Neue Playlist erstellen");
+				Dialog.SetInputField ("", "Wie soll die neue Playlist heißen?");
 
 				// Events
-				buttonOK.onClick.AddListener (delegate {
-					
-					long id = NewPlaylist (inputText.text);
+				button.onClick.AddListener (delegate {
 
+					// Create playlist
+					long id = NewPlaylist (Dialog.GetInputText ());
+
+					// Handle database result
 					switch (id) {
 
+					// Playlist name already taken
 					case (long) Database.Constants.DuplicateFound:
 
-						// TODO
-						print ("Bereits vorhanden.");
-
+						Dialog.SetInfo ("Eine Playlist mit diesem Namen ist bereits vorhanden.");
 						break;
 
+					// Database query failed
 					case (long) Database.Constants.QueryFailed:
 						
-						// TODO
-						print ("Fehlgeschlagen.");
+						Dialog.SetInfo ("Die Playlist konnte nicht erstellt werden.");
+						break;
 
+					// No user input
+					case (long) Database.Constants.EmptyInputValue:
+
+						Dialog.SetInfo ("Bitte geben Sie einen Namen für die Playlist ein.");
 						break;
 
 					default:
 						
-						HideDialog ();
-
+						Dialog.HideDialog ();
 						break;
 
 					}
+
 				});
 
 				break;
@@ -644,31 +692,50 @@ public class Playlist : MonoBehaviour {
 				if (playlist != null)
 				{
 					// UI elements
-					heading.text = "Playlist bearbeiten";
-					inputField = Dialog.GetInputField (playlist.Name, playlist.Name);
-					inputText = Dialog.GetInputText ();
+					Dialog.SetHeading ("Playlist bearbeiten");
+					Dialog.SetInputField (playlist.Name, playlist.Name);
 
 					// Events
-					buttonOK.onClick.AddListener (delegate {
+					button.onClick.AddListener (delegate {
 
 						// Update playlist objects
 						if (Settings.Active.Playlist != null && Settings.Active.Playlist.Equals (playlist)) {
-							Settings.Active.Playlist.Name = inputText.text;
+							Settings.Active.Playlist.Name = Dialog.GetInputText ();
 						}
-						playlist.Name = inputText.text;
+						playlist.Name = Dialog.GetInputText ();
 
 						// Update database
-						bool edited = Edit (playlist);
+						long result = Edit (playlist);
 
-						if (edited) {
+						// Handle database result
+						switch (result) {
+
+						// Playlist name already taken
+						case (long) Database.Constants.DuplicateFound:
+
+							Dialog.SetInfo ("Eine Playlist mit diesem Namen ist bereits vorhanden.");
+							break;
+
+						// Database query failed
+						case (long) Database.Constants.QueryFailed:
+
+							Dialog.SetInfo ("Die Playlist konnte nicht aktualisiert werden.");
+							break;
+
+						// No user input
+						case (long) Database.Constants.EmptyInputValue:
+
+							Dialog.SetInfo ("Bitte geben Sie einen Namen für die Playlist ein.");
+							break;
+
+						default:
+
 							Load ();
 							Display ();
-						} else {
-							// TODO
-							print ("Fehlgeschlagen.");
-						}
+							Dialog.HideDialog ();
+							break;
 
-						HideDialog ();
+						}
 					});
 				}
 				else
@@ -686,16 +753,19 @@ public class Playlist : MonoBehaviour {
 				if (playlist != null)
 				{
 					// UI elements
-					heading.text = "Playlist löschen";
-					text = Dialog.GetText ("Playlist \"" + playlist.Name + "\" endgültig löschen?");
+					Dialog.SetHeading ("Playlist löschen");
+					Dialog.SetText ("Playlist \"" + playlist.Name + "\" endgültig löschen?");
 
 					// Events
-					buttonOK.onClick.AddListener (delegate {
+					button.onClick.AddListener (delegate {
 						
 						Delete (obj);
+
 						Load ();
 						Display ();
-						HideDialog ();
+
+						Dialog.HideDialog ();
+
 					});
 				}
 				else
@@ -714,16 +784,9 @@ public class Playlist : MonoBehaviour {
 
 			// Show dialog
 			Dialog.dialog.SetActive (true);
-
-			return;
 		}
 
 		return;
-	}
-
-	public void HideDialog ()
-	{
-		if (Dialog != null) Dialog.HideDialog ();
 	}
 
 
@@ -768,6 +831,9 @@ public class Playlist : MonoBehaviour {
 						files.Add (file);
 					}
 				}
+
+				// Sort files
+				files.Sort ((lhs, rhs) => Path.GetFileName (lhs.Path).CompareTo (Path.GetFileName (rhs.Path)));
 
 				// Set files
 				obj.Files = files;
@@ -873,7 +939,7 @@ public class Playlist : MonoBehaviour {
 		return (long) Database.Constants.QueryFailed;
 	}
 
-	public bool Edit (PlaylistObj playlist)
+	public long Edit (PlaylistObj playlist)
 	{
 		if (Database.Connect () && playlist != null && playlist.Name.Length > 0)
 		{
@@ -895,18 +961,21 @@ public class Playlist : MonoBehaviour {
 				cmd.Dispose ();
 				Database.Close ();
 
-				return result > 0;
+				return (long) (result > 0 ? Database.Constants.Successful : Database.Constants.QueryFailed);
 			}
-			catch (SqliteException) {}
+			catch (SqliteException)
+			{
+				return (long) Database.Constants.DuplicateFound;
+			}
 		}
 
 		// Close database connection
 		Database.Close ();
 
-		return false;
+		return (long) (playlist.Name.Length > 0 ? Database.Constants.QueryFailed : Database.Constants.EmptyInputValue);
 	}
 
-	public bool AddFile (FileObj file, PlaylistObj playlist)
+	public long AddFile (FileObj file, PlaylistObj playlist)
 	{
 		if (Database.Connect () && file != null && playlist != null)
 		{
@@ -953,6 +1022,9 @@ public class Playlist : MonoBehaviour {
 				// Add file to playlist
 				playlist.Files.Add (file);
 
+				// Sort files
+				playlist.Files.Sort ((lhs, rhs) => Path.GetFileName (lhs.Path).CompareTo (Path.GetFileName (rhs.Path)));
+
 				// Set file IDs
 				string files = FormatFileIDs (playlist.Files);
 
@@ -974,14 +1046,21 @@ public class Playlist : MonoBehaviour {
 				// Add file to interface
 				DisplayFile (playlist, file);
 
-				return result > 0;
+				// Re-order files
+				transform.Find ("#" + playlist.ID + "/Contents/#" + playlist.ID + "." + file.ID).SetSiblingIndex (playlist.Files.IndexOf (file));
+
+				return (long) (result > 0 ? Database.Constants.Successful : Database.Constants.QueryFailed);
+			}
+			else
+			{
+				return (long) Database.Constants.DuplicateFound;
 			}
 		}
 
 		// Close database connection
 		Database.Close ();
 
-		return false;
+		return (long) Database.Constants.QueryFailed;
 	}
 
 	public FileObj GetFile (long id, bool closeConnection)
@@ -1099,10 +1178,10 @@ public class Playlist : MonoBehaviour {
 			SqliteDataReader reader = cmd.ExecuteReader ();
 
 			// Read file IDs
-			List<String> fileIDs = null;
+			List<string> fileIDs = null;
 			while (reader.Read ()) {
 				if (!reader.IsDBNull (0)) {
-					fileIDs = new List<String> (reader.GetString (0).Split (new Char[] { ',', ' ' }));
+					fileIDs = new List<string> (reader.GetString (0).Split (new Char[] { ',', ' ' }));
 				}
 			}
 
@@ -1115,15 +1194,12 @@ public class Playlist : MonoBehaviour {
 				// Remove file
 				fileIDs.Remove (file.ID.ToString ());
 
-				// Update file IDs
-				string files = FormatFileIDs (fileIDs);
-
 				// Query statement
 				sql = "UPDATE playlist SET files = @Files WHERE id = @ID";
 				cmd = new SqliteCommand (sql, Database.Connection);
 
 				// Add Parameters to statement
-				cmd.Parameters.Add (new SqliteParameter ("Files", files));
+				cmd.Parameters.Add (new SqliteParameter ("Files", FormatFileIDs (fileIDs)));
 				cmd.Parameters.Add (new SqliteParameter ("ID", playlist.ID));
 
 				// Result
@@ -1135,8 +1211,6 @@ public class Playlist : MonoBehaviour {
 
 				return result > 0;
 			}
-
-			// TODO remove file if no other playlist contains it
 		}
 
 		// Close database connection
@@ -1145,11 +1219,65 @@ public class Playlist : MonoBehaviour {
 		return false;
 	}
 
+	public void DeleteExtantFile (FileObj file, PlaylistObj exclude)
+	{
+		if (Database.Connect () && !IsFileUsed (file, exclude))
+		{
+			// Query statement
+			string sql = "DELETE FROM file WHERE id = @ID";
+			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("ID", file.ID));
+
+			// Send query
+			cmd.ExecuteNonQuery ();
+
+			// Dispose command
+			cmd.Dispose ();
+		}
+
+		// Close database connection
+		Database.Close ();
+	}
+
+	private bool IsFileUsed (FileObj file, PlaylistObj exclude)
+	{
+		if (file != null)
+		{
+			// Query statement
+			string sql = "SELECT files FROM playlist WHERE files LIKE @Files" + (exclude != null ? " AND id != @ID" : "");
+			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+			// Add Parameters to statement
+			cmd.Parameters.Add (new SqliteParameter ("Files", file.ID));
+			if (exclude != null) cmd.Parameters.Add (new SqliteParameter ("ID", exclude.ID));
+
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+			// Read file IDs
+			while (reader.Read ())
+			{
+				if (!reader.IsDBNull (0))
+				{
+					// Get file IDs
+					List<string> fileIDs = new List<string> (reader.GetString (0).Split (new Char[] { ',', ' ' }));
+
+					// Check if list contains file
+					if (fileIDs.Contains (file.ID.ToString ())) return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 
 
 	//-- HELPER METHODS
 
-	public string FormatFileIDs (List<String> fileIDs)
+	public string FormatFileIDs (List<string> fileIDs)
 	{
 		// Create FileObj list
 		List<FileObj> files = new List<FileObj> (fileIDs.Count);
@@ -1167,6 +1295,7 @@ public class Playlist : MonoBehaviour {
 		// Output
 		List<string> IDs = new List<string> ();
 
+		// Add IDs
 		foreach (FileObj file in files) {
 			if (file.ID != 0) {
 				IDs.Add (file.ID.ToString ());

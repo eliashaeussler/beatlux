@@ -26,15 +26,16 @@ public class Database {
 	// Database connection
 	public static SqliteConnection Connection;
 
-	//
-
 
 
 	// Enums for error handling
 	public enum Constants : long
 	{
-		QueryFailed = -1,
-		DuplicateFound = -2
+		Successful = -1,
+
+		QueryFailed = -10,
+		DuplicateFound = -11,
+		EmptyInputValue = -12
 	}
 
 

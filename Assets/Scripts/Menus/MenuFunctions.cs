@@ -13,7 +13,6 @@ public class MenuFunctions : MonoBehaviour {
 	public static List<String> sFiles;
 	public static bool Searching;
 	private BackgroundThread thread;
-
 	public static List<VisualizationObj> tempViz;
 
 
@@ -28,32 +27,46 @@ public class MenuFunctions : MonoBehaviour {
 	public void StartVisualization ()
 	{
 		// Set active elements
-		if (Settings.Opened.Playlist != null) Settings.Active.Playlist = Settings.Opened.Playlist;
-		if (Settings.Opened.Visualization != null) Settings.Active.Visualization = Settings.Opened.Visualization;
-		if (Settings.Opened.ColorScheme != null) Settings.Active.ColorScheme = Settings.Opened.ColorScheme;
-
-		// Reset opened elements
-		Settings.Opened.Playlist = null;
-		Settings.Opened.Visualization = null;
-		Settings.Opened.ColorScheme = null;
-
-		// Set default visualization
-		if (Settings.Active.Visualization == null) {
-			Settings.Active.Visualization = Settings.Defaults.Visualization;
-		}
+		if (Settings.Selected.Playlist != null) Settings.Active.Playlist = Settings.Selected.Playlist;
+		if (Settings.Selected.File != null) Settings.Active.File = Settings.Selected.File;
+		if (Settings.Selected.Visualization != null) Settings.Active.Visualization = Settings.Selected.Visualization;
+		if (Settings.Selected.ColorScheme != null) Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
 
 		// Set default color scheme
-		if (Settings.Active.ColorScheme == null && Settings.Active.Visualization != null) {
-			Settings.Active.ColorScheme = GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().GetDefault ();
+		if (Settings.Active.ColorScheme == null && Settings.Active.Visualization != null)
+		{
+			Settings.Selected.Visualization = Settings.Active.Visualization;
+			Settings.Active.ColorScheme = ColorScheme.GetDefault ();
 		}
 
 		// Start visualization level
-		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber)) {
+		bool started = false;
+		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber))
+		{
 			StartLevel (Settings.Active.Visualization.BuildNumber);
-		} else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber)) {
+			started = true;
+		}
+		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
+		{
 			StartLevel (Settings.Defaults.Visualization.BuildNumber);
-		} else {
-			// TODO dialog
+			started = true;
+		}
+
+		if (started)
+		{
+			// Reset opened elements
+			Settings.Selected.Playlist = null;
+			Settings.Selected.File = null;
+			Settings.Selected.Visualization = null;
+			Settings.Selected.ColorScheme = null;
+		}
+		else
+		{
+			// Show dialog
+			GameObject.Find ("MenuManager").GetComponent<Dialog> ().ShowDialog (
+				"Keine Visualisierung",
+				"Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
+			);
 		}
 	}
 		

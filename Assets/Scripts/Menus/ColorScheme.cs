@@ -13,7 +13,7 @@ public class ColorScheme : MonoBehaviour {
 	public Dialog Dialog;
 
     // Color schemes
-	public List<ColorSchemeObj> ColorSchemes;
+	public static List<ColorSchemeObj> ColorSchemes;
 
 	// Color Picker GameObject
 	public GameObject ColorPicker;
@@ -31,7 +31,7 @@ public class ColorScheme : MonoBehaviour {
 	{
 		// Add listener for Color Picker
 		PickerObj.onValueChanged.AddListener (col => {
-			UpdateColor (Settings.Opened.ColorScheme, ActiveColorID, col);
+			UpdateColor (Settings.Selected.ColorScheme, ActiveColorID, col);
 		});
 	}
 
@@ -47,15 +47,15 @@ public class ColorScheme : MonoBehaviour {
 			}
 
 			// Set opened color scheme
-			if (Settings.Opened.ColorScheme == null && Settings.Active.ColorScheme != null) {
-				Settings.Opened.ColorScheme = Settings.Active.ColorScheme;
+			if (Settings.Selected.ColorScheme == null && Settings.Active.ColorScheme != null) {
+				Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
 			}
 
 			// Insert default color scheme
 			InsertDefault ();
 
 			// Load color schemes from database
-			Load ();
+			Load (false);
 
 			if (ColorSchemes != null && ColorSchemes.Count > 0)
 			{
@@ -70,7 +70,7 @@ public class ColorScheme : MonoBehaviour {
 					}
 
 					// Hide colors
-					if (transform.Find ("#" + cs.ID + "/Contents") != null && !cs.Equals (Settings.Opened.ColorScheme))
+					if (transform.Find ("#" + cs.ID + "/Contents") != null && !cs.Equals (Settings.Selected.ColorScheme))
 						transform.Find ("#" + cs.ID + "/Contents").gameObject.SetActive (false);
 				}
 			}
@@ -131,7 +131,7 @@ public class ColorScheme : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			mainTextArrow.text = colorScheme.Equals (Settings.Opened.ColorScheme)
+			mainTextArrow.text = colorScheme.Equals (Settings.Selected.ColorScheme)
 				? IconFont.DROPDOWN_OPENED
 				: IconFont.DROPDOWN_CLOSED;
 
@@ -207,7 +207,7 @@ public class ColorScheme : MonoBehaviour {
 			mainLayoutElementListening.preferredWidth = 40;
 
 
-			if (colorScheme.Name != Settings.Opened.Visualization.Name)
+			if (colorScheme.Name != Settings.Selected.Visualization.Name)
 			{
 				// Create edit icons GameObject
 				GameObject editIcons = new GameObject ("Images");
@@ -370,7 +370,7 @@ public class ColorScheme : MonoBehaviour {
 			Image img = image.AddComponent<Image> ();
 			img.color = color;
 
-			if (colorScheme.Name != Settings.Opened.Visualization.Name)
+			if (colorScheme.Name != Settings.Selected.Visualization.Name)
 			{
 				// Add Event Trigger
 				EventTrigger trigger = image.AddComponent<EventTrigger> ();
@@ -405,7 +405,7 @@ public class ColorScheme : MonoBehaviour {
 	public void ToggleColors (ColorSchemeObj colorScheme, bool forceOpen)
 	{
 		// Set color scheme as active color scheme
-		if (!forceOpen) Settings.Opened.ColorScheme = colorScheme;
+		if (!forceOpen) Settings.Selected.ColorScheme = colorScheme;
 
 		// Show or hide colors
 		bool opened = false;
@@ -449,7 +449,7 @@ public class ColorScheme : MonoBehaviour {
 		}
 
 		// Set opened and selected color scheme
-		Settings.Opened.ColorScheme = opened ? colorScheme : null;
+		Settings.Selected.ColorScheme = opened ? colorScheme : null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();
@@ -457,9 +457,12 @@ public class ColorScheme : MonoBehaviour {
 
 	public void ScrollToTop ()
 	{
-		// TODO funktioniert nicht nicht
-		if (!gameObject.transform.parent.Find ("Scrollbar").gameObject.activeSelf)
-			gameObject.transform.parent.gameObject.GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
+		// Force canvas to update elements
+		Canvas.ForceUpdateCanvases ();
+
+		// Scroll to top if scrollbar is not visible
+		if (transform.GetComponent<RectTransform> ().sizeDelta.y < 0)
+			gameObject.transform.parent.GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
 	}
 
 	public long NewColorScheme (string name)
@@ -467,19 +470,22 @@ public class ColorScheme : MonoBehaviour {
 		if (name.Length > 0)
 		{
 			// Create color scheme object
-			ColorSchemeObj colorScheme = new ColorSchemeObj (name, Settings.Opened.Visualization);
+			ColorSchemeObj colorScheme = new ColorSchemeObj (name, Settings.Selected.Visualization);
 
 			// Create object in database
 			long id = Create (colorScheme);
 
 			// Reload playlists
-			Load ();
-			Display ();
+			if (id > 0)
+			{
+				Load (false);
+				Display ();
+			}
 
 			return id;
 		}
 
-		return (long) Database.Constants.QueryFailed;
+		return (long) Database.Constants.EmptyInputValue;
 	}
 
 	public bool Delete (GameObject gameObject, ColorSchemeObj colorScheme)
@@ -494,7 +500,7 @@ public class ColorScheme : MonoBehaviour {
 
 			// Unset active and opened color scheme
 			if (colorScheme.Equals (Settings.Active.ColorScheme)) Settings.Active.ColorScheme = null;
-			if (colorScheme.Equals (Settings.Opened.ColorScheme)) Settings.Opened.ColorScheme = null;
+			if (colorScheme.Equals (Settings.Selected.ColorScheme)) Settings.Selected.ColorScheme = null;
 
 			return true;
 		}
@@ -502,9 +508,10 @@ public class ColorScheme : MonoBehaviour {
 		return false;
 	}
 
-	public ColorSchemeObj GetDefault ()
+	public static ColorSchemeObj GetDefault ()
 	{
 		if (Settings.Active.Visualization != null) {
+			Load (true);
 			return ColorSchemes.Find (x => x.Name == Settings.Active.Visualization.Name);
 		}
 
@@ -553,27 +560,12 @@ public class ColorScheme : MonoBehaviour {
 			// Color scheme object
 			ColorSchemeObj colorScheme = FindColorScheme (obj);
 
-			// Content elements
-			Transform header = Dialog.wrapper.transform.Find ("Header");
-			Transform main = Dialog.wrapper.transform.Find ("Main");
-			Transform footer = Dialog.wrapper.transform.Find ("Footer");
-
-			// Header elements
-			Text heading = header.Find ("Heading").GetComponent<Text> ();
-
-			// Main elements
-			Text text;
-			InputField inputField;
-			Text inputText;
-
-			// Footer elements
-			Button buttonOK = footer.Find ("Button_OK").GetComponent<Button> ();
-			Text buttonOKText = footer.Find ("Button_OK").Find ("Text").GetComponent<Text> ();
-			Button buttonCancel = footer.Find ("Button_Cancel").GetComponent<Button> ();
-			Text buttonCancelText = footer.Find ("Button_Cancel").Find ("Text").GetComponent<Text> ();
+			// Button
+			Button button = Dialog.ButtonOK;
+			Text buttonText = Dialog.GetButtonText ();
 
 			// Remove listener
-			buttonOK.onClick.RemoveAllListeners ();
+			button.onClick.RemoveAllListeners ();
 
 
 			switch (type) {
@@ -581,38 +573,40 @@ public class ColorScheme : MonoBehaviour {
 			// New color scheme
 			case "CS_ADD":
 
-				if (Settings.Opened.Visualization != null)
+				if (Settings.Selected.Visualization != null)
 				{
 					// UI elements
-					heading.text = "Neues Farbschema erstellen";
-					inputField = Dialog.GetInputField ("", "Wie soll das neue Farbschema heißen?");
-					inputText = Dialog.GetInputText ();
+					Dialog.SetHeading ("Neues Farbschema erstellen");
+					Dialog.SetInputField ("", "Wie soll das neue Farbschema heißen?");
 
 					// Events
-					buttonOK.onClick.AddListener (delegate {
+					button.onClick.AddListener (delegate {
 
-						long id = NewColorScheme (inputText.text);
+						long id = NewColorScheme (Dialog.GetInputText ());
 
 						switch (id) {
 
+						// Color scheme name already taken
 						case (long) Database.Constants.DuplicateFound:
 
-							// TODO
-							print ("Bereits vorhanden.");
-
+							Dialog.SetInfo ("Ein Farbschema mit diesem Namen ist für die ausgewählte Visualisierung bereits vorhanden.");
 							break;
 
+						// Database query failed
 						case (long) Database.Constants.QueryFailed:
 
-							// TODO
-							print ("Fehlgeschlagen.");
+							Dialog.SetInfo ("Das Farbschema konnte nicht erstellt werden.");
+							break;
 
+						// No user input
+						case (long) Database.Constants.EmptyInputValue:
+
+							Dialog.SetInfo ("Bitte geben Sie einen Namen für das Farbschema ein.");
 							break;
 
 						default:
 
-							HideDialog ();
-
+							Dialog.HideDialog ();
 							break;
 
 						}
@@ -620,12 +614,10 @@ public class ColorScheme : MonoBehaviour {
 				}
 				else
 				{
-					// UI elements
-					heading.text = "Keine Visualisierung ausgewählt";
-					inputText = Dialog.GetText ("Bitte wählen Sie eine Visualisierung aus, um ein neues Farbschema hinzuzufügen.");
-
-					// Events
-					buttonOK.onClick.AddListener (HideDialog);
+					Dialog.ShowDialog (
+						"Keine Visualisierung ausgewählt",
+						"Bitte wählen Sie eine Visualisierung aus, um ein neues Farbschema hinzuzufügen."
+					);
 				}
 
 				break;
@@ -638,31 +630,50 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-					heading.text = "Farbschema bearbeiten";
-					inputField = Dialog.GetInputField (colorScheme.Name, colorScheme.Name);
-					inputText = Dialog.GetInputText ();
+					Dialog.SetHeading ("Farbschema bearbeiten");
+					Dialog.SetInputField (colorScheme.Name, colorScheme.Name);
 
 					// Events
-					buttonOK.onClick.AddListener (delegate {
+					button.onClick.AddListener (delegate {
 
 						// Update color scheme objects
 						if (Settings.Active.ColorScheme != null && Settings.Active.ColorScheme.Equals (colorScheme)) {
-							Settings.Active.ColorScheme.Name = inputText.text;
+							Settings.Active.ColorScheme.Name = Dialog.GetInputText ();
 						}
-						colorScheme.Name = inputText.text;
+						colorScheme.Name = Dialog.GetInputText ();
 
 						// Update database
-						bool edited = Edit (colorScheme);
+						long result = Edit (colorScheme);
 
-						if (edited) {
-							Load ();
+						// Handle database result
+						switch (result) {
+
+						// Color scheme name already taken
+						case (long) Database.Constants.DuplicateFound:
+
+							Dialog.SetInfo ("Ein Farbschema mit diesem Namen ist für die ausgewählte Visualisierung bereits vorhanden.");
+							break;
+
+						// Database query failed
+						case (long) Database.Constants.QueryFailed:
+
+							Dialog.SetInfo ("Das Farbschema konnte nicht aktualisiert werden.");
+							break;
+
+						// No user input
+						case (long) Database.Constants.EmptyInputValue:
+
+							Dialog.SetInfo ("Bitte geben Sie einen Namen für das Farbschema ein.");
+							break;
+
+						default:
+
+							Load (false);
 							Display ();
-						} else {
-							// TODO
-							print ("Fehlgeschlagen.");
-						}
+							Dialog.HideDialog ();
+							break;
 
-						HideDialog ();
+						}
 					});
 				}
 				else
@@ -680,16 +691,19 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-					heading.text = "Farbschema löschen";
-					text = Dialog.GetText ("Farbschema \"" + colorScheme.Name + "\" endgültig löschen?");
+					Dialog.SetHeading ("Farbschema löschen");
+					Dialog.SetText ("Farbschema \"" + colorScheme.Name + "\" endgültig löschen?");
 
 					// Events
-					buttonOK.onClick.AddListener (delegate {
+					button.onClick.AddListener (delegate {
 
 						Delete (obj, colorScheme);
-						Load ();
+
+						Load (false);
 						Display ();
-						HideDialog ();
+
+						Dialog.HideDialog ();
+
 					});
 				}
 				else
@@ -715,57 +729,27 @@ public class ColorScheme : MonoBehaviour {
 		return;
 	}
 
-	public void HideDialog ()
-	{
-		if (Dialog != null) {
-			Dialog.HideDialog ();
-		}
-	}
-
     
 
 	//-- DATABASE METHODS
 
 	public void InsertDefault ()
 	{
-		if (Database.Connect () && Settings.Opened.Visualization != null && Settings.Opened.Visualization.ID > 0)
+		if (Database.Connect () && Settings.Selected.Visualization != null && Settings.Selected.Visualization.ID > 0 &&
+			!Exists (new ColorSchemeObj (Settings.Selected.Visualization.Name, Settings.Selected.Visualization)))
 		{
-			// Check if color scheme already exists
-			string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID";
+			// Insert default color scheme
+			string sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
 			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
 
 			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Opened.Visualization.Name));
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
+			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Selected.Visualization.Name));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Selected.Visualization.ID));
 
-			// Get sql results
-			SqliteDataReader reader = cmd.ExecuteReader ();
-
-			// Stop if color scheme already exists
-			while (reader.Read ())
-			{
-				cmd.Dispose ();
-				reader.Close ();
-				Database.Close ();
-
-				return;
-			}
-
-			// Dispose command
-			cmd.Dispose ();
-
-			// Insert default color scheme
-			sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
-			cmd = new SqliteCommand (sql, Database.Connection);
-
-			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Opened.Visualization.Name));
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
-
-			if (Settings.Defaults.Colors.ContainsKey (Settings.Opened.Visualization.Name))
+			if (Settings.Defaults.Colors.ContainsKey (Settings.Selected.Visualization.Name))
 			{
 				// Set colors
-				Color[] colors = Settings.Defaults.Colors [Settings.Opened.Visualization.Name];
+				Color[] colors = Settings.Defaults.Colors [Settings.Selected.Visualization.Name];
 				cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colors)));
 
 				// Execute insert statement
@@ -780,20 +764,23 @@ public class ColorScheme : MonoBehaviour {
 		Database.Close ();
 	}
 
-	public void Load ()
+	public static void Load (bool defaultOnly)
     {
-		if (Database.Connect() && Settings.Opened.Visualization != null &&
-			Application.CanStreamedLevelBeLoaded (Settings.Opened.Visualization.BuildNumber))
+		if (Database.Connect() && Settings.Selected.Visualization != null &&
+			Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
         {
             // Database command
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
 
             // Query statement
-            string sql = "SELECT id,name,viz_id,colors FROM color_scheme WHERE viz_id = @Viz_ID ORDER BY name ASC";
+            string sql = "SELECT id,name,viz_id,colors FROM color_scheme WHERE viz_id = @Viz_ID " +
+				(defaultOnly ? "AND name = @Name " : "") +
+				"ORDER BY name ASC";
             cmd.CommandText = sql;
 
 			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Opened.Visualization.ID));
+			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Selected.Visualization.ID));
+			if (defaultOnly) cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Selected.Visualization.Name));
 
             // Get sql results
             SqliteDataReader reader = cmd.ExecuteReader ();
@@ -829,43 +816,32 @@ public class ColorScheme : MonoBehaviour {
 	{
 		if (Database.Connect () && colorScheme != null && colorScheme.Name.Length > 0)
 		{
-			// Check if color scheme name already exists
-			string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID";
-			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+			if (!Exists (colorScheme))
+			{
+				// Insert color scheme into database
+				string sql = "INSERT INTO color_scheme (name,viz_id,colors) VALUES (@Name, @Viz_ID, @Colors); " +
+				"SELECT last_insert_rowid()";
+				SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
 
-			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
+				// Add Parameters to statement
+				cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
+				cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
+				cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colorScheme.Colors)));
 
-			// Exit if color scheme name already exists
-			SqliteDataReader reader = cmd.ExecuteReader ();
-			while (reader.Read ()) {
+				// Execute insert statement and get ID
+				long id = (long)cmd.ExecuteScalar ();
+
+				// Close database connection
 				cmd.Dispose ();
-				reader.Close ();
 				Database.Close ();
 
-				return (long) Database.Constants.DuplicateFound;
+				return id;
 			}
-			cmd.Dispose ();
-
-			// Insert color scheme into database
-			sql = "INSERT INTO color_scheme (name,viz_id,colors) VALUES (@Name, @Viz_ID, @Colors); " +
-				"SELECT last_insert_rowid()";
-			cmd = new SqliteCommand (sql, Database.Connection);
-
-			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
-			cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colorScheme.Colors)));
-
-			// Execute insert statement and get ID
-			long id = (long) cmd.ExecuteScalar ();
 
 			// Close database connection
-			cmd.Dispose ();
 			Database.Close ();
 
-			return id;
+			return (long) Database.Constants.DuplicateFound;
 		}
 
 		// Close database connection
@@ -874,11 +850,11 @@ public class ColorScheme : MonoBehaviour {
 		return (long) Database.Constants.QueryFailed;
 	}
 
-	public bool Edit (ColorSchemeObj colorScheme)
+	public long Edit (ColorSchemeObj colorScheme)
 	{
 		if (Database.Connect () && colorScheme != null && colorScheme.Name.Length > 0)
 		{
-			try
+			if (!Exists (colorScheme))
 			{
 				// Query statement
 				string sql = "UPDATE color_scheme SET name = @Name, viz_id = @Viz_ID, colors = @Colors WHERE id = @ID";
@@ -897,15 +873,19 @@ public class ColorScheme : MonoBehaviour {
 				cmd.Dispose ();
 				Database.Close ();
 
-				return result > 0;
+				return (long) (result > 0 ? Database.Constants.Successful : Database.Constants.QueryFailed);
 			}
-			catch (SqliteException) {}
+
+			// Close database connection
+			Database.Close ();
+
+			return (long) Database.Constants.DuplicateFound;
 		}
 
 		// Close database connection
 		Database.Close ();
 
-		return false;
+		return (long) (colorScheme.Name.Length > 0 ? Database.Constants.QueryFailed : Database.Constants.EmptyInputValue);
 	}
 
 	public bool Delete (ColorSchemeObj colorScheme)
@@ -935,6 +915,32 @@ public class ColorScheme : MonoBehaviour {
 		return false;
 	}
 
+	public bool Exists (ColorSchemeObj colorScheme)
+	{
+		string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID AND id != @ID";
+		SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+		// Add Parameters to statement
+		cmd.Parameters.Add (new SqliteParameter ("Name", colorScheme.Name));
+		cmd.Parameters.Add (new SqliteParameter ("Viz_ID", colorScheme.Visualization.ID));
+		cmd.Parameters.Add (new SqliteParameter ("ID", colorScheme.ID));
+
+		// Exit if color scheme name already exists
+		SqliteDataReader reader = cmd.ExecuteReader ();
+		while (reader.Read ())
+		{
+			cmd.Dispose ();
+			reader.Close ();
+
+			return true;
+		}
+
+		// Dispose command
+		cmd.Dispose ();
+
+		return false;
+	}
+
 
 
 	//-- HELPER METHODS
@@ -957,7 +963,7 @@ public class ColorScheme : MonoBehaviour {
 		return cols.Count > 0 ? String.Join (";", cols.ToArray ()) : null;
 	}
 
-	public Color [] GetColors (string input)
+	public static Color [] GetColors (string input)
 	{
 		// List with colors
 		List<Color> colors = new List<Color> ();
