@@ -492,7 +492,6 @@ public class Playlist : MonoBehaviour {
 			// Remove icon from selected file
 			Transform file = transform.Find ("#" + Settings.Selected.Playlist.ID + "/Contents/#" +
 				Settings.Selected.Playlist.ID + "." + Settings.Selected.File.ID + "/Listening");
-			print (file);
 			if (file != null) file.GetComponent<Text> ().text = "";
 
 			// Unset selected file
@@ -1015,6 +1014,12 @@ public class Playlist : MonoBehaviour {
 			// Reset file ID
 			file.ID = 0;
 
+			// Read metadata
+			TagLib.File tags = TagLib.File.Create (file.Path);
+			file.Artists = tags.Tag.Performers;
+			file.Album = tags.Tag.Album;
+			file.Title = tags.Tag.Title;
+
 			// Update file ID: Query statement
 			string sql = "SELECT id FROM file WHERE path = @Path";
 			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
@@ -1038,12 +1043,15 @@ public class Playlist : MonoBehaviour {
 			if (!(file.ID > 0))
 			{
 				// Query statement
-				sql = "INSERT INTO file (path) VALUES (@Path); " +
+				sql = "INSERT INTO file (path,artists,album,title) VALUES (@Path, @Artists, @Album, @Title); " +
 					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, Database.Connection);
 
 				// Add Parameters to statement
 				cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
+				cmd.Parameters.Add (new SqliteParameter ("Artists", FormatArtists (file.Artists)));
+				cmd.Parameters.Add (new SqliteParameter ("Album", file.Album));
+				cmd.Parameters.Add (new SqliteParameter ("Title", file.Title));
 
 				// Send query
 				file.ID = (long) cmd.ExecuteScalar ();
@@ -1336,5 +1344,14 @@ public class Playlist : MonoBehaviour {
 		}
 
 		return IDs.Count > 0 ? String.Join (",", IDs.ToArray ()) : null;
+	}
+
+	public string FormatArtists (string [] artists)
+	{
+		if (artists.Length > 0) {
+			return String.Join (",", artists);
+		}
+
+		return null;
 	}
 }

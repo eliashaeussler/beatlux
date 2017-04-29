@@ -30,7 +30,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 			pl.ToggleFiles (playlist, true);
 
 			// Show dialog
-			Dialog dialog = GameObject.Find ("MenuManager").GetComponent<Dialog> ();
+			Dialog dialog = GameObject.Find ("Dialog").GetComponent<Dialog> ();
 
 			switch (added) {
 
