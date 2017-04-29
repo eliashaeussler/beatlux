@@ -76,8 +76,10 @@ public class SourceFolder : MonoBehaviour {
 			GameObject obj = new GameObject (item);
 			obj.transform.SetParent (gameObject.transform);
 
+			// Add RectTransform element
 			RectTransform trans = obj.AddComponent<RectTransform> ();
 			trans.pivot = new Vector2 (0, 0.5f);
+			trans.localScale = Vector3.one;
 
 			// Add Layout Element
 			LayoutElement layoutElement = obj.AddComponent<LayoutElement> ();

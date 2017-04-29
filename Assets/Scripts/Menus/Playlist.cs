@@ -64,8 +64,9 @@ public class Playlist : MonoBehaviour {
 			}
 
 			// Hide playlist files
-			if (transform.Find ("#" + p.ID + "/Contents") != null && !p.Equals(Settings.Selected.Playlist))
-				transform.Find ("#" + p.ID + "/Contents").gameObject.SetActive (false);
+			Transform contents = transform.Find ("#" + p.ID + "/Contents");
+			if (contents != null && !p.Equals(Settings.Selected.Playlist))
+				contents.gameObject.SetActive (false);
 		}
 	}
 
@@ -77,6 +78,10 @@ public class Playlist : MonoBehaviour {
 
 		// Text settings
 		text.text = playlist.Name;
+
+		// Set scaling
+		gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
+		gameObject.transform.Find ("Main").GetComponent<RectTransform> ().localScale = Vector3.one;
 
 		// Get Event Trigger
 		EventTrigger events = gameObject.GetComponent<EventTrigger> ();
@@ -104,6 +109,10 @@ public class Playlist : MonoBehaviour {
 
 		// Text settings
 		text.text = Path.GetFileName (file.Path);
+
+		// Set scaling
+		gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
+		gameObject.transform.parent.GetComponent<RectTransform> ().localScale = Vector3.one;
 
 		// Get Event Trigger
 		EventTrigger events = gameObject.GetComponent<EventTrigger> ();
@@ -233,13 +242,14 @@ public class Playlist : MonoBehaviour {
 			// Add text
 			TextUnicode mainTextListening = mainListening.AddComponent<TextUnicode> ();
 
+
 			if (playlist.Equals (Settings.Active.Playlist) && (file == null || (file != null && file.Equals (Settings.Active.File))))
 			{
 				mainTextListening.text = IconFont.LISTENING;
 				mainTextListening.fontSize = 30;
 				mainTextListening.color = file == null ? Color.white : new Color (0.7f, 0.7f, 0.7f);
 			}
-			else if (file != null && file.Equals (Settings.Selected.File))
+			else if (file != null && playlist.Equals (Settings.Selected.Playlist) && file.Equals (Settings.Selected.File))
 			{
 				mainTextListening.text = IconFont.DROPDOWN_CLOSED;
 				mainTextListening.fontSize = 20;
@@ -477,11 +487,19 @@ public class Playlist : MonoBehaviour {
 			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
 		}
 
+		if (!opened && Settings.Selected.File != null)
+		{
+			// Remove icon from selected file
+			Transform file = transform.Find ("#" + Settings.Selected.Playlist.ID + "/Contents/#" +
+				Settings.Selected.Playlist.ID + "." + Settings.Selected.File.ID + "/Listening");
+			if (file != null) file.GetComponent<Text> ().text = "";
+
+			// Unset selected file
+			Settings.Selected.File = null;
+		}
+
 		// Set opened playlist
 		Settings.Selected.Playlist = opened ? playlist : null;
-
-		// Unset selected file
-		if (!opened) Settings.Selected.File = null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();
@@ -996,6 +1014,12 @@ public class Playlist : MonoBehaviour {
 			// Reset file ID
 			file.ID = 0;
 
+			// Read metadata
+			TagLib.File tags = TagLib.File.Create (file.Path);
+			file.Artists = tags.Tag.Performers;
+			file.Album = tags.Tag.Album;
+			file.Title = tags.Tag.Title;
+
 			// Update file ID: Query statement
 			string sql = "SELECT id FROM file WHERE path = @Path";
 			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
@@ -1019,12 +1043,15 @@ public class Playlist : MonoBehaviour {
 			if (!(file.ID > 0))
 			{
 				// Query statement
-				sql = "INSERT INTO file (path) VALUES (@Path); " +
+				sql = "INSERT INTO file (path,artists,album,title) VALUES (@Path, @Artists, @Album, @Title); " +
 					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, Database.Connection);
 
 				// Add Parameters to statement
 				cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
+				cmd.Parameters.Add (new SqliteParameter ("Artists", FormatArtists (file.Artists)));
+				cmd.Parameters.Add (new SqliteParameter ("Album", file.Album));
+				cmd.Parameters.Add (new SqliteParameter ("Title", file.Title));
 
 				// Send query
 				file.ID = (long) cmd.ExecuteScalar ();
@@ -1317,5 +1344,14 @@ public class Playlist : MonoBehaviour {
 		}
 
 		return IDs.Count > 0 ? String.Join (",", IDs.ToArray ()) : null;
+	}
+
+	public string FormatArtists (string [] artists)
+	{
+		if (artists.Length > 0) {
+			return String.Join (",", artists);
+		}
+
+		return null;
 	}
 }
