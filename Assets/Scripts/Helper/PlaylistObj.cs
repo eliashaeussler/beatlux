@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlaylistObj {
+public class PlaylistObj : ICloneable {
 
 	public long ID { get; set; }
 	public string Name { get; set; }
@@ -13,6 +14,13 @@ public class PlaylistObj {
 		this.Name = Name;
 		this.ID = 0;
 		this.Files = new List<FileObj> ();
+	}
+
+
+
+	public object Clone ()
+	{
+		return this.MemberwiseClone ();
 	}
 
 	public override bool Equals (object obj)

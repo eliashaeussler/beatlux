@@ -432,69 +432,59 @@ public class Playlist : MonoBehaviour {
 
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
-		if (playlist.Files.Count > 0)
-		{
-			// Set playlist as active playlist
-			if (!forceOpen)
-				Settings.Selected.Playlist = playlist;
+		// Set playlist as active playlist
+		if (!forceOpen && playlist.Files.Count > 0)
+			Settings.Selected.Playlist = playlist;
 
-			// Show or hide playlist files
-			bool opened = false;
-			foreach (PlaylistObj p in Playlists)
+		// Show or hide playlist files
+		bool opened = false;
+		foreach (PlaylistObj p in Playlists)
+		{
+			// Get GameObject for current file
+			Transform contents = transform.Find ("#" + p.ID + "/Contents");
+			GameObject main = contents != null ? contents.gameObject : null;
+
+			// Get arrow
+			Text arr = transform.Find ("#" + p.ID + "/Main/Arrow").GetComponent<Text> ();
+
+			// Toggle files for GameObject
+			if (main != null)
 			{
-				// Get GameObject for current file
-				Transform contents = transform.Find ("#" + p.ID + "/Contents");
-				GameObject main = contents != null ? contents.gameObject : null;
-
-				// Get arrow
-				Text arr = transform.Find ("#" + p.ID + "/Main/Arrow").GetComponent<Text> ();
-
-				// Toggle files for GameObject
-				if (main != null)
+				if (p == playlist && p.Files.Count > 0)
 				{
-					if (p == playlist)
-					{
-						main.SetActive (!forceOpen ? !main.activeSelf : true);
-						opened = main.activeSelf;
-					}
-					else
-					{
-						main.SetActive (false);
-
-						if (arr.text == IconFont.DROPDOWN_OPENED) {
-							arr.text = IconFont.DROPDOWN_CLOSED;
-						}
-					}
+					main.SetActive (!forceOpen ? !main.activeSelf : true);
+					opened = main.activeSelf;
 				}
+				else
+				{
+					main.SetActive (false);
 
-				// Change arrows
-				if (!forceOpen && p != playlist) {
-					arr.text = IconFont.DROPDOWN_CLOSED;
+					if (arr.text == IconFont.DROPDOWN_OPENED) {
+						arr.text = IconFont.DROPDOWN_CLOSED;
+					}
 				}
 			}
 
-			// Change arrow image
-			Text arrow = transform.Find ("#" + playlist.ID + "/Main/Arrow").GetComponent<Text> ();
-			if (arrow != null) {
-				arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
+			// Change arrows
+			if (!forceOpen && p != playlist) {
+				arr.text = IconFont.DROPDOWN_CLOSED;
 			}
-
-			// Set opened playlist
-			Settings.Selected.Playlist = opened ? playlist : null;
-
-			// Unset selected file
-			if (!opened) Settings.Selected.File = null;
-
-			// Scroll to top if scrollbar is hidden
-			ScrollToTop ();
-		} 
-		else
-		{
-			// Change arrow icon
-			Text arrow = transform.Find ("#" + playlist.ID + "/Main/Arrow").GetComponent<Text> ();
-			if (arrow != null) arrow.text = IconFont.DROPDOWN_CLOSED;
-			// TODO funktioniert noch nicht
 		}
+
+		// Change arrow image
+		TextUnicode arrow = transform.Find ("#" + playlist.ID + "/Main/Arrow").GetComponent<TextUnicode> ();
+		if (arrow != null) {
+			arrow.text = opened ? IconFont.DROPDOWN_OPENED : IconFont.DROPDOWN_CLOSED;
+		}
+
+		// Set opened playlist
+		Settings.Selected.Playlist = opened ? playlist : null;
+
+		// Unset selected file
+		if (!opened) Settings.Selected.File = null;
+
+		// Scroll to top if scrollbar is hidden
+		ScrollToTop ();
 	}
 
 	public void UpdateSelectedFile (FileObj file)
@@ -529,6 +519,38 @@ public class Playlist : MonoBehaviour {
 			// Reload playlists
 			if (id > 0)
 			{
+				Load ();
+				Display ();
+			}
+
+			return id;
+		}
+
+		return (long) Database.Constants.EmptyInputValue;
+	}
+
+	public long EditPlaylist (PlaylistObj playlist, string name)
+	{
+		if (name.Length > 0)
+		{
+			// Clone playlist
+			PlaylistObj pl = (PlaylistObj) playlist.Clone ();
+			pl.Name = name;
+
+			// Edit playlist
+			long id = Edit (pl);
+
+			if (id == (long) Database.Constants.Successful)
+			{
+				// Update playlist objects
+				if (Settings.Active.Playlist != null && Settings.Active.Playlist.Equals (playlist)) {
+					Settings.Active.Playlist.Name = name;
+				}
+				if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Equals (playlist)) {
+					Settings.Selected.Playlist.Name = name;
+				}
+
+				// Reload playlists
 				Load ();
 				Display ();
 			}
@@ -650,10 +672,10 @@ public class Playlist : MonoBehaviour {
 				button.onClick.AddListener (delegate {
 
 					// Create playlist
-					long id = NewPlaylist (Dialog.GetInputText ());
+					long result = NewPlaylist (Dialog.GetInputText ().Trim ());
 
 					// Handle database result
-					switch (id) {
+					switch (result) {
 
 					// Playlist name already taken
 					case (long) Database.Constants.DuplicateFound:
@@ -698,14 +720,8 @@ public class Playlist : MonoBehaviour {
 					// Events
 					button.onClick.AddListener (delegate {
 
-						// Update playlist objects
-						if (Settings.Active.Playlist != null && Settings.Active.Playlist.Equals (playlist)) {
-							Settings.Active.Playlist.Name = Dialog.GetInputText ();
-						}
-						playlist.Name = Dialog.GetInputText ();
-
-						// Update database
-						long result = Edit (playlist);
+						// Edit playlist
+						long result = EditPlaylist (playlist, Dialog.GetInputText ().Trim ());
 
 						// Handle database result
 						switch (result) {
@@ -730,8 +746,6 @@ public class Playlist : MonoBehaviour {
 
 						default:
 
-							Load ();
-							Display ();
 							Dialog.HideDialog ();
 							break;
 

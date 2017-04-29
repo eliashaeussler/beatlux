@@ -113,7 +113,7 @@ public class Dialog : MonoBehaviour {
 		}
 	}
 
-	public void Submit (string input)
+	public void Submit ()
 	{
 		if (ButtonOK != null) {
 			ButtonOK.onClick.Invoke ();
