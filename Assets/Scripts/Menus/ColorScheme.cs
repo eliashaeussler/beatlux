@@ -62,16 +62,28 @@ public class ColorScheme : MonoBehaviour {
 				foreach (ColorSchemeObj cs in ColorSchemes)
 				{
 					// Display color scheme
-					DisplayColorScheme (cs);
+					GameObject gameObject = DisplayColorScheme (cs);
 
-					// Display colors
-					for (int i=0; i < cs.Colors.Length; i++) {
-						DisplayColor (cs, cs.Colors[i], i);
+					if (gameObject != null)
+					{
+						// Display colors
+						for (int i=0; i < cs.Colors.Length; i++) {
+							DisplayColor (cs, cs.Colors [i], i);
+						}
+
+						// Get main and contents
+						Transform main = gameObject.transform.Find ("Main");
+						Transform contents = gameObject.transform.Find ("Contents");
+
+						// Set scaling
+						gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
+						main.GetComponent<RectTransform> ().localScale = Vector3.one;
+
+						// Hide colors
+						if (contents != null && !cs.Equals (Settings.Selected.ColorScheme)) {
+							contents.gameObject.SetActive (false);
+						}
 					}
-
-					// Hide colors
-					if (transform.Find ("#" + cs.ID + "/Contents") != null && !cs.Equals (Settings.Selected.ColorScheme))
-						transform.Find ("#" + cs.ID + "/Contents").gameObject.SetActive (false);
 				}
 			}
 		}
@@ -80,7 +92,7 @@ public class ColorScheme : MonoBehaviour {
 		Database.Close ();
 	}
 
-	public void DisplayColorScheme (ColorSchemeObj colorScheme)
+	public GameObject DisplayColorScheme (ColorSchemeObj colorScheme)
 	{
 		if (colorScheme != null)
 		{
@@ -352,7 +364,11 @@ public class ColorScheme : MonoBehaviour {
 			glg.spacing = new Vector2 (25, 25);
 			glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
 			glg.constraintCount = 10;
+
+			return gameObject;
 		}
+
+		return null;
 	}
 
 	public void DisplayColor (ColorSchemeObj colorScheme, Color color, int id)

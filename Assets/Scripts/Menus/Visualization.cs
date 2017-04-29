@@ -149,6 +149,11 @@ public class Visualization : MonoBehaviour {
 				LayoutElement mainLayoutElementActive = mainActive.AddComponent<LayoutElement> ();
 				mainLayoutElementActive.preferredWidth = 40;
 				mainLayoutElementActive.preferredHeight = 30;
+
+
+
+				// Set scaling
+				gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
 			}
 		}
 	}
