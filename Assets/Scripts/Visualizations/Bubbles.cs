@@ -9,17 +9,19 @@ public class Bubbles : MonoBehaviour {
     {
         public GameObject theSphere;
         public int size;
+        public int speed;
 
-        public Kugel(GameObject sphere, Vector3 pos, int size)
+        public Kugel(GameObject sphere, Vector3 pos, int size, int speed)
         {
             this.theSphere = (GameObject)Instantiate(sphere, pos, Quaternion.identity);
-            this.theSphere.GetComponent<Rigidbody>().AddForce(0, 1000, 0);
+            this.theSphere.GetComponent<Rigidbody>().AddForce(0, speed*500, 0);
             this.size = size;
+            this.speed = speed;
         }
 
         public void groesse(float fl)
         {
-            fl = fl / 10;
+            fl = fl / 15;
             Vector3 scale;
             if(fl > 1)
             {
@@ -89,7 +91,7 @@ public class Bubbles : MonoBehaviour {
 
 
 
-        for (int i = 0; i < vol/1000; i++)
+        for (int i = 0; i < vol/100000; i++)
             
             {
            
@@ -97,10 +99,11 @@ public class Bubbles : MonoBehaviour {
                 int posX = Random.Range(0, 200);
                 int posZ = Random.Range(0, 200);
                 int col = Random.Range(0, 4);
-                int size = Random.Range(0, 5);
+                int size = Random.Range(0, 10);
+                int speed = Random.Range(1, 6);
                 Vector3 pos = new Vector3(posX, -10, posZ);
                 
-                Kugel kug = new Kugel(sphere,pos, size);
+                Kugel kug = new Kugel(sphere,pos, size,speed);
             
 
             if (col == 0)
