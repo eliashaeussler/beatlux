@@ -21,7 +21,7 @@ public class Bubbles : MonoBehaviour {
 
         public void groesse(float fl)
         {
-            fl = fl / 15;
+           
             Vector3 scale;
             if(fl > 1)
             {
@@ -78,13 +78,15 @@ public class Bubbles : MonoBehaviour {
         }
 
         float bass = 0;
-        for( int i = 0; i<30; i++)
+        for( int i = 0; i<20; i++)
         {
-            if (samples[i] >= 0)
+            if (spectrum[i] >= 0)
             {
-                bass += samples[i];
+                bass += spectrum[i];
             }
-            else bass -= samples[i];
+            else bass -= spectrum[i];
+
+
         }
 
 
