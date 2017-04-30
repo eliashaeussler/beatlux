@@ -165,11 +165,11 @@ GameObject:
   - 92: {fileID: 1779909051}
   - 124: {fileID: 1779909050}
   - 81: {fileID: 1779909049}
-  - 114: {fileID: 1779909055}
-  - 82: {fileID: 1779909054}
   - 54: {fileID: 1779909058}
   - 114: {fileID: 1779909057}
   - 114: {fileID: 1779909056}
+  - 114: {fileID: 1779909054}
+  - 82: {fileID: 1779909055}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -239,13 +239,26 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1779909048}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -98}
+  m_LocalPosition: {x: 93, y: 65, z: 55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!82 &1779909054
+--- !u!114 &1779909054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1779909048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07725baee048614d9fc62800b0dd8e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphere: {fileID: 1000010420551140, guid: 3a1cb8c66b2a13a46894bcfc6c2a7f7e, type: 2}
+  height: 200
+--- !u!82 &1779909055
 AudioSource:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -319,19 +332,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &1779909055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1779909048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c07725baee048614d9fc62800b0dd8e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sphere: {fileID: 1000010420551140, guid: 3a1cb8c66b2a13a46894bcfc6c2a7f7e, type: 2}
-  height: 200
 --- !u!114 &1779909056
 MonoBehaviour:
   m_ObjectHideFlags: 0
