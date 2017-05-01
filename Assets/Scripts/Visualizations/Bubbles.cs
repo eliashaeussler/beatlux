@@ -41,8 +41,16 @@ public class Bubbles : MonoBehaviour {
 
 
 
-   public GameObject sphere;
-   public int height;
+    public GameObject sphere;
+    public int height;
+    public int rangeXmin;
+    public int rangeXmax;
+    public int rangeYmin;
+    public int rangeYmax;
+    public int minSize;
+    public int maxSize;
+    public int amount;   
+     
     //Colors
     Color color1 = new Color(0,1,0,1);
     Color color2 = new Color(1,0,0,1);
@@ -93,15 +101,15 @@ public class Bubbles : MonoBehaviour {
 
 
 
-        for (int i = 0; i < vol/100000; i++)
+        for (int i = 0; i < (vol/100) * amount; i++)
             
             {
            
             
-                int posX = Random.Range(0, 200);
-                int posZ = Random.Range(0, 200);
+                int posX = Random.Range(rangeXmin, rangeXmax);
+                int posZ = Random.Range(rangeYmin, rangeYmax);
                 int col = Random.Range(0, 4);
-                int size = Random.Range(0, 10);
+                int size = Random.Range(minSize,maxSize);
                 int speed = Random.Range(1, 6);
                 Vector3 pos = new Vector3(posX, -10, posZ);
                 
