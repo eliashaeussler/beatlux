@@ -48,6 +48,8 @@ public class MenuFunctions : MonoBehaviour {
 		}
 		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
 		{
+			Settings.Active.Visualization = Settings.Defaults.Visualization;
+
 			StartLevel (Settings.Defaults.Visualization.BuildNumber);
 			started = true;
 		}

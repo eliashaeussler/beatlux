@@ -62,7 +62,7 @@ public class MusicInteraction : MonoBehaviour
             }
             transform.localScale = previousScale;
 
-            Debug.Log(previousScale);
+//            Debug.Log(previousScale);
         
     }
 }

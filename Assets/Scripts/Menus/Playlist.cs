@@ -606,9 +606,13 @@ public class Playlist : MonoBehaviour {
 				// Unset active and opened playlist
 				if (playlist.Equals (Settings.Active.Playlist)) Settings.Active.Playlist = null;
 				if (playlist.Equals (Settings.Selected.Playlist)) Settings.Selected.Playlist = null;
-			} else {
-				// Remove files from playlist
+			}
+			else
+			{
+				// Remove files from playlists
 				playlist.Files.Remove (file);
+				if (playlist.Equals (Settings.Active.Playlist)) Settings.Active.Playlist.Files.Remove (file);
+				if (playlist.Equals (Settings.Selected.Playlist)) Settings.Selected.Playlist.Files.Remove (file);
 
 				// Toggle files
 				if (playlist.Files.Count == 0) {
@@ -1014,12 +1018,6 @@ public class Playlist : MonoBehaviour {
 			// Reset file ID
 			file.ID = 0;
 
-			// Read metadata
-			TagLib.File tags = TagLib.File.Create (file.Path);
-			file.Artists = tags.Tag.Performers;
-			file.Album = tags.Tag.Album;
-			file.Title = tags.Tag.Title;
-
 			// Update file ID: Query statement
 			string sql = "SELECT id FROM file WHERE path = @Path";
 			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
@@ -1043,15 +1041,12 @@ public class Playlist : MonoBehaviour {
 			if (!(file.ID > 0))
 			{
 				// Query statement
-				sql = "INSERT INTO file (path,artists,album,title) VALUES (@Path, @Artists, @Album, @Title); " +
+				sql = "INSERT INTO file (path) VALUES (@Path); " +
 					"SELECT last_insert_rowid()";
 				cmd = new SqliteCommand (sql, Database.Connection);
 
 				// Add Parameters to statement
 				cmd.Parameters.Add (new SqliteParameter ("Path", file.Path));
-				cmd.Parameters.Add (new SqliteParameter ("Artists", FormatArtists (file.Artists)));
-				cmd.Parameters.Add (new SqliteParameter ("Album", file.Album));
-				cmd.Parameters.Add (new SqliteParameter ("Title", file.Title));
 
 				// Send query
 				file.ID = (long) cmd.ExecuteScalar ();
@@ -1344,14 +1339,5 @@ public class Playlist : MonoBehaviour {
 		}
 
 		return IDs.Count > 0 ? String.Join (",", IDs.ToArray ()) : null;
-	}
-
-	public string FormatArtists (string [] artists)
-	{
-		if (artists.Length > 0) {
-			return String.Join (",", artists);
-		}
-
-		return null;
 	}
 }
