@@ -3,10 +3,6 @@ using System.Collections;
 
 public class Spectrum : MonoBehaviour
 {
-
-    
-
-
     public GameObject prefab;
     public int numberOfObjects = 20; //number of cubes that are generated when scene is started
     public float radius = 5f;
@@ -50,17 +46,18 @@ public class Spectrum : MonoBehaviour
          **/ 
         for (int i = 0; i < numberOfObjects; i++)
         {
+            
             Vector3 previousScale = cubes[i].transform.localScale;
 
 
-            if (spectrum[i] * newScale > 1.3)   //Only update the cube if the height is above set value (1.3)
+            if (spectrum[i] * newScale > 2.3)   //Only update the cube if the height is above set value (1.3)
             {
                 previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale, Time.deltaTime * 30);
 
             }
             else
             {
-                previousScale.y = 1;
+                previousScale.y = 2;
 
             }
             cubes[i].transform.localScale = previousScale;
