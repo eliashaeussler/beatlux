@@ -21,3 +21,5 @@ EditorBuildSettings:
     path: Assets/Scenes/Visualizations/Spectrum.unity
   - enabled: 1
     path: Assets/Scenes/Credits.unity
+  - enabled: 1
+    path: Assets/Scenes/Visualizations/Fireworks.unity
