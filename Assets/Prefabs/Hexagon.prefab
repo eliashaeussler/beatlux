@@ -37,7 +37,7 @@ GameObject:
   - 33: {fileID: 33000011921945880}
   - 23: {fileID: 23000014235542060}
   m_Layer: 0
-  m_Name: Cylinder (1)
+  m_Name: CylinderTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,10 +94,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010592937754}
-  m_LocalRotation: {x: -0, y: 0.13052616, z: -0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
-  m_LocalScale: {x: 100.00004, y: 100, z: 100.00004}
-  m_LocalEulerAnglesHint: {x: 0, y: 15, z: 0}
+  m_LocalRotation: {x: 0.9914449, y: -0, z: 0.13052624, w: 0}
+  m_LocalPosition: {x: 0, y: 0.201, z: 0}
+  m_LocalScale: {x: 96, y: 0.01, z: 96}
+  m_LocalEulerAnglesHint: {x: 180, y: -15, z: 0}
   m_Children: []
   m_Father: {fileID: 4000010755284370}
   m_RootOrder: 1
@@ -114,7 +114,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 62f5d491158a1314e962633ce0efde74, type: 2}
+  - {fileID: 2100000, guid: a19e942a27764114eb6c44ec836508dd, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
