@@ -11,6 +11,8 @@ public class HexGrid : MonoBehaviour {
     public int hexNumber = 100;
     public float newScale = 500;
     public float timing = 5f;
+    public GameObject tempChild;
+    private ColorSchemeObj colorScheme;
 
     // Use this for initialization
     void Start () {
@@ -34,7 +36,7 @@ public class HexGrid : MonoBehaviour {
             }
         }
         hexes = GameObject.FindGameObjectsWithTag("Hexes");
-        Debug.Log(hexes.Length);
+        colorScheme = Settings.Active.ColorScheme;
     }
 	
 	// Update is called once per frame
@@ -46,21 +48,29 @@ public class HexGrid : MonoBehaviour {
          **/
         for (int i = 1; i < hexes.Length; i++)
         {
+            
+            tempChild = hexes[i].transform.Find("Cylinder").gameObject;
+            tempChild.GetComponent<Renderer>().material.color = colorScheme.Colors[0];
+            tempChild = hexes[i].transform.Find("CylinderTop").gameObject;
+            tempChild.GetComponent<Renderer>().material.color = colorScheme.Colors[1];
+            
             Vector3 previousScale = hexes[i].transform.localScale;
-
-
-            if (spectrum[i] * newScale > previousScale.y)   //Only update the cube if the height is above set value (1.3)
+            
+            if (spectrum[i] * newScale > previousScale.y)   
             {
                 previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale*(i/2), Time.deltaTime * timing);
 
             }
             else
             {
-                previousScale.y -= Random.Range(0.1f, 0.5f);
+                if (previousScale.y > 1)
+                {
+                    previousScale.y -= Random.Range(0.01f, 0.2f);
+                }
 
             }
             hexes[i].transform.localScale = previousScale;
-
+            
         }
     }
 }
