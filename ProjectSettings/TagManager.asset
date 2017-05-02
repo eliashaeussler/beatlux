@@ -7,6 +7,7 @@ TagManager:
   - Cubes
   - Hexes
   - Light
+  - LightDone
   layers:
   - Default
   - TransparentFX
