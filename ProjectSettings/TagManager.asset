@@ -4,10 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Cubes
-  - Hexes
-  - Light
   - LightDone
+  - Cubes
+  - Light
   layers:
   - Default
   - TransparentFX

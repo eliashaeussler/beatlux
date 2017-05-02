@@ -27,10 +27,18 @@ public class KetteVersuch : MonoBehaviour
     Color color4 = new Color(1, 1, 0, 1);
     Color color5 = new Color(0, 1, 1, 1);
 
-
+    Color[] colors;
 
     void Start()
     {
+
+        colors = Settings.Active.ColorScheme.Colors;
+
+        color1 = colors[0];
+        color2 = colors[1];
+        color3 = colors[2];
+        color4 = colors[3];
+        color5 = colors[4];
 
         //initializing the arrays to store the lights
         ketAr = new GameObject[numKetten][];
@@ -290,7 +298,7 @@ public class KetteVersuch : MonoBehaviour
 
             }
 
-            Debug.Log(random);
+
 
             //changing tags of light(necessary for sorting lights)
             for (int j = 0; j < lichter.Length; j++)
@@ -303,7 +311,6 @@ public class KetteVersuch : MonoBehaviour
 
             //storing lights in ketAr
             haengAr[i] = lichter;
-            Debug.Log(haengAr[i].Length);
         }
 
         
