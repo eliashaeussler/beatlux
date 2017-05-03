@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (AudioSource))]
+//[RequireComponent (typeof (AudioSource))]
 public class AudioPeer : MonoBehaviour {
 
-    AudioSource aSource;
+//    AudioSource aSource;
     public static float[] samples = new float[512];
     public static float[] freqBands = new float[8];
 
 
 	// Use this for initialization
 	void Start () {
-        aSource = GetComponent<AudioSource>();
+//        aSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -22,7 +22,7 @@ public class AudioPeer : MonoBehaviour {
 
     void GetSpectrumAudioSource()
     {
-        aSource.GetSpectrumData(samples, 0, FFTWindow.Blackman);
+		AudioListener.GetSpectrumData(samples, 0, FFTWindow.Blackman);
     }
 
     //creates frequences suitable for the human perception 

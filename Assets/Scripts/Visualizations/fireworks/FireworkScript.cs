@@ -14,7 +14,7 @@ public class FireworkScript : MonoBehaviour {
 	void Update () {
 
         // Getting the volumedata 
-        GameObject.Find("AudioSource").GetComponent<AudioSource>().GetOutputData(samples, 0);
+		AudioListener.GetOutputData(samples, 0);
         float vol = 0;
         foreach (float sample in samples)
         {

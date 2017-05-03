@@ -83,7 +83,7 @@ public class Database {
 		string[] stm = {
 			"CREATE TABLE IF NOT EXISTS `file` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT NOT NULL UNIQUE )",
 			"CREATE TABLE IF NOT EXISTS `playlist` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `files` TEXT DEFAULT NULL )",
-			"CREATE TABLE IF NOT EXISTS `visualization` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `colors` INTEGER NOT NULL DEFAULT 1, `buildNumber` INTEGER UNIQUE )",
+			"CREATE TABLE IF NOT EXISTS `visualization` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `colors` INTEGER NOT NULL DEFAULT 1, `buildNumber` INTEGER UNIQUE, `skybox` TEXT DEFAULT NULL )",
 			"CREATE TABLE IF NOT EXISTS `color_scheme` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `viz_id` INTEGER, `colors` TEXT NOT NULL, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
 		};
 
@@ -111,7 +111,8 @@ public class Database {
 				if (Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
 				{
 					// Query statement
-					string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber); " +
+					string sql = "INSERT INTO visualization (name, colors, buildNumber, skybox) " +
+						"VALUES (@Name, @Colors, @BuildNumber, @Skybox); " +
 						"SELECT last_insert_rowid()";
 					SqliteCommand cmd = new SqliteCommand (sql, Connection);
 
@@ -119,6 +120,7 @@ public class Database {
 					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
 					cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
 					cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+					cmd.Parameters.Add (new SqliteParameter ("Skybox", viz.Skybox));
 
 					try
 					{

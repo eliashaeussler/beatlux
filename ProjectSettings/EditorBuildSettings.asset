@@ -24,4 +24,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Visualizations/Kette.unity
   - enabled: 1
+    path: Assets/Scenes/Visualizations/ParticleFountains.unity
+  - enabled: 1
     path: Assets/Scenes/Visualizations/Spectrum.unity

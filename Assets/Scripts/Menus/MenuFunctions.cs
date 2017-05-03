@@ -53,6 +53,22 @@ public class MenuFunctions : MonoBehaviour {
 				// Show or hide player skin
 				if (player != null) player.SetActive (IsVisualization (level));
 
+				// Set skybox
+				if (!IsVisualization (level))
+				{
+					RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
+				}
+				else
+				{
+					VisualizationObj viz = Array.Find (Settings.Visualizations, x => x.BuildNumber == level);
+
+					if (viz.Skybox != null) {
+						RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/" + viz.Skybox);
+					} else {
+						RenderSettings.skybox = null;
+					}
+				}
+
 				// Unload last scene
 				SceneManager.UnloadScene (Settings.Active.Scene);
 				Settings.Active.Scene = level;

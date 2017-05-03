@@ -169,7 +169,7 @@ public class Visualization : MonoBehaviour {
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
 
             // Query statement
-            string sql = "SELECT id,name,colors,buildNumber FROM visualization ORDER BY name ASC";
+            string sql = "SELECT id,name,colors,buildNumber,skybox FROM visualization ORDER BY name ASC";
             cmd.CommandText = sql;
 
             // Get sql results
@@ -186,6 +186,7 @@ public class Visualization : MonoBehaviour {
                 obj.Name = reader.GetString (1);
 				obj.Colors = reader.GetInt32 (2);
                 obj.BuildNumber = reader.GetInt32 (3);
+				obj.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
 
 				// Add visualization to visualizations array
 				if (Application.CanStreamedLevelBeLoaded (obj.BuildNumber))
@@ -210,7 +211,7 @@ public class Visualization : MonoBehaviour {
 		{
 			// Send database query
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
-			cmd.CommandText = "SELECT id,name,colors,buildNumber FROM visualization WHERE id = @ID";
+			cmd.CommandText = "SELECT id,name,colors,buildNumber,skybox FROM visualization WHERE id = @ID";
 
 			// Add Parameters to statement
 			cmd.Parameters.Add (new SqliteParameter ("ID", id));
@@ -227,6 +228,7 @@ public class Visualization : MonoBehaviour {
 				viz.Name = reader.GetString (1);
 				viz.Colors = reader.GetInt32 (2);
 				viz.BuildNumber = reader.GetInt32 (3);
+				viz.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
 			}
 
 			// Close reader
