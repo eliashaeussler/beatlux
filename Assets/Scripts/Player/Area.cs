@@ -25,6 +25,25 @@ public class Area : MonoBehaviour {
 		if (size.y == 0) size.y = Camera.main.pixelHeight;
 
 		// Set x and y range
+		GetRange ();
+
+	}
+
+	void Update ()
+	{
+		// Get x and y range
+		GetRange ();
+
+		// Check if mouse is in range
+		if ((Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
+			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
+			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y)
+		{
+			canvas.ShowPlayer ();
+		}
+	}
+	private void GetRange ()
+	{
 		// IMPORTANT: mouse (0,0) is bottom-left
 		rangeX = new Vector2 ();
 		rangeY = new Vector2 ();
@@ -43,16 +62,6 @@ public class Area : MonoBehaviour {
 		} else {
 			rangeY.x = Camera.main.pixelHeight - size.y;
 			rangeY.y = Camera.main.pixelHeight;
-		}
-	}
-
-	void Update ()
-	{
-		if ((Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
-			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
-			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y)
-		{
-			canvas.ShowPlayer ();
 		}
 	}
 }

@@ -54,7 +54,7 @@ public class MenuFunctions : MonoBehaviour {
 				if (player != null) player.SetActive (IsVisualization (level));
 
 				// Set skybox
-				if (!IsVisualization (level))
+				if (!IsVisualization (level) || level == Settings.Defaults.Visualization.BuildNumber)
 				{
 					RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
 				}

@@ -13,14 +13,21 @@ public class VizPlayer : MonoBehaviour {
 	public GameObject shuffle;
 
 	// Visualizations
+	private VisualizationObj activeViz;
 	private List<VisualizationObj> visualizations;
 	private int position;
+
+	private bool isShuffle = Settings.Player.ShuffleViz;
 
 
 
 	void Update ()
 	{
+		// Set visualization order
 		ToggleShuffle (Settings.Player.ShuffleViz);
+
+		// Set active visualization
+		activeViz = Settings.Active.Visualization;
 	}
 
 
@@ -76,24 +83,33 @@ public class VizPlayer : MonoBehaviour {
 		Settings.Player.ShuffleViz = state;
 
 		// Set visualizations
-		SetVisualizations ();
+		if (visualizations == null || !Settings.Player.ShuffleViz ||
+		    activeViz != Settings.Active.Visualization) {
+
+			SetVisualizations ();
+		}
 
 		// Update playlist
-		if (Settings.Player.ShuffleViz)
+		if (isShuffle != state)
 		{
-			// Re-order visualizations
-			System.Random rand = new System.Random ();
-			int n = visualizations.Count;
-			while (n > 1) {
-				n--;
-				int k = rand.Next (n + 1);
-				VisualizationObj val = visualizations [k];
-				visualizations [k] = visualizations [n];
-				visualizations [n] = val;
+			if (Settings.Player.ShuffleViz)
+			{
+				// Re-order visualizations
+				System.Random rand = new System.Random ();
+				int n = visualizations.Count;
+				while (n > 1) {
+					n--;
+					int k = rand.Next (n + 1);
+					VisualizationObj val = visualizations [k];
+					visualizations [k] = visualizations [n];
+					visualizations [n] = val;
+				}
+
+				// Set position
+				position = visualizations.IndexOf (Settings.Active.Visualization);
 			}
 
-			// Set position
-			position = visualizations.IndexOf (Settings.Active.Visualization);
+			isShuffle = state;
 		}
 
 		// Update UI
@@ -144,8 +160,6 @@ public class VizPlayer : MonoBehaviour {
 				if (tempPos == position) break;
 			}
 		}
-
-		print (Settings.Active.Visualization.Name);
 	}
 
 
