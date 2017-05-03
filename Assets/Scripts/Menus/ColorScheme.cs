@@ -523,10 +523,15 @@ public class ColorScheme : MonoBehaviour {
 
 	public static ColorSchemeObj GetDefault ()
 	{
-		if (Settings.Active.Visualization != null)
+		return GetDefault (Settings.Active.Visualization);
+	}
+
+	public static ColorSchemeObj GetDefault (VisualizationObj viz)
+	{
+		if (viz != null)
 		{
 			Load (true);
-			return ColorSchemes.Find (x => x.Name == Settings.Active.Visualization.Name);
+			return ColorSchemes.Find (x => x.Name == viz.Name);
 		}
 
 		return null;

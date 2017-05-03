@@ -59,7 +59,7 @@ public class KetteVersuch : MonoBehaviour
 
             //Intantiating object and saving lights into an array
             Vector3 pos = new Vector3(posX, -10, posZ);
-            Instantiate(ketten, pos, Quaternion.identity);
+			Instantiate(ketten, pos, Quaternion.identity, Settings.MenuManager.vizContents);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
 
 
@@ -196,7 +196,7 @@ public class KetteVersuch : MonoBehaviour
 
             //Intantiating object and saving lights into an array
             Vector3 pos = new Vector3(posX, 20, posZ);
-            Instantiate(haenger, pos, Quaternion.identity);
+			Instantiate(haenger, pos, Quaternion.identity, Settings.MenuManager.vizContents);
             GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
 
 
@@ -359,6 +359,9 @@ public class KetteVersuch : MonoBehaviour
     void Update()
     {
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
+
+		if (ketAr == null)
+			Start ();
 
         /**
          * change the light intensity in reaction to the spectrum

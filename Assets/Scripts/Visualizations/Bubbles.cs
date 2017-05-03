@@ -25,7 +25,7 @@ public class Bubbles : MonoBehaviour {
          * */
         public Kugel(GameObject sphere, Vector3 pos, int size, int speed)
         {
-            this.theSphere = (GameObject)Instantiate(sphere, pos, Quaternion.identity);
+			this.theSphere = (GameObject)Instantiate(sphere, pos, Quaternion.identity, Settings.MenuManager.vizContents);
             this.theSphere.GetComponent<Rigidbody>().AddForce(0, speed*500, 0);
             this.size = size;
             this.speed = speed;
@@ -138,7 +138,8 @@ public class Bubbles : MonoBehaviour {
                 Kugel kug = new Kugel(sphere,pos, size,speed);
             
             // assign color to object
-			kug.theSphere.GetComponent<Renderer>().material.color = Settings.Active.ColorScheme.Colors [col];
+			if (col < Settings.Active.ColorScheme.Colors.Length)
+				kug.theSphere.GetComponent<Renderer>().material.color = Settings.Active.ColorScheme.Colors [col];
                 
 
                 // store kug  in spheres

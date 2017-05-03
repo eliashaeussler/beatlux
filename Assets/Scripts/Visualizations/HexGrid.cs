@@ -31,7 +31,7 @@ public class HexGrid : MonoBehaviour {
                 else
                 {
                     pos = pos + new Vector3(hexwidth + gap, 0, 0);
-                    Instantiate(hex, pos, Quaternion.identity);
+					Instantiate(hex, pos, Quaternion.identity, Settings.MenuManager.vizContents);
                 }
             }
         }

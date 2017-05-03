@@ -48,16 +48,19 @@ public class VizPlayer : MonoBehaviour {
 		if (viz != null && Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
 		{
 			// Set as active visualization
-			Settings.Active.Visualization = viz;
+			Settings.Selected.Visualization = viz;
 
 			// Reset color scheme
-			Settings.Active.ColorScheme = null;
+			Settings.Selected.ColorScheme = ColorScheme.GetDefault (viz);
+
+			// Get level
+			VisualizationObj selectedViz = Settings.MenuManager.StartVisualization (false);
 
 			// Start level
-			Settings.MenuManager.StartVisualization ();
+			if (selectedViz != null) Settings.MenuManager.StartLevel (selectedViz.BuildNumber);
 
 
-			return visualizations.IndexOf (viz) != position ? true : false;
+			return visualizations.IndexOf (selectedViz) != position;
 		}
 
 		return false;
@@ -103,7 +106,7 @@ public class VizPlayer : MonoBehaviour {
 
 	// Select next visualization
 	public void Next ()
-	{
+	{ 
 		if (visualizations.Count > 0)
 		{
 			bool found = false;

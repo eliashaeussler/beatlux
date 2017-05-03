@@ -7,11 +7,11 @@ public class Settings {
 	// Available visualizations
 	public static VisualizationObj [] Visualizations = new VisualizationObj []
 	{
-		new VisualizationObj ("Bubbles",			4,	5),
-		new VisualizationObj ("Hexagons",			2,	6),
-		new VisualizationObj ("Lichterketten",		5,	7),
+		new VisualizationObj ("Bubbles",			4,	6),
+		new VisualizationObj ("Hexagons",			2,	7),
+		new VisualizationObj ("Lichterketten",		5,	8),
 		new VisualizationObj ("Particle Fountains",	3,	-1), // TODO: fix build number
-		new VisualizationObj ("Spektrum",			3,	8)
+		new VisualizationObj ("Spektrum",			3,	9)
 	};
 
 	public static MenuFunctions MenuManager;
@@ -26,7 +26,7 @@ public class Settings {
 		public static VisualizationObj Visualization;
 		public static ColorSchemeObj ColorScheme;
 
-		public static int Scene = 0;
+		public static int Scene = 1;
 	}
 
 	//-- OPENED ELEMENTS
@@ -48,7 +48,7 @@ public class Settings {
 	//-- DEFAULT SETTINGS
 	public abstract class Defaults
 	{
-		public static VisualizationObj Visualization = new VisualizationObj ("beatlux", 1, 4);
+		public static VisualizationObj Visualization = new VisualizationObj ("beatlux", 1, 5);
 
 
 		//-- DEFAULT COLORS

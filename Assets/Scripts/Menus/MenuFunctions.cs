@@ -11,7 +11,8 @@ public class MenuFunctions : MonoBehaviour {
 
 	public AudioSource audio;
 	public GameObject player;
-	public int defaultStart = 0;
+	public Transform vizContents;
+	public int defaultStart = 1;
 
 	public static List<String> sDirs;
 	public static List<String> sFiles;
@@ -39,7 +40,14 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		if (Application.CanStreamedLevelBeLoaded (level))
 		{
+			// Destroy old viz contents
+			DestroyOld ();
+
+			// Start level
 			SceneManager.LoadScene (level, LoadSceneMode.Additive);
+			SceneManager.sceneLoaded += delegate {
+				DestroyOld ();
+			};
 			SceneManager.sceneLoaded += delegate
 			{
 				// Show or hide player skin
@@ -52,7 +60,7 @@ public class MenuFunctions : MonoBehaviour {
 		}
     }
 
-	public void StartVisualization ()
+	public VisualizationObj StartVisualization (bool start)
 	{
 		// Set active elements
 		if (Settings.Selected.Playlist != null) Settings.Active.Playlist = Settings.Selected.Playlist;
@@ -73,19 +81,26 @@ public class MenuFunctions : MonoBehaviour {
 		}
 
 		// Start visualization level
-		bool started = false;
 		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber))
 		{
-			StartLevel (Settings.Active.Visualization.BuildNumber);
-			started = true;
+			if (start) StartLevel (Settings.Active.Visualization.BuildNumber);
+			return Settings.Active.Visualization;
 		}
 		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
 		{
 			Settings.Active.Visualization = Settings.Defaults.Visualization;
-
-			StartLevel (Settings.Defaults.Visualization.BuildNumber);
-			started = true;
+			if (start) StartLevel (Settings.Defaults.Visualization.BuildNumber);
+			return Settings.Defaults.Visualization;
 		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public void StartVisualization ()
+	{
+		bool started = StartVisualization (true) != null;
 
 		if (started)
 		{
@@ -109,6 +124,13 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		Application.Quit ();
     }
+
+	private void DestroyOld ()
+	{
+		for (int i = Settings.MenuManager.vizContents.childCount - 1; i >= 0; i--) {
+			GameObject.DestroyImmediate (Settings.MenuManager.vizContents.GetChild (i).gameObject);
+		}
+	}
 
 
 
