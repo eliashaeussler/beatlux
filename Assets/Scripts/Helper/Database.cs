@@ -99,15 +99,114 @@ public class Database {
 		}
 	}
 
+	public static void InsertDefaultViz ()
+	{
+		if (GetConnection () != null)
+		{
+			for (int i=0; i < Settings.Visualizations.Length; i++)
+			{
+				// Current visualization
+				VisualizationObj viz = Settings.Visualizations [i];
+
+				if (Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
+				{
+					// Query statement
+					string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber); " +
+						"SELECT last_insert_rowid()";
+					SqliteCommand cmd = new SqliteCommand (sql, Connection);
+
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+					cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
+					cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+
+					try
+					{
+						// Execute insert statement
+						long id = (long) cmd.ExecuteScalar ();
+
+						// Update ID
+						Settings.Visualizations [i].ID = id;
+
+						// Dispose command
+						cmd.Dispose ();
+					}
+					catch
+					{
+						// Dispose command
+						cmd.Dispose ();
+
+						// Select ID from database
+						sql = "SELECT id FROM visualization WHERE name = @Name AND buildNumber = @BuildNumber";
+						cmd = new SqliteCommand (sql, Connection);
+
+						// Add Parameters to statement
+						cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+						cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+
+						// Get sql results
+						SqliteDataReader reader = cmd.ExecuteReader ();
+
+						// Read id
+						while (reader.Read ()) {
+							Settings.Visualizations [i].ID = reader.GetInt64 (0);
+						}
+
+						// Close reader
+						reader.Close();
+						cmd.Dispose ();
+					}
+				}
+			}
+		}
+	}
+
+	public static void InsertDefaultCS ()
+	{
+		if (GetConnection () != null && Settings.Visualizations != null && Settings.Visualizations.Length > 0)
+		{
+			foreach (VisualizationObj viz in Settings.Visualizations)
+			{
+				if (!ColorScheme.Exists (new ColorSchemeObj (viz.Name, viz)))
+				{
+					// Insert default color scheme
+					string sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
+					SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+					cmd.Parameters.Add (new SqliteParameter ("Viz_ID", viz.ID));
+
+					if (Settings.Defaults.Colors.ContainsKey (viz.Name))
+					{
+						// Set colors
+						Color[] colors = Settings.Defaults.Colors [viz.Name];
+						cmd.Parameters.Add (new SqliteParameter ("Colors", ColorScheme.FormatColors (colors)));
+
+						// Execute insert statement
+						cmd.ExecuteNonQuery ();
+
+						// Dispose command
+						cmd.Dispose ();
+					}
+				}
+			}
+		}
+	}
+
 
 
 	// Get instance (Singleton)
 	public static SqliteConnection GetConnection ()
 	{
 		// Create instance if not exists
-		if (Instance == null) {
+		if (Instance == null)
+		{
 			Instance = new Database ();
+
 			CreateTables ();
+			InsertDefaultViz ();
+			InsertDefaultCS ();
 		}
 
 		// Return database connection

@@ -5,17 +5,21 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 
 	// Color constants
-	public static Color COLOR_DISABLED = new Color (0.7f, 0.7f, 0.7f);
+	public static Color COLOR_DISABLED = new Color (0.4f, 0.4f, 0.4f);
 	public static Color COLOR_ENABLED = Color.white;
 
 	// Volume rotation constants
 	public static int VOLUME_ROTATION_MAX = 137;
 
 
+
+	// Player canvas
+	public PlayerCanvas canvas;
 
 	// Audio source (component of Main Camera)
 	public AudioSource audio;
@@ -32,15 +36,17 @@ public class Player : MonoBehaviour {
 	public Text artist;
 	public Text visualization;
 	public Slider timeline;
-	public Transform volume;
-	public Slider volumeSlider;
+	public Transform volumeLeft;
+	public Transform volumeRight;
+	public Slider volumeSliderLeft;
+	public Slider volumeSliderRight;
 
 	// Defines player states (set by user or default)
 	private bool userChangedSlider = false;
 	private bool continuePlay = true;
-	private bool isShuffle = false;
 
 	// Playlist
+	private PlaylistObj activePlaylist;
 	private List<FileObj> files;
 	private int position;
 	
@@ -49,39 +55,46 @@ public class Player : MonoBehaviour {
 	void Start ()
 	{
 		// Set audio source
-		audio = Camera.main.GetComponent<AudioSource> ();
-
-		// Set visualization
-		if (Settings.Active.Visualization != null) // TODO remove after debug
-		visualization.text = Settings.Active.Visualization.Name;
-
-		// Set UI
-		ToggleShuffle (false);
-		ToggleRepeat (false);
+		audio = Settings.MenuManager.audio;
 
 		// Set volume
-		SetVolume (audio.volume);
-
-		// Select first file
-		position = GetFileIndex (position, -1);
-		Next ();
+		SetVolume (Settings.Player.Volume);
 	}
 
 	void Update ()
 	{
+		// Set visualization
+		if (Settings.Active.Visualization != null) {
+			visualization.text = Settings.Active.Visualization.Name;
+		}
+
 		// Update UI elements
+		ToggleRepeat (Settings.Player.Repeat);
 		UpdatePlayButton ();
 		UpdateSlider ();
 
+		// Play first file if playlist changed
+		if (activePlaylist != Settings.Active.Playlist)
+		{
+			activePlaylist = Settings.Active.Playlist;
+			ToggleShuffle (Settings.Player.Shuffle, true);
+			Play (Settings.Active.File ?? files [0]);
+		}
+
 		// Play next file
 		if (!audio.isPlaying && continuePlay) {
-			Next (); // TODO funktioniert beim Editor nicht -> evtl. on end event für audio source ?!
+			Next ();
+		}
+
+		// Show player if mouse moves
+		if (Input.mousePosition.y <= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)) {
+			canvas.KeepPlayer ();
 		}
 	}
 
 
 
-	private void SetPlaylist ()
+	private void SetPlaylist (bool play)
 	{
 		// Instantiate list
 		files = new List<FileObj> ();
@@ -95,9 +108,17 @@ public class Player : MonoBehaviour {
 			}
 
 			// Set position in list
-			if (Settings.Active.File != null && Settings.Active.Playlist.Files.Contains (Settings.Active.File)) {
-				position = Settings.Active.Playlist.Files.IndexOf (Settings.Active.File);
-			} else {
+			if (Settings.Active.File != null && Settings.Active.Playlist.Files.Contains (Settings.Active.File))
+			{
+				if (!Settings.Player.Shuffle)
+				{
+					int index = Settings.Active.Playlist.Files.IndexOf (Settings.Active.File);
+					if (position != index && play) Play (Settings.Active.File);
+					position = index;
+				}
+			}
+			else
+			{
 				position = 0;
 			}
 		}
@@ -105,58 +126,61 @@ public class Player : MonoBehaviour {
 
 	private bool Play (FileObj file)
 	{
-		// Get audio resource
-		WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
-		AudioClip clip = resource.audioClip;
-
-		// Wait until file is loaded
-		while (clip.loadState != AudioDataLoadState.Loaded)
+		if (File.Exists (file.Path))
 		{
-			if (clip.loadState == AudioDataLoadState.Failed) {
-				return false;
-			}
-		}
+			// Get audio resource
+			WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
+			AudioClip clip = resource.audioClip;
 
-		if (clip.length > 0)
-		{
-			// Update current audio source
-			audio.clip = clip;
-
-			// Reset time
-			audio.time = 0;
-
-			// Play audio
-			audio.Play ();
-
-			// Set as active file
-			Settings.Active.File = file;
-
-			// Set full time
-			fullTime.text = FormatTime (audio.clip.length);
-
-			// Update position
-			position = files.IndexOf (file);
-
-			// Get artists and title
-			TagLib.File tags = TagLib.File.Create (file.Path);
-			string artist = tags.Tag.FirstAlbumArtistSort;
-			string title = tags.Tag.Title;
-
-			// Set artists and title
-			string output = "";
-			if (artist != null && artist.Length > 0)
-				output = artist + " – ";
-			
-			if (title != null && title.Length > 0) {
-				output += title;
-			} else {
-				output += Path.GetFileNameWithoutExtension (file.Path);
+			// Wait until file is loaded
+			while (clip.loadState != AudioDataLoadState.Loaded)
+			{
+				if (clip.loadState == AudioDataLoadState.Failed) {
+					return false;
+				}
 			}
 
-			this.artist.text = output;
+			if (clip.length > 0)
+			{
+				// Update current audio source
+				audio.clip = clip;
+
+				// Reset time
+				audio.time = 0;
+
+				// Play audio
+				audio.Play ();
+
+				// Set as active file
+				Settings.Active.File = file;
+
+				// Set full time
+				fullTime.text = FormatTime (audio.clip.length);
+
+				// Update position
+				position = files.IndexOf (file);
+
+				// Get artists and title
+				TagLib.File tags = TagLib.File.Create (file.Path);
+				string artist = tags.Tag.FirstAlbumArtistSort;
+				string title = tags.Tag.Title;
+
+				// Set artists and title
+				string output = "";
+				if (artist != null && artist.Length > 0)
+					output = artist + " – ";
+				
+				if (title != null && title.Length > 0) {
+					output += title;
+				} else {
+					output += Path.GetFileNameWithoutExtension (file.Path);
+				}
+
+				this.artist.text = output;
 
 
-			return true;
+				return true;
+			}
 		}
 
 		return false;
@@ -213,10 +237,12 @@ public class Player : MonoBehaviour {
 		audio.volume = value;
 
 		// Update slider
-		if (volumeSlider.value != value) volumeSlider.value = value;
+		if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
+		if (volumeSliderRight.value != value) volumeSliderRight.value = value;
 
 		// Update UI
-		volume.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+		volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+		volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
 	}
 
 	public void TogglePlay ()
@@ -237,12 +263,13 @@ public class Player : MonoBehaviour {
 	}
 
 	public void ToggleRepeat () {
-		ToggleRepeat (!audio.loop);
+		ToggleRepeat (!Settings.Player.Repeat);
 	}
 
 	public void ToggleRepeat (bool state)
 	{
 		// Change loop
+		Settings.Player.Repeat = state;
 		audio.loop = state;
 
 		// Update UI
@@ -250,16 +277,19 @@ public class Player : MonoBehaviour {
 	}
 
 	public void ToggleShuffle () {
-		ToggleShuffle (!isShuffle);
+		ToggleShuffle (!Settings.Player.Shuffle, false);
 	}
 
-	public void ToggleShuffle (bool state)
+	public void ToggleShuffle (bool state, bool play)
 	{
 		// Change shuffle
-		isShuffle = state;
+		Settings.Player.Shuffle = state;
+
+		// Set playlist
+		SetPlaylist (play);
 
 		// Update playlist
-		if (isShuffle)
+		if (Settings.Player.Shuffle)
 		{
 			// Re-order files
 			System.Random rand = new System.Random ();
@@ -275,14 +305,9 @@ public class Player : MonoBehaviour {
 			// Set position
 			position = files.IndexOf (Settings.Active.File);
 		}
-		else
-		{
-			// Set playlist
-			SetPlaylist ();
-		}
 
 		// Update UI
-		shuffle.GetComponent<Text> ().color = isShuffle ? COLOR_ENABLED : COLOR_DISABLED;
+		shuffle.GetComponent<Text> ().color = Settings.Player.Shuffle ? COLOR_ENABLED : COLOR_DISABLED;
 	}
 
 
@@ -329,11 +354,6 @@ public class Player : MonoBehaviour {
 				if (tempPos == position) break;
 			}
 		}
-	}
-
-	public void Shuffle ()
-	{
-		
 	}
 	
 	

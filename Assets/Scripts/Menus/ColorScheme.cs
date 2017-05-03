@@ -51,9 +51,6 @@ public class ColorScheme : MonoBehaviour {
 				Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
 			}
 
-			// Insert default color scheme
-			InsertDefault ();
-
 			// Load color schemes from database
 			Load (false);
 
@@ -526,7 +523,8 @@ public class ColorScheme : MonoBehaviour {
 
 	public static ColorSchemeObj GetDefault ()
 	{
-		if (Settings.Active.Visualization != null) {
+		if (Settings.Active.Visualization != null)
+		{
 			Load (true);
 			return ColorSchemes.Find (x => x.Name == Settings.Active.Visualization.Name);
 		}
@@ -749,40 +747,13 @@ public class ColorScheme : MonoBehaviour {
 
 	//-- DATABASE METHODS
 
-	public void InsertDefault ()
-	{
-		if (Database.Connect () && Settings.Selected.Visualization != null && Settings.Selected.Visualization.ID > 0 &&
-			!Exists (new ColorSchemeObj (Settings.Selected.Visualization.Name, Settings.Selected.Visualization)))
-		{
-			// Insert default color scheme
-			string sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
-			SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
-
-			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("Name", Settings.Selected.Visualization.Name));
-			cmd.Parameters.Add (new SqliteParameter ("Viz_ID", Settings.Selected.Visualization.ID));
-
-			if (Settings.Defaults.Colors.ContainsKey (Settings.Selected.Visualization.Name))
-			{
-				// Set colors
-				Color[] colors = Settings.Defaults.Colors [Settings.Selected.Visualization.Name];
-				cmd.Parameters.Add (new SqliteParameter ("Colors", FormatColors (colors)));
-
-				// Execute insert statement
-				cmd.ExecuteNonQuery ();
-
-				// Dispose command
-				cmd.Dispose ();
-			}
-		}
-
-		// Close database connection
-		Database.Close ();
-	}
-
 	public static void Load (bool defaultOnly)
     {
-		if (Database.Connect() && Settings.Selected.Visualization != null &&
+		// Reset color schemes
+		ColorSchemes = new List<ColorSchemeObj> ();
+
+		// Get color schemes
+		if (Database.Connect () && Settings.Selected.Visualization != null && Settings.Selected.Visualization.ID > 0 &&
 			Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
         {
             // Database command
@@ -800,9 +771,6 @@ public class ColorScheme : MonoBehaviour {
 
             // Get sql results
             SqliteDataReader reader = cmd.ExecuteReader ();
-
-			// Reset color schemes
-			ColorSchemes = new List<ColorSchemeObj> ();
 
             // Read sql results
             while (reader.Read ())
@@ -931,7 +899,7 @@ public class ColorScheme : MonoBehaviour {
 		return false;
 	}
 
-	public bool Exists (ColorSchemeObj colorScheme)
+	public static bool Exists (ColorSchemeObj colorScheme)
 	{
 		string sql = "SELECT id FROM color_scheme WHERE name = @Name AND viz_id = @Viz_ID AND id != @ID";
 		SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
@@ -961,7 +929,7 @@ public class ColorScheme : MonoBehaviour {
 
 	//-- HELPER METHODS
 
-	public string FormatColors (Color [] colors)
+	public static string FormatColors (Color [] colors)
 	{
 		// Output
 		List<string> cols = new List<string> ();

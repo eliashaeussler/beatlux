@@ -443,8 +443,8 @@ public class Playlist : MonoBehaviour {
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
 		// Set playlist as active playlist
-		if (!forceOpen && playlist.Files.Count > 0)
-			Settings.Selected.Playlist = playlist;
+//		if (!forceOpen && playlist.Files.Count > 0)
+//			Settings.Selected.Playlist = playlist;
 
 		// Show or hide playlist files
 		bool opened = false;
@@ -498,8 +498,22 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.File = null;
 		}
 
-		// Set opened playlist
-		Settings.Selected.Playlist = opened ? playlist : null;
+		if (opened && Settings.Selected.Playlist != playlist)
+		{
+			// Set selected playlist
+			Settings.Selected.Playlist = opened ? playlist : null;
+
+			// Unset selected file
+			Settings.Selected.File = Settings.Selected.Playlist.Files [0];
+
+			// Add icon to selected file
+			Transform file = transform.Find ("#" + Settings.Selected.Playlist.ID + "/Contents/#" +
+				Settings.Selected.Playlist.ID + "." + Settings.Selected.File.ID + "/Listening");
+			if (file != null) file.GetComponent<Text> ().text = IconFont.DROPDOWN_CLOSED;
+		}
+
+		// Unset selected playlist
+		if (!opened) Settings.Selected.Playlist = null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();

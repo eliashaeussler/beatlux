@@ -14,6 +14,8 @@ public class Settings {
 		new VisualizationObj ("Spektrum",			3,	6)
 	};
 
+	public static MenuFunctions MenuManager;
+
 
 
 	//-- ACTIVE ELEMENTS
@@ -23,6 +25,8 @@ public class Settings {
 		public static FileObj File;
 		public static VisualizationObj Visualization;
 		public static ColorSchemeObj ColorScheme;
+
+		public static int Scene = 0;
 	}
 
 	//-- OPENED ELEMENTS
@@ -121,6 +125,15 @@ public class Settings {
 	{
 		public static int MaxLength = 30;
 		public static Color InfoColor = GetColor (250, 80, 80);
+	}
+
+	//-- PLAYER SETTINGS
+	public abstract class Player
+	{
+		public static float Volume = 0.6f;
+		public static bool Shuffle = false;
+		public static bool Repeat = false;
+		public static bool ShuffleViz = false;
 	}
 
 

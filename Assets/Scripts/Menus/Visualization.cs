@@ -21,9 +21,6 @@ public class Visualization : MonoBehaviour {
 
 	void Start ()
 	{
-		// Insert visualizations into database
-		Insert ();
-
 		// Select visualizations from database
 		Load ();
 
@@ -42,6 +39,8 @@ public class Visualization : MonoBehaviour {
         Database.Close ();
 	
 	}
+
+
 
 	public void Display ()
 	{
@@ -161,38 +160,6 @@ public class Visualization : MonoBehaviour {
 
 
 	//-- DATABASE METHODS
-
-	public void Insert ()
-	{
-		if (Database.Connect ())
-		{
-			foreach (VisualizationObj viz in Settings.Visualizations)
-			{
-				if (Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
-				{
-					// Query statement
-					string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber)";
-					SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
-
-					// Add Parameters to statement
-					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
-					cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
-					cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
-
-					// Execute insert statement
-					try {
-						cmd.ExecuteNonQuery ();
-					} catch {}
-
-					// Dispose command
-					cmd.Dispose ();
-				}
-			}
-		}
-
-		// Close database connection
-		Database.Close ();
-	}
 
 	public void Load ()
     {

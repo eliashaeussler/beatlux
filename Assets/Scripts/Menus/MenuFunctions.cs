@@ -9,6 +9,10 @@ using System.Linq;
 
 public class MenuFunctions : MonoBehaviour {
 
+	public AudioSource audio;
+	public GameObject player;
+	public int defaultStart = 0;
+
 	public static List<String> sDirs;
 	public static List<String> sFiles;
 	public static bool Searching;
@@ -17,10 +21,34 @@ public class MenuFunctions : MonoBehaviour {
 
 
 
+	void Start ()
+	{
+		// Set MenuManager
+		Settings.MenuManager = this;
+
+		// Set audio source
+		audio = GetComponent<AudioSource> ();
+
+		// Load main menu
+		StartLevel (defaultStart);
+	}
+
+
+
 	public void StartLevel (int level)
 	{
-		if (Application.CanStreamedLevelBeLoaded (level)) {
-			SceneManager.LoadScene (level);
+		if (Application.CanStreamedLevelBeLoaded (level))
+		{
+			SceneManager.LoadScene (level, LoadSceneMode.Additive);
+			SceneManager.sceneLoaded += delegate
+			{
+				// Show or hide player skin
+				if (player != null) player.SetActive (IsVisualization (level));
+
+				// Unload last scene
+				SceneManager.UnloadScene (Settings.Active.Scene);
+				Settings.Active.Scene = level;
+			};
 		}
     }
 
@@ -37,6 +65,11 @@ public class MenuFunctions : MonoBehaviour {
 		{
 			Settings.Selected.Visualization = Settings.Active.Visualization;
 			Settings.Active.ColorScheme = ColorScheme.GetDefault ();
+		}
+
+		// Select first file
+		if (Settings.Active.Playlist != null && Settings.Active.Playlist.Files.Count > 0 && Settings.Selected.File == null) {
+			Settings.Active.File = Settings.Active.Playlist.Files [0];
 		}
 
 		// Start visualization level
@@ -72,9 +105,26 @@ public class MenuFunctions : MonoBehaviour {
 		}
 	}
 		
-    public void Quit () {
+    public void Quit ()
+	{
 		Application.Quit ();
     }
+
+
+
+	//-- HELPER METHODS
+
+	public static bool IsVisualization (int level)
+	{
+		// Is default visualization?
+		if (level == Settings.Defaults.Visualization.BuildNumber) return true;
+
+		// Check all visualizations
+		foreach (VisualizationObj viz in Settings.Visualizations)
+			if (viz.BuildNumber == level) return true;
+
+		return false;
+	}
 
 
 

@@ -9,7 +9,8 @@ using System.Linq;
 
 public class SourceFolder : MonoBehaviour {
 
-	public static string[] SupportedFormats = {
+	public static string[] SupportedFormats =
+	{
 		".mp3",
 		".ogg",
 		".wav",
