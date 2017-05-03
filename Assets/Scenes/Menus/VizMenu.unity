@@ -3081,11 +3081,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011359905484, guid: 556f5c5c2b2e342e48ab1e2e7888ec4a,
-        type: 2}
-      propertyPath: dialog
-      value: 
-      objectReference: {fileID: 650012530}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 556f5c5c2b2e342e48ab1e2e7888ec4a, type: 2}
   m_IsPrefabParent: 0
@@ -3320,11 +3315,6 @@ RectTransform:
   m_AnchoredPosition: {x: 163.63635, y: -10}
   m_SizeDelta: {x: 21.818182, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &650012530 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1000011376077682, guid: 556f5c5c2b2e342e48ab1e2e7888ec4a,
-    type: 2}
-  m_PrefabInternal: {fileID: 552868425}
 --- !u!1 &701745753
 GameObject:
   m_ObjectHideFlags: 0
@@ -4605,8 +4595,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 70938886}
   m_RootOrder: 0
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6868,7 +6858,7 @@ Prefab:
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -980.24634
+      value: -980
       objectReference: {fileID: 0}
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}

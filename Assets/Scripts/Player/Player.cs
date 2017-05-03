@@ -317,7 +317,7 @@ public class Player : MonoBehaviour {
 	// Play next clip
 	public void Next ()
 	{
-		if (files.Count > 0)
+		if (files != null && files.Count > 0)
 		{
 			bool found = false;
 			int tempPos = position;
@@ -338,7 +338,7 @@ public class Player : MonoBehaviour {
 	// Play previous clip
 	public void Previous ()
 	{
-		if (files.Count > 0)
+		if (files != null && files.Count > 0)
 		{
 			bool found = false;
 			int tempPos = position;

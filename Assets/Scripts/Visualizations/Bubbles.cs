@@ -69,13 +69,7 @@ public class Bubbles : MonoBehaviour {
     public int rangeYmax;
     public int minSize;
     public int maxSize;
-    public int amount;   
-     
-    //Colors
-    Color color1 = new Color(0,1,0,1);
-    Color color2 = new Color(1,0,0,1);
-    Color color3 = new Color(0,0,1,1);
-    Color color4 = new Color(1,1,0,1);
+    public int amount;
 
 
     //Array to store the spheres
@@ -144,22 +138,7 @@ public class Bubbles : MonoBehaviour {
                 Kugel kug = new Kugel(sphere,pos, size,speed);
             
             // assign color to object
-            if (col == 0)
-                {
-                    kug.theSphere.GetComponent<Renderer>().material.color = color1;
-                }
-                if(col == 1)
-                {
-                    kug.theSphere.GetComponent<Renderer>().material.color = color2;
-                }
-                if (col == 2)
-                {
-                    kug.theSphere.GetComponent<Renderer>().material.color = color3;
-                }
-                if (col == 3)
-                {
-                    kug.theSphere.GetComponent<Renderer>().material.color = color4;
-                }
+			kug.theSphere.GetComponent<Renderer>().material.color = Settings.Active.ColorScheme.Colors [col];
                 
 
                 // store kug  in spheres

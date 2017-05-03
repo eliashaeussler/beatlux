@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ public class VizPlayer : MonoBehaviour {
 
 
 
-	void Start ()
+	void Update ()
 	{
 		ToggleShuffle (Settings.Player.ShuffleViz);
 	}
@@ -57,7 +57,7 @@ public class VizPlayer : MonoBehaviour {
 			Settings.MenuManager.StartVisualization ();
 
 
-			return true;
+			return visualizations.IndexOf (viz) != position ? true : false;
 		}
 
 		return false;
@@ -72,12 +72,12 @@ public class VizPlayer : MonoBehaviour {
 		// Change shuffle
 		Settings.Player.ShuffleViz = state;
 
+		// Set visualizations
+		SetVisualizations ();
+
 		// Update playlist
 		if (Settings.Player.ShuffleViz)
 		{
-			// Set visualizations if not already done
-			if (visualizations == null) SetVisualizations ();
-
 			// Re-order visualizations
 			System.Random rand = new System.Random ();
 			int n = visualizations.Count;
@@ -91,11 +91,6 @@ public class VizPlayer : MonoBehaviour {
 
 			// Set position
 			position = visualizations.IndexOf (Settings.Active.Visualization);
-		}
-		else
-		{
-			// Set visualizations
-			SetVisualizations ();
 		}
 
 		// Update UI
@@ -146,6 +141,8 @@ public class VizPlayer : MonoBehaviour {
 				if (tempPos == position) break;
 			}
 		}
+
+		print (Settings.Active.Visualization.Name);
 	}
 
 
