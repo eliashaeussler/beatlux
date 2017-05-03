@@ -10,7 +10,7 @@ public class Settings {
 		new VisualizationObj ("Bubbles",			4,	6),
 		new VisualizationObj ("Hexagons",			2,	7),
 		new VisualizationObj ("Lichterketten",		5,	8),
-		new VisualizationObj ("Particle Fountains",	3,	-1), // TODO: fix build number
+		new VisualizationObj ("Particle Fountains",	3,	10),
 		new VisualizationObj ("Spektrum",			3,	9)
 	};
 
