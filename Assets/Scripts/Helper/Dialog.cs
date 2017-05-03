@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Dialog : MonoBehaviour {
 
@@ -9,50 +10,79 @@ public class Dialog : MonoBehaviour {
 	public GameObject wrapper;
 
 	// UI elements
-	Transform main;
+	Text heading;
+	Text info;
 	InputField inputField;
 	Text text;
+	public Button ButtonOK { get; private set; }
+	Button buttonCancel;
 
 
 
 	void Start ()
 	{
 		// Get UI components
-		main = wrapper.transform.Find ("Main");
-		inputField = main.Find ("InputField").gameObject.GetComponent<InputField> ();
-		text = main.Find ("Text").gameObject.GetComponent<Text> ();
+		heading = wrapper.transform.Find ("Header/Heading").GetComponent<Text> ();
+		info = wrapper.transform.Find ("Main/Info").GetComponent<Text> ();
+		inputField = wrapper.transform.Find ("Main/InputField").GetComponent<InputField> ();
+		text = wrapper.transform.Find ("Main/Text").GetComponent<Text> ();
+		ButtonOK = wrapper.transform.Find ("Footer/Button_OK").GetComponent<Button> ();
+		buttonCancel = wrapper.transform.Find ("Footer/Button_Cancel").GetComponent<Button> ();
+
+		// Set input maxlength
+		inputField.characterLimit = Settings.Input.MaxLength;
 	}
 
 
 
-	public InputField GetInputField (string input, string placeholder)
+	public void SetHeading (string text) {
+		heading.text = text;
+	}
+
+	public void SetInputField (string input, string placeholder)
 	{
 		if (dialog != null && wrapper != null && inputField != null)
 		{
 			// Get elements
-			Text inputText = inputField.gameObject.transform.Find ("Text").GetComponent<Text> ();
-			Text inputPlaceholder = inputField.gameObject.transform.Find ("Placeholder").GetComponent<Text> ();
+			Text inputPlaceholder = inputField.transform.Find ("Placeholder").GetComponent<Text> ();
 
 			// Set contents
 			inputField.text = input;
-			inputText.text = input;
 			inputPlaceholder.text = placeholder;
 
 			// Activate input field
 			inputField.gameObject.SetActive (true);
 
-			return inputField;
+			// Focus input field
+			FocusInputField ();
+		}
+	}
+
+	public string GetInputText ()
+	{
+		if (dialog != null && inputField != null) {
+			return inputField.text;
 		}
 
 		return null;
 	}
 
-	public Text GetInputText ()
+	public void SetInfo (string text)
 	{
-		return inputField.transform.Find ("Text").gameObject.GetComponent<Text> ();;
+		if (dialog != null && info != null && text.Length > 0)
+		{
+			// Set text color
+			info.color = Settings.Input.InfoColor;
+
+			// Set text
+			info.text = text;
+
+			// Make info text visible
+			info.gameObject.SetActive (true);
+		}
 	}
 
-	public Text GetText (string content)
+	public void SetText (string content)
 	{
 		if (dialog != null && wrapper != null && text != null)
 		{
@@ -61,11 +91,56 @@ public class Dialog : MonoBehaviour {
 
 			// Activate text
 			text.gameObject.SetActive (true);
+		}
+	}
 
-			return text;
+	public Text GetButtonText ()
+	{
+		if (dialog != null && wrapper != null && ButtonOK != null) {
+			return ButtonOK.transform.Find ("Text").GetComponent<Text> ();
 		}
 
 		return null;
+	}
+
+	public void FocusInputField ()
+	{
+		if (inputField != null)
+		{
+			// TODO funktioniert nicht
+			inputField.ActivateInputField ();
+			inputField.Select ();
+		}
+	}
+
+	public void Submit ()
+	{
+		if (ButtonOK != null) {
+			ButtonOK.onClick.Invoke ();
+		}
+	}
+
+
+
+	public void ShowDialog (string heading, string text)
+	{
+		// Set heading
+		SetHeading (heading);
+
+		// Set text
+		SetText (text);
+
+		// Remove all Listeners
+		ButtonOK.onClick.RemoveAllListeners ();
+
+		// Add Action Listener
+		ButtonOK.onClick.AddListener (HideDialog);
+
+		// Hide cancel button
+		buttonCancel.gameObject.SetActive (false);
+
+		// Set active
+		dialog.SetActive (true);
 	}
 
 	public void HideDialog ()
@@ -76,8 +151,19 @@ public class Dialog : MonoBehaviour {
 			dialog.SetActive (false);
 
 			// Reset UI elements
+			info.gameObject.SetActive (false);
 			inputField.gameObject.SetActive (false);
 			text.gameObject.SetActive (false);
+			buttonCancel.gameObject.SetActive (true);
+
+			// Reset UI contents
+			heading.text = "";
+			info.text = "";
+			inputField.text = "";
+			text.text = "";
+
+			// Remove Listener
+			wrapper.transform.Find ("Footer/Button_OK").GetComponent<Button> ().onClick.RemoveAllListeners ();
 		}
 	}
 }

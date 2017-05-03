@@ -24,12 +24,18 @@ public class CameraController : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed += 5f;
+            if (speed < 50)
+            {
+                speed += 5f;
+            }
         }
 
         if(Input.GetKeyDown(KeyCode.RightShift))
         {
-            speed -= 5f;
+            if (speed > 0)
+            {
+                speed -= 5f;
+            }
         }
 
         if (Input.GetKeyDown("space"))

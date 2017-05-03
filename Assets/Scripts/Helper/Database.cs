@@ -26,15 +26,16 @@ public class Database {
 	// Database connection
 	public static SqliteConnection Connection;
 
-	//
-
 
 
 	// Enums for error handling
 	public enum Constants : long
 	{
-		QueryFailed = -1,
-		DuplicateFound = -2
+		Successful = -1,
+
+		QueryFailed = -10,
+		DuplicateFound = -11,
+		EmptyInputValue = -12
 	}
 
 
@@ -82,8 +83,8 @@ public class Database {
 		string[] stm = {
 			"CREATE TABLE IF NOT EXISTS `file` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT NOT NULL UNIQUE )",
 			"CREATE TABLE IF NOT EXISTS `playlist` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `files` TEXT DEFAULT NULL )",
-			"CREATE TABLE IF NOT EXISTS `visualization` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `colors` INTEGER NOT NULL DEFAULT 1, `buildNumber` INTEGER UNIQUE )",
-			"CREATE TABLE IF NOT EXISTS `color_scheme` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `viz_id` INTEGER, `colors` TEXT NOT NULL, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
+			"CREATE TABLE IF NOT EXISTS `visualization` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `colors` INTEGER NOT NULL DEFAULT 1, `buildNumber` INTEGER UNIQUE, `skybox` TEXT DEFAULT NULL )",
+			"CREATE TABLE IF NOT EXISTS `color_scheme` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `viz_id` INTEGER, `colors` TEXT NOT NULL, FOREIGN KEY(`viz_id`) REFERENCES `visualization`(`id`) )",
 		};
 
 		// Create tables
@@ -98,15 +99,116 @@ public class Database {
 		}
 	}
 
+	public static void InsertDefaultViz ()
+	{
+		if (GetConnection () != null)
+		{
+			for (int i=0; i < Settings.Visualizations.Length; i++)
+			{
+				// Current visualization
+				VisualizationObj viz = Settings.Visualizations [i];
+
+				if (Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
+				{
+					// Query statement
+					string sql = "INSERT INTO visualization (name, colors, buildNumber, skybox) " +
+						"VALUES (@Name, @Colors, @BuildNumber, @Skybox); " +
+						"SELECT last_insert_rowid()";
+					SqliteCommand cmd = new SqliteCommand (sql, Connection);
+
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+					cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
+					cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+					cmd.Parameters.Add (new SqliteParameter ("Skybox", viz.Skybox));
+
+					try
+					{
+						// Execute insert statement
+						long id = (long) cmd.ExecuteScalar ();
+
+						// Update ID
+						Settings.Visualizations [i].ID = id;
+
+						// Dispose command
+						cmd.Dispose ();
+					}
+					catch
+					{
+						// Dispose command
+						cmd.Dispose ();
+
+						// Select ID from database
+						sql = "SELECT id FROM visualization WHERE name = @Name AND buildNumber = @BuildNumber";
+						cmd = new SqliteCommand (sql, Connection);
+
+						// Add Parameters to statement
+						cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+						cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
+
+						// Get sql results
+						SqliteDataReader reader = cmd.ExecuteReader ();
+
+						// Read id
+						while (reader.Read ()) {
+							Settings.Visualizations [i].ID = reader.GetInt64 (0);
+						}
+
+						// Close reader
+						reader.Close();
+						cmd.Dispose ();
+					}
+				}
+			}
+		}
+	}
+
+	public static void InsertDefaultCS ()
+	{
+		if (GetConnection () != null && Settings.Visualizations != null && Settings.Visualizations.Length > 0)
+		{
+			foreach (VisualizationObj viz in Settings.Visualizations)
+			{
+				if (!ColorScheme.Exists (new ColorSchemeObj (viz.Name, viz)))
+				{
+					// Insert default color scheme
+					string sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
+					SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+
+					// Add Parameters to statement
+					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
+					cmd.Parameters.Add (new SqliteParameter ("Viz_ID", viz.ID));
+
+					if (Settings.Defaults.Colors.ContainsKey (viz.Name))
+					{
+						// Set colors
+						Color[] colors = Settings.Defaults.Colors [viz.Name];
+						cmd.Parameters.Add (new SqliteParameter ("Colors", ColorScheme.FormatColors (colors)));
+
+						// Execute insert statement
+						cmd.ExecuteNonQuery ();
+
+						// Dispose command
+						cmd.Dispose ();
+					}
+				}
+			}
+		}
+	}
+
 
 
 	// Get instance (Singleton)
 	public static SqliteConnection GetConnection ()
 	{
 		// Create instance if not exists
-		if (Instance == null) {
+		if (Instance == null)
+		{
 			Instance = new Database ();
+
 			CreateTables ();
+			InsertDefaultViz ();
+			InsertDefaultCS ();
 		}
 
 		// Return database connection

@@ -14,31 +14,33 @@ public class Visualization : MonoBehaviour {
 	// Color schemes
     public List<VisualizationObj> Visualizations = new List<VisualizationObj> ();
 
+	// Color scheme object
+	public ColorScheme ColorSchemes;
+
 
 
 	void Start ()
 	{
-		// Insert visualizations into database
-		Insert ();
-
 		// Select visualizations from database
 		Load ();
 
 		// Set opened visualization
-		if (Settings.OpenedVisualization == null && Settings.ActiveVisualization != null) {
-			Settings.OpenedVisualization = Settings.ActiveVisualization;
+		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
+			Settings.Selected.Visualization = Settings.Active.Visualization;
 		}
 
 		// Display visualizations
 		Display ();
 
 		// Display color schemes
-		GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().Display ();
+		ColorSchemes.Display ();
 
         // Close database connection
         Database.Close ();
 	
 	}
+
+
 
 	public void Display ()
 	{
@@ -77,7 +79,7 @@ public class Visualization : MonoBehaviour {
 
 				// Add text
 				TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-				mainTextArrow.text = viz.Equals (Settings.OpenedVisualization) ? IconFont.DROPDOWN_CLOSED : "";
+				mainTextArrow.text = viz.Equals (Settings.Selected.Visualization) ? IconFont.DROPDOWN_CLOSED : "";
 
 				// Set text alignment
 				mainTextArrow.alignment = TextAnchor.MiddleLeft;
@@ -110,9 +112,9 @@ public class Visualization : MonoBehaviour {
 				VisualizationObj currentViz = viz;
 				button.onClick.AddListener (delegate {
 
-					Settings.OpenedVisualization = currentViz;
-					Settings.OpenedColorScheme = null;
-					GameObject.Find ("ColorSchemeContent").GetComponent<ColorScheme> ().Display ();
+					Settings.Selected.Visualization = currentViz;
+					Settings.Selected.ColorScheme = null;
+					ColorSchemes.Display ();
 					Display ();
 
 				});
@@ -129,7 +131,7 @@ public class Visualization : MonoBehaviour {
 				// Add text
 				TextUnicode mainTextActive = mainActive.AddComponent<TextUnicode> ();
 
-				if (viz.Equals (Settings.ActiveVisualization))
+				if (viz.Equals (Settings.Active.Visualization))
 				{
 					mainTextActive.text = IconFont.VISUALIZATION;
 					mainTextActive.fontSize = 30;
@@ -146,6 +148,11 @@ public class Visualization : MonoBehaviour {
 				LayoutElement mainLayoutElementActive = mainActive.AddComponent<LayoutElement> ();
 				mainLayoutElementActive.preferredWidth = 40;
 				mainLayoutElementActive.preferredHeight = 30;
+
+
+
+				// Set scaling
+				gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
 			}
 		}
 	}
@@ -153,35 +160,6 @@ public class Visualization : MonoBehaviour {
 
 
 	//-- DATABASE METHODS
-
-	public void Insert ()
-	{
-		if (Database.Connect ())
-		{
-			foreach (VisualizationObj viz in Settings.Visualizations)
-			{
-				// Query statement
-				string sql = "INSERT INTO visualization (name, colors, buildNumber) VALUES (@Name, @Colors, @BuildNumber)";
-				SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
-
-				// Add Parameters to statement
-				cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
-				cmd.Parameters.Add (new SqliteParameter ("Colors", viz.Colors));
-				cmd.Parameters.Add (new SqliteParameter ("BuildNumber", viz.BuildNumber));
-
-				// Execute insert statement
-				try {
-					cmd.ExecuteNonQuery ();
-				} catch {}
-
-				// Dispose command
-				cmd.Dispose ();
-			}
-		}
-
-		// Close database connection
-		Database.Close ();
-	}
 
 	public void Load ()
     {
@@ -191,7 +169,7 @@ public class Visualization : MonoBehaviour {
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
 
             // Query statement
-            string sql = "SELECT id,name,colors,buildNumber FROM visualization ORDER BY name ASC";
+            string sql = "SELECT id,name,colors,buildNumber,skybox FROM visualization ORDER BY name ASC";
             cmd.CommandText = sql;
 
             // Get sql results
@@ -208,6 +186,7 @@ public class Visualization : MonoBehaviour {
                 obj.Name = reader.GetString (1);
 				obj.Colors = reader.GetInt32 (2);
                 obj.BuildNumber = reader.GetInt32 (3);
+				obj.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
 
 				// Add visualization to visualizations array
 				if (Application.CanStreamedLevelBeLoaded (obj.BuildNumber))
@@ -232,7 +211,7 @@ public class Visualization : MonoBehaviour {
 		{
 			// Send database query
 			SqliteCommand cmd = new SqliteCommand (Database.Connection);
-			cmd.CommandText = "SELECT id,name,colors,buildNumber FROM visualization WHERE id = @ID";
+			cmd.CommandText = "SELECT id,name,colors,buildNumber,skybox FROM visualization WHERE id = @ID";
 
 			// Add Parameters to statement
 			cmd.Parameters.Add (new SqliteParameter ("ID", id));
@@ -249,6 +228,7 @@ public class Visualization : MonoBehaviour {
 				viz.Name = reader.GetString (1);
 				viz.Colors = reader.GetInt32 (2);
 				viz.BuildNumber = reader.GetInt32 (3);
+				viz.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
 			}
 
 			// Close reader

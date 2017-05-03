@@ -9,45 +9,160 @@ using System.Linq;
 
 public class MenuFunctions : MonoBehaviour {
 
+	public AudioSource audio;
+	public GameObject player;
+	public Transform vizContents;
+	public int defaultStart = 1;
+
 	public static List<String> sDirs;
 	public static List<String> sFiles;
 	public static bool Searching;
 	private BackgroundThread thread;
-
 	public static List<VisualizationObj> tempViz;
+
+
+
+	void Start ()
+	{
+		// Set MenuManager
+		Settings.MenuManager = this;
+
+		// Set audio source
+		audio = GetComponent<AudioSource> ();
+
+		// Load main menu
+		StartLevel (defaultStart);
+	}
 
 
 
 	public void StartLevel (int level)
 	{
-		if (Application.CanStreamedLevelBeLoaded (level)) {
-			SceneManager.LoadScene (level);
+		if (Application.CanStreamedLevelBeLoaded (level))
+		{
+			// Destroy old viz contents
+			DestroyOld ();
+
+			// Start level
+			SceneManager.LoadScene (level, LoadSceneMode.Additive);
+			SceneManager.sceneLoaded += delegate {
+				DestroyOld ();
+			};
+			SceneManager.sceneLoaded += delegate
+			{
+				// Show or hide player skin
+				if (player != null) player.SetActive (IsVisualization (level));
+
+				// Set skybox
+				if (!IsVisualization (level) || level == Settings.Defaults.Visualization.BuildNumber)
+				{
+					RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
+				}
+				else
+				{
+					VisualizationObj viz = Array.Find (Settings.Visualizations, x => x.BuildNumber == level);
+
+					if (viz.Skybox != null) {
+						RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/" + viz.Skybox);
+					} else {
+						RenderSettings.skybox = null;
+					}
+				}
+
+				// Unload last scene
+				SceneManager.UnloadScene (Settings.Active.Scene);
+				Settings.Active.Scene = level;
+			};
 		}
     }
+
+	public VisualizationObj StartVisualization (bool start)
+	{
+		// Set active elements
+		if (Settings.Selected.Playlist != null) Settings.Active.Playlist = Settings.Selected.Playlist;
+		if (Settings.Selected.File != null) Settings.Active.File = Settings.Selected.File;
+		if (Settings.Selected.Visualization != null) Settings.Active.Visualization = Settings.Selected.Visualization;
+		if (Settings.Selected.ColorScheme != null) Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
+
+		// Set default color scheme
+		if (Settings.Active.ColorScheme == null && Settings.Active.Visualization != null)
+		{
+			Settings.Selected.Visualization = Settings.Active.Visualization;
+			Settings.Active.ColorScheme = ColorScheme.GetDefault ();
+		}
+
+		// Select first file
+		if (Settings.Active.Playlist != null && Settings.Active.Playlist.Files.Count > 0 && Settings.Selected.File == null) {
+			Settings.Active.File = Settings.Active.Playlist.Files [0];
+		}
+
+		// Start visualization level
+		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber))
+		{
+			if (start) StartLevel (Settings.Active.Visualization.BuildNumber);
+			return Settings.Active.Visualization;
+		}
+		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
+		{
+			Settings.Active.Visualization = Settings.Defaults.Visualization;
+			if (start) StartLevel (Settings.Defaults.Visualization.BuildNumber);
+			return Settings.Defaults.Visualization;
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	public void StartVisualization ()
 	{
-		// Set active elements
-		Settings.ActivePlaylist = Settings.OpenedPlaylist;
-		Settings.ActiveVisualization = Settings.OpenedVisualization;
-		Settings.ActiveColorScheme = Settings.OpenedColorScheme;
+		bool started = StartVisualization (true) != null;
 
-		// Reset opened elements
-		Settings.OpenedPlaylist = null;
-		Settings.OpenedVisualization = null;
-		Settings.OpenedColorScheme = null;
-
-		// Start visualization level
-		if (Settings.ActiveVisualization != null && Application.CanStreamedLevelBeLoaded (Settings.ActiveVisualization.BuildNumber)) {
-			StartLevel (Settings.ActiveVisualization.BuildNumber);
-		} else {
-			StartLevel (Settings.Visualizations.First ().BuildNumber);
+		if (started)
+		{
+			// Reset opened elements
+			Settings.Selected.Playlist = null;
+			Settings.Selected.File = null;
+			Settings.Selected.Visualization = null;
+			Settings.Selected.ColorScheme = null;
+		}
+		else
+		{
+			// Show dialog
+			GameObject.Find ("MenuManager").GetComponent<Dialog> ().ShowDialog (
+				"Keine Visualisierung",
+				"Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
+			);
 		}
 	}
 		
-    public void Quit () {
+    public void Quit ()
+	{
 		Application.Quit ();
     }
+
+	private void DestroyOld ()
+	{
+		for (int i = Settings.MenuManager.vizContents.childCount - 1; i >= 0; i--) {
+			GameObject.DestroyImmediate (Settings.MenuManager.vizContents.GetChild (i).gameObject);
+		}
+	}
+
+
+
+	//-- HELPER METHODS
+
+	public static bool IsVisualization (int level)
+	{
+		// Is default visualization?
+		if (level == Settings.Defaults.Visualization.BuildNumber) return true;
+
+		// Check all visualizations
+		foreach (VisualizationObj viz in Settings.Visualizations)
+			if (viz.BuildNumber == level) return true;
+
+		return false;
+	}
 
 
 
@@ -104,7 +219,7 @@ public class MenuFunctions : MonoBehaviour {
 	private void GetResults (string pattern)
 	{
 		// Get results
-		string path = Settings.CurrentPath;
+		string path = Settings.Source.Current;
 		FileSearch (path, pattern);
 	}
 

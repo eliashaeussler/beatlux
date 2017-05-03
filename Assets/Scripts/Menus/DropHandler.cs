@@ -25,8 +25,37 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 				file = new FileObj (dir);
 			}
 
-			bool added = pl.AddFile (file, playlist);
+			// Add file and show playlist
+			long added = pl.AddFile (file, playlist);
 			pl.ToggleFiles (playlist, true);
+
+			// Show dialog
+			Dialog dialog = GameObject.Find ("Dialog").GetComponent<Dialog> ();
+
+			switch (added) {
+
+			// Playlist already contains file
+			case (long) Database.Constants.DuplicateFound:
+
+				dialog.ShowDialog (
+					"Lied bereits vorhanden",
+					"Das ausgewählte Lied ist in der Playlist \"" + playlist.Name + "\" bereits vorhanden."
+				);
+				break;
+
+			// Query failed
+			case (long) Database.Constants.QueryFailed:
+
+				dialog.ShowDialog (
+					"Fehler",
+					"Das ausgewählte Lied konnte nicht zur Playlist \"" + playlist.Name + "\" hinzugefügt werden."
+				);
+				break;
+
+			default:
+				break;
+
+			}
 		}
 	}
 }

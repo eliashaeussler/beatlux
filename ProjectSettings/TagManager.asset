@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - LightDone
   - Cubes
-  - Bass
-  - Hexes
   - Light
   layers:
   - Default
