@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using NLayer;
 
 public class Player : MonoBehaviour {
 
@@ -21,8 +22,9 @@ public class Player : MonoBehaviour {
 	// Player canvas
 	public PlayerCanvas canvas;
 
-	// Audio source (component of Main Camera)
+	// Audio source and clip
 	public AudioSource audio;
+	private AudioClip clip;
 
 	// UI elements
 	public GameObject play;
@@ -49,6 +51,9 @@ public class Player : MonoBehaviour {
 	private PlaylistObj activePlaylist;
 	private List<FileObj> files;
 	private int position;
+
+	// MP3 reading
+	private bool mp3Reading = false;
 	
 
 
@@ -82,7 +87,7 @@ public class Player : MonoBehaviour {
 		}
 
 		// Play next file
-		if (!audio.isPlaying && continuePlay) {
+		if (!audio.isPlaying && continuePlay && !mp3Reading) {
 			Next ();
 		}
 
@@ -128,62 +133,124 @@ public class Player : MonoBehaviour {
 	{
 		if (File.Exists (file.Path))
 		{
-			// Get audio resource
-			WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
-			AudioClip clip = resource.audioClip;
-
-			// Wait until file is loaded
-			while (clip.loadState != AudioDataLoadState.Loaded)
+			if (Path.GetExtension (file.Path) == ".mp3")
 			{
-				if (clip.loadState == AudioDataLoadState.Failed) {
-					return false;
+				// Get mp3 file
+				MpegFile mp3 = new MpegFile (file.Path);
+				int samples = (int) (mp3.Length / mp3.Channels) / sizeof (float);
+
+				// Create audio clip
+				clip = AudioClip.Create (Path.GetFileName (file.Path), samples, mp3.Channels, mp3.SampleRate, false);
+
+				// Read samples
+				StartCoroutine (ReadSamples (file, mp3, samples));
+
+				if (clip != null && samples > 0)
+				{
+					artist.text = "Wird geladen...";
+					return true;
 				}
 			}
-
-			if (clip.length > 0)
+			else
 			{
-				// Update current audio source
-				audio.clip = clip;
+				// Get audio resource
+				WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
+				clip = resource.GetAudioClip (true, true);
 
-				// Reset time
-				audio.time = 0;
-
-				// Play audio
-				audio.Play ();
-
-				// Set as active file
-				Settings.Active.File = file;
-
-				// Set full time
-				fullTime.text = FormatTime (audio.clip.length);
-
-				// Update position
-				position = files.IndexOf (file);
-
-				// Get artists and title
-				TagLib.File tags = TagLib.File.Create (file.Path);
-				string artist = tags.Tag.FirstAlbumArtistSort;
-				string title = tags.Tag.Title;
-
-				// Set artists and title
-				string output = "";
-				if (artist != null && artist.Length > 0)
-					output = artist + " – ";
-				
-				if (title != null && title.Length > 0) {
-					output += title;
-				} else {
-					output += Path.GetFileNameWithoutExtension (file.Path);
+				// Wait until file is loaded
+				while (clip.loadState != AudioDataLoadState.Loaded)
+				{
+					if (clip.loadState == AudioDataLoadState.Failed) {
+						return false;
+					}
 				}
 
-				this.artist.text = output;
-
-
-				return true;
+				if (clip != null && clip.length > 0)
+				{
+					StartPlay (file);
+					return true;
+				}
 			}
 		}
 
 		return false;
+	}
+
+	private void StartPlay (FileObj file)
+	{
+		// Update current audio source
+		audio.clip = clip;
+
+		// Reset time
+		audio.time = 0;
+
+		// Play audio
+		audio.Play ();
+
+		// Set as active file
+		Settings.Active.File = file;
+
+		// Set full time
+		fullTime.text = FormatTime (audio.clip.length);
+
+		// Update position
+		position = files.IndexOf (file);
+
+		// Get artists and title
+		TagLib.File tags = TagLib.File.Create (file.Path);
+		string artist = tags.Tag.FirstAlbumArtistSort;
+		string title = tags.Tag.Title;
+
+		// Set artists and title
+		string output = "";
+		if (artist != null && artist.Length > 0)
+			output = artist + " – ";
+
+		if (title != null && title.Length > 0) {
+			output += title;
+		} else {
+			output += Path.GetFileNameWithoutExtension (file.Path);
+		}
+
+		this.artist.text = output;
+	}
+
+	private IEnumerator ReadSamples (FileObj file, MpegFile mp3, int samples)
+	{
+		mp3Reading = true;
+
+		// Settings
+		long pos = 0;
+		long step = mp3.SampleRate * mp3.Channels;
+		float[] buffer = new float [samples * mp3.Channels];
+
+		// Read samples
+		while (pos < buffer.Length)
+		{
+			// Keep player opened
+			canvas.KeepPlayer ();
+
+			// Temporary buffer
+			float[] temp = new float[step];
+
+			// Read samples
+			mp3.ReadSamples (temp, 0, (int) step);
+
+			// Insert into buffer
+			long length = pos + step <= buffer.Length ? step : buffer.Length - pos;
+			Array.Copy (temp, 0, buffer, pos, length);
+
+			// Update position
+			pos += step;
+			yield return pos;
+		}
+
+		// Set data for clip
+		clip.SetData (buffer, 0);
+
+		// Start play
+		StartPlay (file);
+		mp3Reading = false;
 	}
 
 	private void UpdatePlayButton ()
@@ -217,16 +284,20 @@ public class Player : MonoBehaviour {
 
 	private void SetAudioTime (float value)
 	{
-		if (audio != null && audio.clip != null && audio.clip.length != 0 && userChangedSlider) {
+		if (audio != null && audio.clip != null && audio.clip.length != 0 && userChangedSlider)
+		{
 			audio.time = value < 1 ? value * audio.clip.length : audio.clip.length - 0.1f;
 		}
 	}
 
 	public void UpdateTime (float value)
 	{
-		if (audio != null && audio.clip != null && audio.clip.length > 0) {
+		if (audio != null && audio.clip != null && audio.clip.length > 0)
+		{
 			currentTime.text = FormatTime (value * audio.clip.length);
-		} else {
+		}
+		else
+		{
 			timeline.value = 0;
 		}
 	}

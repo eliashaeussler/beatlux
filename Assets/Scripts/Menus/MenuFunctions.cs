@@ -27,7 +27,7 @@ public class MenuFunctions : MonoBehaviour {
 		// Set MenuManager
 		Settings.MenuManager = this;
 
-		// Set audio source
+		// Set components
 		audio = GetComponent<AudioSource> ();
 
 		// Load main menu
@@ -40,9 +40,6 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		if (Application.CanStreamedLevelBeLoaded (level))
 		{
-			// Destroy old viz contents
-			DestroyOld ();
-
 			// Start level
 			SceneManager.LoadScene (level, LoadSceneMode.Additive);
 			SceneManager.sceneLoaded += delegate {
