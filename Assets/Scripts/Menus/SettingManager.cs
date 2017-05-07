@@ -102,4 +102,6 @@ public class SettingManager : MonoBehaviour {
 
         }
     }
+
+    
 }
