@@ -11,9 +11,10 @@ public class SettingManager : MonoBehaviour {
     public Dropdown textureQualityDropdown;
     public Dropdown antialiasingDropdown;
     public Button applyButton;
+    public Dropdown mirrorDropdown;
 
     public GameSettings gameSettings;
-
+    public GameObject mirrors;
     //Storage for all available resolutions
     public Resolution[] resolutions;
 
@@ -27,7 +28,7 @@ public class SettingManager : MonoBehaviour {
             Screen.SetResolution(resolutions[gameSettings.resolutionIndex].width, resolutions[gameSettings.resolutionIndex].height, Screen.fullScreen);
             QualitySettings.masterTextureLimit = gameSettings.textureQuality;
             QualitySettings.antiAliasing = gameSettings.antialiasing;
-
+            setMirrors();
 
         }
     }
@@ -43,7 +44,7 @@ public class SettingManager : MonoBehaviour {
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
         antialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
         applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
-
+        mirrorDropdown.onValueChanged.AddListener(delegate { OnMirrorsChange(); });
         resolutions = Screen.resolutions;
 
         foreach (Resolution resolution in resolutions)
@@ -76,6 +77,13 @@ public class SettingManager : MonoBehaviour {
         gameSettings.antialiasing = QualitySettings.antiAliasing = (int)Mathf.Pow(2f, antialiasingDropdown.value);
     }
 
+    public void OnMirrorsChange()
+    {
+        gameSettings.mirrors = mirrorDropdown.value;
+
+        setMirrors();
+    }
+
     public void OnApplyButtonClick()
     {
         SaveSettings();
@@ -99,7 +107,27 @@ public class SettingManager : MonoBehaviour {
             textureQualityDropdown.value = gameSettings.textureQuality;
             resolutionDropdown.value = gameSettings.resolutionIndex;
             fullscreenToggle.isOn = gameSettings.fullscreen;
+            mirrorDropdown.value = gameSettings.mirrors;
+        }
+    }
 
+    public void setMirrors()
+    {
+        switch (gameSettings.mirrors)
+        {
+            case 0:
+                mirrors.GetComponent<MirrorReflection>().enabled = false;
+                break;
+            case 1:
+                mirrors.GetComponent<MirrorReflection>().enabled = true;
+                mirrors.GetComponent<MirrorReflection>().m_TextureSize = 256;
+                break;
+            case 2:
+                mirrors.GetComponent<MirrorReflection>().enabled = true;
+                mirrors.GetComponent<MirrorReflection>().m_TextureSize = 512;
+                break;
+            default:
+                break;
         }
     }
 
