@@ -28,5 +28,6 @@ public class IconFont : MonoBehaviour {
 	public const string REPEAT = "\ue912";
 	public const string ARROW_LEFT = "\ue913";
 	public const string ARROW_BACK = "\ue914";
+	public const string HOME = "\ue915";
 
 }

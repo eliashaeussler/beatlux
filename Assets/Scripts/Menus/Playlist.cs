@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.IO;
+using System.Linq;
 
 public class Playlist : MonoBehaviour {
 
@@ -17,10 +18,13 @@ public class Playlist : MonoBehaviour {
 	// Playlists
 	public List<PlaylistObj> Playlists;
 
+	// Playlist to toggle
+	public PlaylistObj togglePlaylist;
 
 
 
-	public void Start ()
+
+	void Start ()
 	{
 		// Select playlists from database
 		Load ();
@@ -57,6 +61,15 @@ public class Playlist : MonoBehaviour {
 
 		// Close database connection
 		Database.Close ();
+	}
+
+	void Update ()
+	{
+		if (togglePlaylist != null)
+		{
+			ToggleFiles (togglePlaylist, true);
+			togglePlaylist = null;
+		}
 	}
 
 
@@ -151,6 +164,10 @@ public class Playlist : MonoBehaviour {
 	{
 		if (playlist != null)
 		{
+			// Navigation for buttons
+			Navigation nav = new Navigation ();
+			nav.mode = Navigation.Mode.None;
+
 			// Set name
 			string name = "#" + playlist.ID + (file != null ? ("." + file.ID) : "");
 
@@ -231,6 +248,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
+			mainTextArrow.color = Settings.GetColor (80, 80, 80);
 
 			if (file == null) {
 				mainTextArrow.text = playlist.Equals (Settings.Selected.Playlist)
@@ -262,13 +280,13 @@ public class Playlist : MonoBehaviour {
 			{
 				mainTextListening.text = IconFont.LISTENING;
 				mainTextListening.fontSize = 30;
-				mainTextListening.color = file == null ? Color.white : new Color (0.7f, 0.7f, 0.7f);
+				mainTextListening.color = file == null ? Settings.GetColor (60, 60, 60) : Settings.GetColor (80, 80, 80);
 			}
 			else if (file != null && playlist.Equals (Settings.Selected.Playlist) && file.Equals (Settings.Selected.File))
 			{
 				mainTextListening.text = IconFont.DROPDOWN_CLOSED;
 				mainTextListening.fontSize = 20;
-				mainTextListening.color = Color.gray;
+				mainTextListening.color = Settings.GetColor (90, 90, 90);
 			}
 
 			// Set text alignment
@@ -280,6 +298,7 @@ public class Playlist : MonoBehaviour {
 			// Add Layout Element
 			LayoutElement mainLayoutElementListening = mainListening.AddComponent<LayoutElement> ();
 			mainLayoutElementListening.minWidth = file == null ? 40 : 32;
+
 
 			// Create text GameObject
 			GameObject mainText = new GameObject ("Text");
@@ -293,11 +312,11 @@ public class Playlist : MonoBehaviour {
 
 			// Set text color
 			if (file == null) {
-				text.color = Color.white;
+				text.color = Settings.GetColor (60, 60, 60);
 			} else if (playlist.Equals (Settings.Active.Playlist) && file.Equals (Settings.Active.File)) {
-				text.color = new Color (0.7f, 0.7f, 0.7f);
+				text.color = Settings.GetColor (100, 100, 100);
 			} else {
-				text.color = Color.gray;
+				text.color = Settings.GetColor (90, 90, 90);
 			}
 
 			// Font settings
@@ -310,6 +329,7 @@ public class Playlist : MonoBehaviour {
 			// Add button
 			Button buttonText = mainText.AddComponent<Button> ();
 			buttonText.transition = Selectable.Transition.Animation;
+			buttonText.navigation = nav;
 
 			// Add animator
 			Animator animatorText = mainText.AddComponent<Animator> ();
@@ -360,6 +380,7 @@ public class Playlist : MonoBehaviour {
 				// Add text
 				TextUnicode editText = edit.AddComponent<TextUnicode> ();
 				editText.text = IconFont.EDIT;
+				editText.color = Settings.GetColor (80, 80, 80);
 
 				// Set text alignment
 				editText.alignment = TextAnchor.MiddleRight;
@@ -374,6 +395,7 @@ public class Playlist : MonoBehaviour {
 				// Add button
 				Button buttonEditEvt = edit.AddComponent<Button> ();
 				buttonEditEvt.transition = Selectable.Transition.Animation;
+				buttonEditEvt.navigation = nav;
 
 				// Add button onclick event
 				buttonEditEvt.onClick.AddListener (delegate {
@@ -393,6 +415,7 @@ public class Playlist : MonoBehaviour {
 			// Add text
 			Text deleteText = delete.AddComponent<Text> ();
 			deleteText.text = IconFont.TRASH;
+			deleteText.color = Settings.GetColor (80, 80, 80);
 
 			// Set text alignment
 			deleteText.alignment = TextAnchor.MiddleRight;
@@ -407,6 +430,7 @@ public class Playlist : MonoBehaviour {
 			// Add button
 			Button buttonDeleteEvt = delete.AddComponent<Button> ();
 			buttonDeleteEvt.transition = Selectable.Transition.Animation;
+			buttonDeleteEvt.navigation = nav;
 
 			// Add button onclick event
 			buttonDeleteEvt.onClick.AddListener (delegate {
@@ -457,10 +481,6 @@ public class Playlist : MonoBehaviour {
 
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
-		// Set playlist as active playlist
-//		if (!forceOpen && playlist.Files.Count > 0)
-//			Settings.Selected.Playlist = playlist;
-
 		// Show or hide playlist files
 		bool opened = false;
 		foreach (PlaylistObj p in Playlists)
@@ -513,18 +533,13 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.File = null;
 		}
 
-		if (opened && Settings.Selected.Playlist != playlist)
+		if ((opened && Settings.Selected.Playlist != playlist) || forceOpen)
 		{
 			// Set selected playlist
-			Settings.Selected.Playlist = opened ? playlist : null;
+			Settings.Selected.Playlist = playlist;
 
-			// Unset selected file
-			Settings.Selected.File = Settings.Selected.Playlist.Files [0];
-
-			// Add icon to selected file
-			Transform file = transform.Find ("#" + Settings.Selected.Playlist.ID + "/Contents/#" +
-				Settings.Selected.Playlist.ID + "." + Settings.Selected.File.ID + "/Listening");
-			if (file != null) file.GetComponent<Text> ().text = IconFont.DROPDOWN_CLOSED;
+			// Set selected file
+			UpdateSelectedFile (Settings.Selected.Playlist.Files.First ());
 		}
 
 		// Unset selected playlist
@@ -1107,12 +1122,6 @@ public class Playlist : MonoBehaviour {
 				// Close database connection
 				cmd.Dispose ();
 				Database.Close ();
-
-				// Add file to interface
-				DisplayFile (playlist, file);
-
-				// Re-order files
-				transform.Find ("#" + playlist.ID + "/Contents/#" + playlist.ID + "." + file.ID).SetSiblingIndex (playlist.Files.IndexOf (file));
 
 				return (long) (result > 0 ? Database.Constants.Successful : Database.Constants.QueryFailed);
 			}

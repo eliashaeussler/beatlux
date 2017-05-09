@@ -77,22 +77,64 @@ public class SourceFolder : MonoBehaviour {
 			GameObject obj = new GameObject (item);
 			obj.transform.SetParent (gameObject.transform);
 
-			// Add RectTransform element
-			RectTransform trans = obj.AddComponent<RectTransform> ();
-			trans.pivot = new Vector2 (0, 0.5f);
+			// Add Horizontal Layout Group
+			HorizontalLayoutGroup hlg = obj.AddComponent<HorizontalLayoutGroup> ();
+			hlg.spacing = 20;
+			hlg.childAlignment = TextAnchor.MiddleLeft;
+			hlg.childForceExpandWidth = false;
+			hlg.childForceExpandHeight = true;
+
+			// Set RectTransform
+			RectTransform trans = obj.GetComponent<RectTransform> ();
 			trans.localScale = Vector3.one;
 
+
+			// Create image GameObject
+			GameObject goImage = new GameObject ("Image");
+			goImage.transform.SetParent (obj.transform);
+
+			// Add text
+			TextUnicode textImage = goImage.AddComponent<TextUnicode> ();
+			textImage.color = Settings.GetColor (80, 80, 80);
+
+			textImage.text = isDir ? IconFont.FOLDER : IconFont.MUSIC;
+
+			// Set text alignment
+			textImage.alignment = TextAnchor.MiddleLeft;
+
+			// Font settings
+			textImage.font = IconFont.font;
+			textImage.fontSize = 30;
+
+			// Add RectTransform
+			RectTransform imageTrans = goImage.GetComponent<RectTransform> ();
+			imageTrans.localScale = Vector3.one;
+
+
+			// Create text GameObject
+			GameObject goText = new GameObject ("Text");
+			goText.transform.SetParent (obj.transform);
+
+			// Add RectTransform element
+			RectTransform textTrans = goText.AddComponent<RectTransform> ();
+			textTrans.pivot = new Vector2 (0.5f, 0.5f);
+			textTrans.localScale = Vector3.one;
+
 			// Add Layout Element
-			LayoutElement layoutElement = obj.AddComponent<LayoutElement> ();
+			LayoutElement layoutElement = goText.AddComponent<LayoutElement> ();
 			layoutElement.minHeight = 30;
 			layoutElement.preferredHeight = 30;
 
 			// Add Drag Handler
-			if (!isDir) obj.AddComponent<DragHandler> ();
+			if (!isDir) goText.AddComponent<DragHandler> ();
 
 			// Add Button
-			Button button = obj.AddComponent<Button> ();
+			Button button = goText.AddComponent<Button> ();
 			button.transition = Selectable.Transition.Animation;
+
+			Navigation nav = new Navigation ();
+			nav.mode = Navigation.Mode.None;
+			button.navigation = nav;
 
 			// Add OnClick Handler
 			string currentItem = item;
@@ -118,15 +160,16 @@ public class SourceFolder : MonoBehaviour {
 			}
 
 			// Add Animator
-			Animator animator = obj.AddComponent<Animator> ();
+			Animator animator = goText.AddComponent<Animator> ();
 			animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 
 			// Add Text
-			Text text = obj.AddComponent<Text> ();
-			text.color = Color.white;
+			Text text = goText.AddComponent<Text> ();
+			text.color = Settings.GetColor (60, 60, 60);
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.text = Path.GetFileName (item);
 			text.fontSize = 30;
+			text.alignment = TextAnchor.MiddleLeft;
 		}
 	}
 
