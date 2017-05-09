@@ -29,6 +29,19 @@ public class Visualization : MonoBehaviour {
 			Settings.Selected.Visualization = Settings.Active.Visualization;
 		}
 
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
+		}
+
+		// Set close button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Close").GetComponent<Button> ().onClick.RemoveAllListeners ();
+			GameObject.Find ("Close").GetComponent<Button> ().onClick.AddListener (delegate {
+				Settings.MenuManager.StartVisualization ();
+			});
+		}
+
 		// Display visualizations
 		Display ();
 

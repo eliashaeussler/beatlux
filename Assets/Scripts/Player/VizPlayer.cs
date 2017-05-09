@@ -61,7 +61,7 @@ public class VizPlayer : MonoBehaviour {
 			Settings.Selected.ColorScheme = ColorScheme.GetDefault (viz);
 
 			// Get level
-			VisualizationObj selectedViz = Settings.MenuManager.StartVisualization (false);
+			VisualizationObj selectedViz = Settings.MenuManager.NextVisualization ();
 
 			// Start level
 			if (selectedViz != null) Settings.MenuManager.StartLevel (selectedViz.BuildNumber);

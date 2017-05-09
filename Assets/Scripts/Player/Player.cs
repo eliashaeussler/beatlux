@@ -48,7 +48,6 @@ public class Player : MonoBehaviour {
 	private bool continuePlay = true;
 
 	// Playlist
-	private PlaylistObj activePlaylist;
 	private List<FileObj> files;
 	private int position;
 
@@ -64,6 +63,9 @@ public class Player : MonoBehaviour {
 
 		// Set volume
 		SetVolume (Settings.Player.Volume);
+
+		// Set null position
+		position = -1;
 	}
 
 	void Update ()
@@ -78,12 +80,19 @@ public class Player : MonoBehaviour {
 		UpdatePlayButton ();
 		UpdateSlider ();
 
-		// Play first file if playlist changed
-		if (activePlaylist != Settings.Active.Playlist)
-		{
-			activePlaylist = Settings.Active.Playlist;
-			ToggleShuffle (Settings.Player.Shuffle, true);
-			Play (Settings.Active.File ?? files [0]);
+		// Current states
+		bool playlistChanged = Settings.Selected.Playlist != null && !Settings.Selected.Playlist.Equals (Settings.Active.Playlist);
+		bool fileChanged = Settings.Selected.File != null && !Settings.Selected.File.Equals (Settings.Active.File);
+
+		// Play first file if playlist was changed
+		if (playlistChanged) {
+			SetPlaylist ();
+			ToggleShuffle (Settings.Player.Shuffle);
+		}
+
+		// Play file if selected file was changed
+		if (fileChanged || playlistChanged) {
+			Play (Settings.Selected.File);
 		}
 
 		// Play next file
@@ -99,32 +108,22 @@ public class Player : MonoBehaviour {
 
 
 
-	private void SetPlaylist (bool play)
+	private void SetPlaylist ()
 	{
 		// Instantiate list
 		files = new List<FileObj> ();
 
+		// Set active playlist
+		if (Settings.Selected.Playlist != null) {
+			Settings.Active.Playlist = Settings.Selected.Playlist;
+			Settings.Selected.Playlist = null;
+		}
+
 		// Get files from active playlist
 		if (Settings.Active.Playlist != null)
 		{
-			// Take all files from playlist
 			foreach (FileObj file in Settings.Active.Playlist.Files) {
 				files.Add (file);
-			}
-
-			// Set position in list
-			if (Settings.Active.File != null && Settings.Active.Playlist.Files.Contains (Settings.Active.File))
-			{
-				if (!Settings.Player.Shuffle)
-				{
-					int index = Settings.Active.Playlist.Files.IndexOf (Settings.Active.File);
-					if (position != index && play) Play (Settings.Active.File);
-					position = index;
-				}
-			}
-			else
-			{
-				position = 0;
 			}
 		}
 	}
@@ -155,7 +154,7 @@ public class Player : MonoBehaviour {
 			{
 				// Get audio resource
 				WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
-				clip = resource.GetAudioClip (true, true);
+				clip = resource.GetAudioClip (true, false);
 
 				// Wait until file is loaded
 				while (clip.loadState != AudioDataLoadState.Loaded)
@@ -189,6 +188,7 @@ public class Player : MonoBehaviour {
 
 		// Set as active file
 		Settings.Active.File = file;
+		Settings.Selected.File = null;
 
 		// Set full time
 		fullTime.text = FormatTime (audio.clip.length);
@@ -348,16 +348,13 @@ public class Player : MonoBehaviour {
 	}
 
 	public void ToggleShuffle () {
-		ToggleShuffle (!Settings.Player.Shuffle, false);
+		ToggleShuffle (!Settings.Player.Shuffle);
 	}
 
-	public void ToggleShuffle (bool state, bool play)
+	public void ToggleShuffle (bool state)
 	{
 		// Change shuffle
 		Settings.Player.Shuffle = state;
-
-		// Set playlist
-		SetPlaylist (play);
 
 		// Update playlist
 		if (Settings.Player.Shuffle)
@@ -372,10 +369,14 @@ public class Player : MonoBehaviour {
 				files [k] = files [n];
 				files [n] = val;
 			}
-
-			// Set position
-			position = files.IndexOf (Settings.Active.File);
 		}
+		else
+		{
+			SetPlaylist ();
+		}
+
+		// Set position
+		position = files.IndexOf (Settings.Active.File);
 
 		// Update UI
 		shuffle.GetComponent<Text> ().color = Settings.Player.Shuffle ? COLOR_ENABLED : COLOR_DISABLED;

@@ -173,7 +173,6 @@ public class KetteVersuch : MonoBehaviour
 
             //storing lights in ketAr
             ketAr[i] = lichter;
-            Debug.Log(ketAr[i].Length);
 
 
         }

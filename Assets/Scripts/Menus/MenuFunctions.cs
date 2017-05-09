@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Linq;
+using UnityEngine.UI;
 
 public class MenuFunctions : MonoBehaviour {
 
@@ -19,6 +20,12 @@ public class MenuFunctions : MonoBehaviour {
 	public static bool Searching;
 	private BackgroundThread thread;
 	public static List<VisualizationObj> tempViz;
+
+	private bool _sett = false;
+	public bool openSettings {
+		get { return _sett; }
+		set { _sett = value; }
+	}
 
 
 
@@ -42,9 +49,13 @@ public class MenuFunctions : MonoBehaviour {
 		{
 			// Start level
 			SceneManager.LoadScene (level, LoadSceneMode.Additive);
+
+			// Destroy unused GameObjects
 			SceneManager.sceneLoaded += delegate {
 				DestroyOld ();
 			};
+
+			// Update skybox and unload last scene
 			SceneManager.sceneLoaded += delegate
 			{
 				// Show or hide player skin
@@ -73,53 +84,50 @@ public class MenuFunctions : MonoBehaviour {
 		}
     }
 
-	public VisualizationObj StartVisualization (bool start)
+	public VisualizationObj NextVisualization ()
 	{
-		// Set active elements
-		if (Settings.Selected.Playlist != null) Settings.Active.Playlist = Settings.Selected.Playlist;
-		if (Settings.Selected.File != null) Settings.Active.File = Settings.Selected.File;
-		if (Settings.Selected.Visualization != null) Settings.Active.Visualization = Settings.Selected.Visualization;
-		if (Settings.Selected.ColorScheme != null) Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
-
 		// Set default color scheme
-		if (Settings.Active.ColorScheme == null && Settings.Active.Visualization != null)
-		{
-			Settings.Selected.Visualization = Settings.Active.Visualization;
-			Settings.Active.ColorScheme = ColorScheme.GetDefault ();
+		if (Settings.Selected.ColorScheme == null && Settings.Selected.Visualization != null) {
+			Settings.Selected.ColorScheme = ColorScheme.GetDefault ();
 		}
 
 		// Select first file
-		if (Settings.Active.Playlist != null && Settings.Active.Playlist.Files.Count > 0 && Settings.Selected.File == null) {
-			Settings.Active.File = Settings.Active.Playlist.Files [0];
+		if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Count > 0 && Settings.Selected.File == null) {
+			Settings.Selected.File = Settings.Selected.Playlist.Files.First ();
 		}
 
+		// Set visualization and color scheme
+		Settings.Active.Visualization = Settings.Selected.Visualization;
+		Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
+
+
 		// Start visualization level
-		if (Settings.Active.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Active.Visualization.BuildNumber))
+		if (Settings.Selected.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
 		{
-			if (start) StartLevel (Settings.Active.Visualization.BuildNumber);
-			return Settings.Active.Visualization;
+			// Do nothing.
 		}
 		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
 		{
 			Settings.Active.Visualization = Settings.Defaults.Visualization;
-			if (start) StartLevel (Settings.Defaults.Visualization.BuildNumber);
-			return Settings.Defaults.Visualization;
 		}
 		else
 		{
 			return null;
 		}
+
+		return Settings.Active.Visualization;
 	}
 
 	public void StartVisualization ()
 	{
-		bool started = StartVisualization (true) != null;
+		VisualizationObj viz = NextVisualization ();
 
-		if (started)
+		if (viz != null)
 		{
-			// Reset opened elements
-			Settings.Selected.Playlist = null;
-			Settings.Selected.File = null;
+			// Start visualization
+			StartLevel (viz.BuildNumber);
+
+			// Reset visualization elements
 			Settings.Selected.Visualization = null;
 			Settings.Selected.ColorScheme = null;
 		}
@@ -130,6 +138,15 @@ public class MenuFunctions : MonoBehaviour {
 				"Keine Visualisierung",
 				"Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
 			);
+		}
+	}
+
+	public void Close ()
+	{
+		if (Settings.Active.Visualization != null) {
+			StartVisualization ();
+		} else {
+			StartLevel (1);
 		}
 	}
 		

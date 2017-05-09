@@ -37,6 +37,21 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.File = Settings.Active.File;
 		}
 
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
+		}
+
+		// Set close button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Close").GetComponent<Button> ().onClick.RemoveAllListeners ();
+			GameObject.Find ("Close").GetComponent<Button> ().onClick.AddListener (delegate {
+				
+				Settings.MenuManager.StartVisualization ();
+
+			});
+		}
+
 		// Display playlists
 		Display ();
 
