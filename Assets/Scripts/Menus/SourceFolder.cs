@@ -95,20 +95,20 @@ public class SourceFolder : MonoBehaviour {
 
 			// Add text
 			TextUnicode textImage = goImage.AddComponent<TextUnicode> ();
-			textImage.color = Settings.GetColor (80, 80, 80);
 
+			textImage.color = Settings.GetColor (180, 180, 180);
 			textImage.text = isDir ? IconFont.FOLDER : IconFont.MUSIC;
-
-			// Set text alignment
 			textImage.alignment = TextAnchor.MiddleLeft;
-
-			// Font settings
 			textImage.font = IconFont.font;
 			textImage.fontSize = 30;
 
 			// Add RectTransform
 			RectTransform imageTrans = goImage.GetComponent<RectTransform> ();
 			imageTrans.localScale = Vector3.one;
+
+			// Add Layout Element
+			LayoutElement imageLayout = goImage.AddComponent<LayoutElement> ();
+			imageLayout.minWidth = 30;
 
 
 			// Create text GameObject
@@ -165,7 +165,8 @@ public class SourceFolder : MonoBehaviour {
 
 			// Add Text
 			Text text = goText.AddComponent<Text> ();
-			text.color = Settings.GetColor (60, 60, 60);
+
+			text.color = Color.white;
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.text = Path.GetFileName (item);
 			text.fontSize = 30;

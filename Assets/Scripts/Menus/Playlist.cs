@@ -239,7 +239,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-			mainTextArrow.color = Settings.GetColor (80, 80, 80);
+			mainTextArrow.color = Color.white;
 
 			if (file == null) {
 				mainTextArrow.text = playlist.Equals (Settings.Selected.Playlist)
@@ -271,13 +271,13 @@ public class Playlist : MonoBehaviour {
 			{
 				mainTextListening.text = IconFont.LISTENING;
 				mainTextListening.fontSize = 30;
-				mainTextListening.color = file == null ? Settings.GetColor (60, 60, 60) : Settings.GetColor (80, 80, 80);
+				mainTextListening.color = file == null ? Color.white : Settings.GetColor (180, 180, 180);
 			}
 			else if (file != null && playlist.Equals (Settings.Selected.Playlist) && file.Equals (Settings.Selected.File))
 			{
 				mainTextListening.text = IconFont.DROPDOWN_CLOSED;
 				mainTextListening.fontSize = 20;
-				mainTextListening.color = Settings.GetColor (90, 90, 90);
+				mainTextListening.color = Color.gray;
 			}
 
 			// Set text alignment
@@ -303,11 +303,11 @@ public class Playlist : MonoBehaviour {
 
 			// Set text color
 			if (file == null) {
-				text.color = Settings.GetColor (60, 60, 60);
+				text.color = Color.white;
 			} else if (playlist.Equals (Settings.Active.Playlist) && file.Equals (Settings.Active.File)) {
-				text.color = Settings.GetColor (100, 100, 100);
+				text.color = Settings.GetColor (180, 180, 180);
 			} else {
-				text.color = Settings.GetColor (90, 90, 90);
+				text.color = Color.gray;
 			}
 
 			// Font settings
@@ -371,7 +371,7 @@ public class Playlist : MonoBehaviour {
 				// Add text
 				TextUnicode editText = edit.AddComponent<TextUnicode> ();
 				editText.text = IconFont.EDIT;
-				editText.color = Settings.GetColor (80, 80, 80);
+				editText.color = Color.white;
 
 				// Set text alignment
 				editText.alignment = TextAnchor.MiddleRight;
@@ -406,7 +406,7 @@ public class Playlist : MonoBehaviour {
 			// Add text
 			Text deleteText = delete.AddComponent<Text> ();
 			deleteText.text = IconFont.TRASH;
-			deleteText.color = Settings.GetColor (80, 80, 80);
+			deleteText.color = Color.white;
 
 			// Set text alignment
 			deleteText.alignment = TextAnchor.MiddleRight;
