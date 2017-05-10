@@ -56,6 +56,9 @@ public class Source : MonoBehaviour {
 					arrowText.color = new Color (1, 1, 1, 0.5f);
 					arrowText.alignment = TextAnchor.MiddleCenter;
 					arrowText.text = IconFont.DROPDOWN_CLOSED;
+
+					RectTransform arrowTrans = arrow.GetComponent<RectTransform> ();
+					arrowTrans.localScale = Vector3.one;
 				}
 			}
 
