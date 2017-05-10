@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,7 @@ public class VizPlayer : MonoBehaviour {
 	public GameObject previous;
 	public GameObject next;
 	public GameObject shuffle;
+	public Button logo;
 
 	// Visualizations
 	private VisualizationObj activeViz;
@@ -20,6 +21,16 @@ public class VizPlayer : MonoBehaviour {
 	private bool isShuffle = Settings.Player.ShuffleViz;
 
 
+
+	void Start ()
+	{
+		// Set logo onClick listener
+		logo.onClick.AddListener (delegate {
+
+			Select (Settings.Defaults.Visualization);
+
+		});
+	}
 
 	void Update ()
 	{

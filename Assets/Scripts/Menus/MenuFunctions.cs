@@ -86,20 +86,28 @@ public class MenuFunctions : MonoBehaviour {
 
 	public VisualizationObj NextVisualization ()
 	{
-		// Set default color scheme
-		if (Settings.Selected.ColorScheme == null && Settings.Selected.Visualization != null) {
-			Settings.Selected.ColorScheme = ColorScheme.GetDefault ();
+		// Set default visualization
+		if (Settings.Selected.Visualization == null) {
+			Settings.Selected.Visualization = Settings.Defaults.Visualization;
 		}
 
-		// Select first file
-		if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Count > 0 && Settings.Selected.File == null) {
-			Settings.Selected.File = Settings.Selected.Playlist.Files.First ();
+		// Set default color scheme
+		if (Settings.Selected.ColorScheme == null
+			&& !Settings.Selected.Visualization.Equals (Settings.Defaults.Visualization)) {
+
+			Settings.Selected.ColorScheme = ColorScheme.GetDefault (Settings.Selected.Visualization);
 		}
 
 		// Set visualization and color scheme
 		Settings.Active.Visualization = Settings.Selected.Visualization;
 		Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
 
+		// Select first file
+		if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Count > 0
+			&& Settings.Selected.File == null) {
+
+			Settings.Selected.File = Settings.Selected.Playlist.Files.First ();
+		}
 
 		// Start visualization level
 		if (Settings.Selected.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
@@ -109,6 +117,7 @@ public class MenuFunctions : MonoBehaviour {
 		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
 		{
 			Settings.Active.Visualization = Settings.Defaults.Visualization;
+			Settings.Active.ColorScheme = null;
 		}
 		else
 		{
@@ -141,10 +150,20 @@ public class MenuFunctions : MonoBehaviour {
 		}
 	}
 
+	public void Dismiss ()
+	{
+		Settings.Selected.Visualization = null;
+		Settings.Selected.ColorScheme = null;
+		Settings.Selected.Playlist = null;
+		Settings.Selected.File = null;
+
+		StartVisualization ();
+	}
+
 	public void Close ()
 	{
 		if (Settings.Active.Visualization != null) {
-			StartVisualization ();
+			Dismiss ();
 		} else {
 			StartLevel (1);
 		}
@@ -159,6 +178,26 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		for (int i = Settings.MenuManager.vizContents.childCount - 1; i >= 0; i--) {
 			GameObject.DestroyImmediate (Settings.MenuManager.vizContents.GetChild (i).gameObject);
+		}
+	}
+
+	public static void SetSelected ()
+	{
+		// Set selected playlist
+		if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null) {
+			Settings.Selected.Playlist = Settings.Active.Playlist;
+		}
+
+		// Set selected file
+		if (Settings.Selected.File == null && Settings.Active.File != null &&
+			Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains (Settings.Active.File)) {
+
+			Settings.Selected.File = Settings.Active.File;
+		}
+
+		// Set selected visualization
+		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
+			Settings.Selected.Visualization = Settings.Active.Visualization;
 		}
 	}
 

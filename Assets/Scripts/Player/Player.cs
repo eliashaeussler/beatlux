@@ -123,7 +123,9 @@ public class Player : MonoBehaviour {
 		if (Settings.Active.Playlist != null)
 		{
 			foreach (FileObj file in Settings.Active.Playlist.Files) {
-				files.Add (file);
+				if (File.Exists (file.Path)) {
+					files.Add (file);
+				}
 			}
 		}
 	}

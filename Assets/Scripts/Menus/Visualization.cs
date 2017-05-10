@@ -24,10 +24,8 @@ public class Visualization : MonoBehaviour {
 		// Select visualizations from database
 		Load ();
 
-		// Set opened visualization
-		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
-			Settings.Selected.Visualization = Settings.Active.Visualization;
-		}
+		// Set selected elements
+		MenuFunctions.SetSelected ();
 
 		// Set start button
 		if (Settings.Active.File != null) {
@@ -125,10 +123,19 @@ public class Visualization : MonoBehaviour {
 				VisualizationObj currentViz = viz;
 				button.onClick.AddListener (delegate {
 
-					Settings.Selected.Visualization = currentViz;
-					Settings.Selected.ColorScheme = null;
-					ColorSchemes.Display ();
-					Display ();
+					if (!currentViz.Equals (Settings.Selected.Visualization))
+					{
+						Settings.Selected.Visualization = currentViz;
+
+						if (Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+							Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
+						} else {
+							Settings.Selected.ColorScheme = ColorScheme.GetDefault (currentViz);
+						}
+
+						ColorSchemes.Display ();
+						Display ();
+					}
 
 				});
 

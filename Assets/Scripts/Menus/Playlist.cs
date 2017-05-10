@@ -29,17 +29,8 @@ public class Playlist : MonoBehaviour {
 		// Select playlists from database
 		Load ();
 
-		// Set selected playlist
-		if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null) {
-			Settings.Selected.Playlist = Settings.Active.Playlist;
-		}
-
-		// Set selected file
-		if (Settings.Selected.File == null && Settings.Active.File != null &&
-		    Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains (Settings.Active.File)) {
-
-			Settings.Selected.File = Settings.Active.File;
-		}
+		// Set selected elements
+		MenuFunctions.SetSelected ();
 
 		// Set start button
 		if (Settings.Active.File != null) {
@@ -907,7 +898,7 @@ public class Playlist : MonoBehaviour {
 				foreach (string id in fileIDs)
 				{
 					FileObj file = GetFile (Int64.Parse (id), false);
-					if (file != null) {
+					if (file != null && File.Exists (file.Path)) {
 						files.Add (file);
 					}
 				}
