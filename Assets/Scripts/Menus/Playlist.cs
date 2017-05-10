@@ -534,7 +534,7 @@ public class Playlist : MonoBehaviour {
 		}
 
 		// Unset selected playlist
-		if (!opened) Settings.Selected.Playlist = null;
+		if (!opened && !forceOpen) Settings.Selected.Playlist = null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();

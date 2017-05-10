@@ -116,7 +116,6 @@ public class Player : MonoBehaviour {
 		// Set active playlist
 		if (Settings.Selected.Playlist != null) {
 			Settings.Active.Playlist = Settings.Selected.Playlist;
-			Settings.Selected.Playlist = null;
 		}
 
 		// Get files from active playlist
@@ -128,6 +127,9 @@ public class Player : MonoBehaviour {
 				}
 			}
 		}
+
+		// Reset selected playlist
+		Settings.Selected.Playlist = null;
 	}
 
 	private bool Play (FileObj file)
