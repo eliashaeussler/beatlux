@@ -12,13 +12,14 @@ public class FountainScript : MonoBehaviour {
     int colVal1;
     int colVal2;
     float comp = 0f;
-    float volS;
-    float vol = 0;
+    bool bol = false;
+    float maxVol = 0;
+    
 
 
 	// Use this for initialization
 	void Start () {
-        //this.GetComponent<ParticleSystem>().Stop();
+        this.GetComponent<ParticleSystem>().Play();
         if (Settings.Active.ColorScheme == null)
         {
             col1 = new Color32(243, 225, 125, 255);
@@ -37,10 +38,28 @@ public class FountainScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
-        AudioListener.GetOutputData(samples, 0);
 
-        //this.GetComponent<ParticleSystem>().Play();
+        AudioListener.GetOutputData(samples, 0);
+        float vol = 0;
+        foreach (float sample in samples)
+        {
+            if (sample >= 0)
+            {
+                vol += sample;
+            }
+            else vol -= sample;
+        }
+        if (maxVol < vol) maxVol = vol;
+        if (vol <= 0)
+        {
+            bol = true;
+            this.GetComponent<ParticleSystem>().Stop();
+            
+        } else if (vol>0&&bol== true){
+            this.GetComponent<ParticleSystem>().Play();
+            bol = false;
+        }
+        
 
         //switches between selected colors
         if (count == 0)
@@ -64,6 +83,7 @@ public class FountainScript : MonoBehaviour {
         
         // controlls color
         ParticleSystem ps = this.GetComponent<ParticleSystem>();
+        ps.startLifetime = 3.5f * vol / maxVol;
         ps.startColor = Color.Lerp(col4[colVal1],col4[colVal2],Time.time);
         
         count++;
@@ -76,7 +96,7 @@ public class FountainScript : MonoBehaviour {
             comp = AudioPeer.freqBands[0];
             sh.angle = sh.angle+0.4f;
         }
-        else if (comp > AudioPeer.freqBands[0])
+        else if (comp > AudioPeer.freqBands[0]&&sh.angle>3.0)
         {
             comp = AudioPeer.freqBands[0];
             sh.angle = sh.angle - 0.4f;

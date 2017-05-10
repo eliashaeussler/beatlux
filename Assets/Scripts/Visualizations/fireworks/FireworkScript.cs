@@ -7,16 +7,17 @@ public class FireworkScript : MonoBehaviour {
     public float sScale, mScale;
     float[] samples = new float [1024];
     Color[] colors = new Color[] { Color.blue, Color.cyan, Color.green, Color.magenta, Color.red, Color.yellow, Color.white };
-    float vol = 0;
+    float volMax=0;
+    float bassMax = 0;
 	void Start () {
-	
+        
 	}
 
 	void Update () {
-
         // Getting the volumedata 
+        GameObject.Find("BigBang").GetComponent<ParticleSystem>().Stop();
 		AudioListener.GetOutputData(samples, 0);
-        
+        float vol = 0;
         foreach (float sample in samples)
         {
             if (sample >= 0)
@@ -26,8 +27,18 @@ public class FireworkScript : MonoBehaviour {
             else vol -= sample;
         }
 
+        if (volMax < vol) volMax = vol;
+
+
+        if (AudioPeer.freqBands[0]>=bassMax*10)
+        {
+            GameObject.Find("BigBang").GetComponent<ParticleSystem>().Play();
+            //print(bassMax);
+        }
+        bassMax = AudioPeer.freqBands[0];
+
         // if below a certain threshhold, nothing happens
-        if (AudioPeer.freqBands[band] < 0)
+        if (AudioPeer.freqBands[band] <= 0)
         {
             this.GetComponent<ParticleSystem>().Stop();
         }
@@ -35,7 +46,7 @@ public class FireworkScript : MonoBehaviour {
         {
             this.GetComponent<ParticleSystem>().Play();
             this.GetComponent<ParticleSystem>().startSpeed = 10+ 25 * AudioPeer.freqBands[band];
-            //this.GetComponent<ParticleSystem>().startLifetime = AudioPeer.freqBands[band];
+            //this.GetComponent<ParticleSystem>().startLifetime = 0.5f + AudioPeer.freqBands[band];
             this.GetComponent<ParticleSystem>().emission.SetBursts(
                 new ParticleSystem.Burst[]{
                 new ParticleSystem.Burst(0, (short)(10*AudioPeer.freqBands[band]))
@@ -46,6 +57,7 @@ public class FireworkScript : MonoBehaviour {
                 if (child.name == "SubEmitterDeath")
                 {
                     ParticleSystem paSy = child.GetComponent<ParticleSystem>();
+                    paSy.startLifetime = 0.4f+(vol / volMax);
                     var col = paSy.colorOverLifetime;
                     col.enabled = true;
                     Gradient grad = new Gradient();
