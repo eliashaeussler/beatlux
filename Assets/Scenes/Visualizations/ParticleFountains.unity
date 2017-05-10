@@ -222,7 +222,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -239062884
+  randomSeed: -867076176
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -2038,7 +2038,6 @@ GameObject:
   - 4: {fileID: 166051596}
   - 198: {fileID: 166051595}
   - 199: {fileID: 166051594}
-  - 114: {fileID: 166051593}
   - 114: {fileID: 166051592}
   m_Layer: 0
   m_Name: Rocket_Firework (6)
@@ -2061,18 +2060,6 @@ MonoBehaviour:
   band: 6
   sScale: 0
   mScale: 0
---- !u!114 &166051593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 166051591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &166051594
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -2169,7 +2156,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 2122185405
+  randomSeed: -1355482234
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -3890,7 +3877,6 @@ GameObject:
   - 4: {fileID: 173891113}
   - 198: {fileID: 173891112}
   - 199: {fileID: 173891111}
-  - 114: {fileID: 173891110}
   - 114: {fileID: 173891109}
   m_Layer: 0
   m_Name: Rocket_Firework (4)
@@ -3913,18 +3899,6 @@ MonoBehaviour:
   band: 4
   sScale: 0
   mScale: 0
---- !u!114 &173891110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 173891108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &173891111
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -4021,7 +3995,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -483648044
+  randomSeed: 742394683
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -5800,7 +5774,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -339506775
+  randomSeed: -2073978648
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -6177,7 +6151,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0
     gravityModifier: 1
-    maxNumParticles: 200
+    maxNumParticles: 1000
     size3D: 0
     rotation3D: 0
   ShapeModule:
@@ -7574,7 +7548,6 @@ GameObject:
   - 4: {fileID: 340713425}
   - 198: {fileID: 340713424}
   - 199: {fileID: 340713423}
-  - 114: {fileID: 340713422}
   - 114: {fileID: 340713421}
   m_Layer: 0
   m_Name: Rocket_Firework (1)
@@ -7597,18 +7570,6 @@ MonoBehaviour:
   band: 1
   sScale: 0
   mScale: 0
---- !u!114 &340713422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 340713420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &340713423
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -7705,7 +7666,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1939098530
+  randomSeed: 1661060671
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -9606,7 +9567,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -21548255
+  randomSeed: -608005429
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -11438,7 +11399,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -367233583
+  randomSeed: 1224018573
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -13300,7 +13261,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1452081031
+  randomSeed: 2068679742
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -13677,7 +13638,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0
     gravityModifier: 1
-    maxNumParticles: 200
+    maxNumParticles: 1000
     size3D: 0
     rotation3D: 0
   ShapeModule:
@@ -15074,7 +15035,6 @@ GameObject:
   - 4: {fileID: 652681178}
   - 198: {fileID: 652681177}
   - 199: {fileID: 652681176}
-  - 114: {fileID: 652681175}
   - 114: {fileID: 652681174}
   m_Layer: 0
   m_Name: Fountain (1)
@@ -15092,18 +15052,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5cc00f0bcad08eb40bb35dcc3862e70d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &652681175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000012745681020, guid: 6444c9ebb8876e8499c970e03e02618e,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 652681173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!199 &652681176
@@ -15202,7 +15150,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1412667389
+  randomSeed: 1918397343
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -16969,7 +16917,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1565374100
+  randomSeed: 605455917
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -18831,7 +18779,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -2079190519
+  randomSeed: 1955746400
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -20635,7 +20583,6 @@ GameObject:
   - 4: {fileID: 895783581}
   - 198: {fileID: 895783580}
   - 199: {fileID: 895783579}
-  - 114: {fileID: 895783578}
   - 114: {fileID: 895783577}
   m_Layer: 0
   m_Name: Fountain
@@ -20653,18 +20600,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5cc00f0bcad08eb40bb35dcc3862e70d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &895783578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000012745681020, guid: 6444c9ebb8876e8499c970e03e02618e,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 895783576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!199 &895783579
@@ -20763,7 +20698,7 @@ ParticleSystem:
   moveWithTransform: 0
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -428032783
+  randomSeed: -128952369
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -22472,7 +22407,6 @@ GameObject:
   - 4: {fileID: 933855690}
   - 198: {fileID: 933855689}
   - 199: {fileID: 933855688}
-  - 114: {fileID: 933855687}
   - 114: {fileID: 933855686}
   m_Layer: 0
   m_Name: Rocket_Firework (2)
@@ -22495,18 +22429,6 @@ MonoBehaviour:
   band: 2
   sScale: 0
   mScale: 0
---- !u!114 &933855687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 933855685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &933855688
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -22603,7 +22525,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 398065037
+  randomSeed: -478176324
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -24324,7 +24246,6 @@ GameObject:
   - 4: {fileID: 1080448765}
   - 198: {fileID: 1080448764}
   - 199: {fileID: 1080448763}
-  - 114: {fileID: 1080448762}
   - 114: {fileID: 1080448761}
   m_Layer: 0
   m_Name: Rocket_Firework
@@ -24347,18 +24268,6 @@ MonoBehaviour:
   band: 0
   sScale: 0
   mScale: 0
---- !u!114 &1080448762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1080448760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &1080448763
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -24455,7 +24364,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -554860023
+  randomSeed: 1390846647
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -26176,7 +26085,6 @@ GameObject:
   - 4: {fileID: 1162871508}
   - 198: {fileID: 1162871507}
   - 199: {fileID: 1162871506}
-  - 114: {fileID: 1162871505}
   - 114: {fileID: 1162871504}
   m_Layer: 0
   m_Name: Rocket_Firework (7)
@@ -26199,18 +26107,6 @@ MonoBehaviour:
   band: 7
   sScale: 0
   mScale: 0
---- !u!114 &1162871505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1162871503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &1162871506
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -26307,7 +26203,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 2053302438
+  randomSeed: -1690047369
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -28086,7 +27982,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -291919128
+  randomSeed: -1027652594
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -29948,7 +29844,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1015343215
+  randomSeed: 598168158
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -31780,7 +31676,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -24464813
+  randomSeed: -1150617979
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -33612,7 +33508,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -81395232
+  randomSeed: -1829364093
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -35474,7 +35370,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1220702124
+  randomSeed: -1060337555
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -37336,7 +37232,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 956798418
+  randomSeed: 1369988333
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -39168,7 +39064,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -830553227
+  randomSeed: 2107480502
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -41070,7 +40966,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -936464173
+  randomSeed: 589461518
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -42874,7 +42770,6 @@ GameObject:
   - 4: {fileID: 1865932262}
   - 198: {fileID: 1865932261}
   - 199: {fileID: 1865932260}
-  - 114: {fileID: 1865932259}
   - 114: {fileID: 1865932258}
   m_Layer: 0
   m_Name: Rocket_Firework (5)
@@ -42897,18 +42792,6 @@ MonoBehaviour:
   band: 5
   sScale: 0
   mScale: 0
---- !u!114 &1865932259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1865932257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &1865932260
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -43005,7 +42888,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 479155179
+  randomSeed: 1946447040
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -44784,7 +44667,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1065428418
+  randomSeed: 1720985425
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -45161,7 +45044,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0
     gravityModifier: 1
-    maxNumParticles: 200
+    maxNumParticles: 1000
     size3D: 0
     rotation3D: 0
   ShapeModule:
@@ -46558,7 +46441,6 @@ GameObject:
   - 4: {fileID: 2000315936}
   - 198: {fileID: 2000315935}
   - 199: {fileID: 2000315934}
-  - 114: {fileID: 2000315933}
   - 114: {fileID: 2000315932}
   m_Layer: 0
   m_Name: Rocket_Firework (3)
@@ -46581,18 +46463,6 @@ MonoBehaviour:
   band: 3
   sScale: 0
   mScale: 0
---- !u!114 &2000315933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000011209495364, guid: aaa50e47611a07442a91d0495f788c21,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2000315931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &2000315934
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -46689,7 +46559,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -2119152523
+  randomSeed: -1435873705
   InitialModule:
     serializedVersion: 2
     enabled: 1

@@ -7,6 +7,7 @@ public class FireworkScript : MonoBehaviour {
     public float sScale, mScale;
     float[] samples = new float [1024];
     Color[] colors = new Color[] { Color.blue, Color.cyan, Color.green, Color.magenta, Color.red, Color.yellow, Color.white };
+    float vol = 0;
 	void Start () {
 	
 	}
@@ -15,7 +16,7 @@ public class FireworkScript : MonoBehaviour {
 
         // Getting the volumedata 
 		AudioListener.GetOutputData(samples, 0);
-        float vol = 0;
+        
         foreach (float sample in samples)
         {
             if (sample >= 0)
@@ -33,7 +34,8 @@ public class FireworkScript : MonoBehaviour {
         else
         {
             this.GetComponent<ParticleSystem>().Play();
-            this.GetComponent<ParticleSystem>().startSpeed = 30+25 * AudioPeer.freqBands[band];
+            this.GetComponent<ParticleSystem>().startSpeed = 10+ 25 * AudioPeer.freqBands[band];
+            //this.GetComponent<ParticleSystem>().startLifetime = AudioPeer.freqBands[band];
             this.GetComponent<ParticleSystem>().emission.SetBursts(
                 new ParticleSystem.Burst[]{
                 new ParticleSystem.Burst(0, (short)(10*AudioPeer.freqBands[band]))

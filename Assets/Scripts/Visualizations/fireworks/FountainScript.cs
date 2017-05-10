@@ -13,10 +13,12 @@ public class FountainScript : MonoBehaviour {
     int colVal2;
     float comp = 0f;
     float volS;
+    float vol = 0;
 
 
 	// Use this for initialization
 	void Start () {
+        //this.GetComponent<ParticleSystem>().Stop();
         if (Settings.Active.ColorScheme == null)
         {
             col1 = new Color32(243, 225, 125, 255);
@@ -35,6 +37,10 @@ public class FountainScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        
+        AudioListener.GetOutputData(samples, 0);
+
+        //this.GetComponent<ParticleSystem>().Play();
 
         //switches between selected colors
         if (count == 0)
