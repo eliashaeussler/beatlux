@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class spawnBoundaries : MonoBehaviour {
     public GameObject boundaries;
     public GameSettings gameSettings;
     public GameObject mirrors;
+    public bool mirrorsOnOff = false;
     // Use this for initialization
     void Start()
     {
         Instantiate(boundaries, Vector3.zero, Quaternion.identity, Settings.MenuManager.vizContents);
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+        
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true && mirrorsOnOff)
         {
             gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
             switch (gameSettings.mirrors)
