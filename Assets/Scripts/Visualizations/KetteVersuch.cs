@@ -160,8 +160,6 @@ public class KetteVersuch : MonoBehaviour
 
             }
 
-            Debug.Log(random);
-
             //changing tags of light(necessary for sorting lights)
             for (int j = 0; j < lichter.Length; j++)
             {

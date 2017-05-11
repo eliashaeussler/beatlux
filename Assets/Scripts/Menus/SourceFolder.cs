@@ -18,6 +18,11 @@ public class SourceFolder : MonoBehaviour {
 		".aiff"
 	};
 
+	public static List<String> sDirs;
+	public static List<String> sFiles;
+	public static bool Searching;
+	private BackgroundThread thread;
+
 
 	
 	void Start ()
@@ -234,6 +239,102 @@ public class SourceFolder : MonoBehaviour {
 
 		return elements;
 	}
+
+
+
+	//-- FILE SEARCH
+
+	public void SearchFiles (string s)
+	{
+		Searching = s.Length > 0;
+
+		if (!Searching)
+		{
+			// Search done
+			Invoke ("HideProgress", 0.01f);
+			SourceFolder.Initialize ();
+		}
+		else
+		{
+			// Reset results
+			sDirs = new List<String> ();
+			sFiles = new List<String> ();
+
+			// Dispose current thread
+			if (thread != null && thread.IsBusy) {
+				thread.Abort ();
+				thread.Dispose ();
+			}
+
+			// Initalize thread
+			thread = new BackgroundThread ();
+			thread.WorkerSupportsCancellation = true;
+			thread.DoWork += delegate {
+
+				// Destroy elements
+				MainThreadDispatcher.Instance ().Enqueue (SourceFolder.DestroyAll);
+
+				// Get search results
+				GetResults (s);
+
+				// Display search results
+				MainThreadDispatcher.Instance ().Enqueue (delegate {
+					SourceFolder.Display (sDirs, sFiles, true);
+				});
+
+				// Hide progress
+				MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+
+			};
+
+			// Run thread
+			thread.RunWorkerAsync ();
+		}
+	}
+
+	private void GetResults (string pattern)
+	{
+		// Get results
+		string path = Settings.Source.Current;
+		FileSearch (path, pattern);
+	}
+
+	private void FileSearch (string folder, string pattern)
+	{
+		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
+			sDirs.Add (folder);
+		}
+
+		// Get files
+		string[] files = Directory.GetFiles (folder).Where (x =>
+			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
+			&& Path.GetFileName (x).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0
+			&& SourceFolder.IsSupportedFile (x)
+		).ToArray ();
+
+		// Add file if file name contains pattern
+		foreach (string file in files) {
+			sFiles.Add (file);
+		}
+
+		// Get directories
+		string[] dirs = Directory.GetDirectories (folder).Where (x =>
+			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
+		).ToArray ();
+
+		// Jump into sub directory
+		foreach (string dir in dirs) {
+			FileSearch (dir, pattern);
+		}
+	}
+
+	public void HideProgress () {
+		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
+	}
+
+
+
+	//-- HELPER METHODS
 
 	public static bool IsSupportedFile (string file)
 	{

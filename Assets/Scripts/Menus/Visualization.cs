@@ -17,6 +17,8 @@ public class Visualization : MonoBehaviour {
 	// Color scheme object
 	public ColorScheme ColorSchemes;
 
+	public static List<VisualizationObj> tempViz;
+
 
 
 	void Start ()
@@ -218,7 +220,7 @@ public class Visualization : MonoBehaviour {
             cmd.Dispose ();
 
 			// Clone visualizations array
-			MenuFunctions.tempViz = Visualizations;
+			tempViz = Visualizations;
 		}
 
 		// Close database connection
@@ -263,6 +265,26 @@ public class Visualization : MonoBehaviour {
 		if (closeConnection) Database.Close ();
 
 		return null;
+	}
+
+
+
+	//-- VISUALIZATION SEARCH
+
+	public void SearchVisualizations (string s)
+	{
+		// Get Visualization object
+		Visualization viz = GameObject.Find ("VizContent").GetComponent<Visualization> ();
+
+		// Do search or reset
+		if (s.Length > 0) {
+			viz.Visualizations = tempViz.Where (x => x.Name.IndexOf (s, StringComparison.OrdinalIgnoreCase) >= 0).ToList ();
+		} else {
+			viz.Visualizations = tempViz;
+		}
+
+		// Display visualizations
+		viz.Display ();
 	}
     
 }
