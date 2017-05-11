@@ -18,6 +18,7 @@ public class MainMenu : MonoBehaviour {
 		start.GetComponent<Button> ().onClick.AddListener (delegate {
 
 			if (Settings.Active.Visualization != null) {
+				Settings.Selected.Visualization = Settings.Active.Visualization;
 				Settings.MenuManager.StartVisualization ();
 			} else {
 				Settings.MenuManager.StartLevel (2);
