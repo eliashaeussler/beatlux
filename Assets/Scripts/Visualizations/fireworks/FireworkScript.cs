@@ -4,11 +4,19 @@ using System.Collections;
 public class FireworkScript : MonoBehaviour {
 
     public int band;
-    public float sScale, mScale;
+    public int extraHeight;
     float[] samples = new float [1024];
     Color[] colors = new Color[] { Color.blue, Color.cyan, Color.green, Color.magenta, Color.red, Color.yellow, Color.white };
     float volMax=0;
     float bassMax = 0;
+
+    int qSamples = 1024;
+    float refValue = 0.01f;
+    float rmsValue;
+    float dbValue;
+
+
+
 	void Start () {
         
 	}
@@ -28,10 +36,23 @@ public class FireworkScript : MonoBehaviour {
         }
 
         if (volMax < vol) volMax = vol;
+        
+        /**
+        //decible stuff
+        float sum = 0;
 
-
-        if (AudioPeer.freqBands[0]>=bassMax*10)
+        for (int i = 0; i < qSamples; i++)
         {
+            sum += samples[i] * samples[i];
+        }
+
+        rmsValue = Mathf.Sqrt(sum / qSamples);
+        dbValue = 20 * Mathf.Log10(rmsValue / refValue);
+        print(dbValue);
+        */
+
+        if (AudioPeer.freqBands[0] >= bassMax * 15)
+        {              
             GameObject.Find("BigBang").GetComponent<ParticleSystem>().Play();
             //print(bassMax);
         }
@@ -45,7 +66,7 @@ public class FireworkScript : MonoBehaviour {
         else
         {
             this.GetComponent<ParticleSystem>().Play();
-            this.GetComponent<ParticleSystem>().startSpeed = 10+ 25 * AudioPeer.freqBands[band];
+            this.GetComponent<ParticleSystem>().startSpeed = 10+ 25 * AudioPeer.freqBands[band]+extraHeight;
             //this.GetComponent<ParticleSystem>().startLifetime = 0.5f + AudioPeer.freqBands[band];
             this.GetComponent<ParticleSystem>().emission.SetBursts(
                 new ParticleSystem.Burst[]{
