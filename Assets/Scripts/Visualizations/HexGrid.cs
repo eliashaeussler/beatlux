@@ -62,7 +62,7 @@ public class HexGrid : MonoBehaviour
 
             if (spectrum[i] * newScale > 1.2)
             {
-                previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale * 10, Time.deltaTime * timing);
+                previousScale.y = Mathf.Lerp(previousScale.y, spectrum[i] * newScale *((i+4)/3), Time.deltaTime * timing);
 
             }
             else
