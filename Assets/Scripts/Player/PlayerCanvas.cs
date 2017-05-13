@@ -59,6 +59,11 @@ public class PlayerCanvas : MonoBehaviour {
 
 		// TODO fade out wrapper
 
+		HidePlayerImmediate ();
+	}
+
+	public void HidePlayerImmediate ()
+	{
 		// Hide player
 		wrapper.SetActive (false);
 

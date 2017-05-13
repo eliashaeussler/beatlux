@@ -12,6 +12,7 @@ public class MenuFunctions : MonoBehaviour {
 
 	public AudioSource audio;
 	public GameObject player;
+	public GameObject playerControl;
 	public Transform vizContents;
 	public int defaultStart = 1;
 
@@ -46,34 +47,15 @@ public class MenuFunctions : MonoBehaviour {
 
 			// Destroy unused GameObjects
 			SceneManager.sceneLoaded += delegate {
+
 				DestroyOld ();
 			};
 
 			// Update skybox and unload last scene
-			SceneManager.sceneLoaded += delegate
-			{
-				// Show or hide player skin
-				if (player != null) player.SetActive (IsVisualization (level));
+			SceneManager.sceneLoaded += delegate {
 
-				// Set skybox
-				if (!IsVisualization (level) || level == Settings.Defaults.Visualization.BuildNumber)
-				{
-					RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
-				}
-				else
-				{
-					VisualizationObj viz = Array.Find (Settings.Visualizations, x => x.BuildNumber == level);
+				SetLevel (level);
 
-					if (viz.Skybox != null) {
-						RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/" + viz.Skybox);
-					} else {
-						RenderSettings.skybox = null;
-					}
-				}
-
-				// Unload last scene
-				SceneManager.UnloadScene (Settings.Active.Scene);
-				Settings.Active.Scene = level;
 			};
 		}
     }
@@ -137,6 +119,33 @@ public class MenuFunctions : MonoBehaviour {
 				"Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
 			);
 		}
+	}
+
+	private void SetLevel (int level)
+	{
+		// Show or hide player skin
+		player.SetActive (IsVisualization (level));
+		playerControl.SetActive (IsVisualization (level));
+
+		// Set skybox
+		if (!IsVisualization (level) || level == Settings.Defaults.Visualization.BuildNumber)
+		{
+			RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
+		}
+		else
+		{
+			VisualizationObj viz = Array.Find (Settings.Visualizations, x => x.BuildNumber == level);
+
+			if (viz.Skybox != null) {
+				RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/" + viz.Skybox);
+			} else {
+				RenderSettings.skybox = null;
+			}
+		}
+
+		// Unload last scene
+		SceneManager.UnloadScene (Settings.Active.Scene);
+		Settings.Active.Scene = level;
 	}
 
 	public void Dismiss ()

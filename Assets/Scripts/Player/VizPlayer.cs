@@ -14,11 +14,11 @@ public class VizPlayer : MonoBehaviour {
 	public Button logo;
 
 	// Visualizations
-	private VisualizationObj activeViz;
 	private List<VisualizationObj> visualizations;
 	private int oldPos;
 	private int position;
 
+	// Shuffle state
 	private bool isShuffled = false;
 
 
@@ -36,7 +36,8 @@ public class VizPlayer : MonoBehaviour {
 	void Update ()
 	{
 		// Check for updated visualization
-		if ((Settings.Selected.Visualization != null && Settings.Selected.Visualization != Settings.Active.Visualization)
+		if ((Settings.Selected.Visualization != null
+			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization))
 		    || visualizations == null) {
 
 			ToggleShuffle (Settings.Player.ShuffleViz);
@@ -48,7 +49,8 @@ public class VizPlayer : MonoBehaviour {
 		}
 
 		// Start visualization if current has changed
-		if (oldPos != position) {
+		if (oldPos != position && Settings.Selected.Visualization != null
+			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
 			StartViz ();
 		}
 	}
@@ -124,6 +126,11 @@ public class VizPlayer : MonoBehaviour {
 				visualizations [k] = visualizations [n];
 				visualizations [n] = val;
 			}
+		}
+
+		// Set selected visualization
+		if (Settings.Selected.Visualization == null) {
+			Settings.Selected.Visualization = Settings.Active.Visualization;
 		}
 
 		// Set shuffle
