@@ -158,19 +158,22 @@ public class Player : MonoBehaviour {
 				// Play file
 				if (Path.GetExtension (file.Path) == ".mp3")
 				{
+					print (Environment.OSVersion.Platform);
 					// Get mp3 file
-					MpegFile mp3 = new MpegFile (file.Path);
-					int samples = (int) (mp3.Length / mp3.Channels) / sizeof (float);
-
-					// Create audio clip
-					clip = AudioClip.Create (Path.GetFileName (file.Path), samples, mp3.Channels, mp3.SampleRate, false);
-
-					// Read samples
-					StartCoroutine (ReadSamples (mp3, samples));
-
-					if (clip != null && samples > 0) {
-						artist.text = "Wird geladen...";
-					}
+//					MpegFile mp3 = new MpegFile (file.Path);
+//					int samples = (int) (mp3.Length / mp3.Channels) / sizeof (float);
+//
+//					// Create audio clip
+//					clip = AudioClip.Create (Path.GetFileName (file.Path), samples, mp3.Channels, mp3.SampleRate, false);
+//
+//					// Read samples
+//					StartCoroutine (ReadSamples (mp3, samples));
+//
+//					if (clip != null && samples > 0) {
+//						artist.text = "Wird geladen...";
+//					}
+					clip = MP3Import.StartImport (file.Path);
+					StartPlay ();
 				}
 				else
 				{
