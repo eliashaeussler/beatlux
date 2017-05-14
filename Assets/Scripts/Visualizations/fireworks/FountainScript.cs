@@ -6,6 +6,9 @@ public class FountainScript : MonoBehaviour {
     Color col1;
     Color col2;
     Color col3;
+    Color col5;
+    Color col6;
+    Color col7;
     float[] samples = new float[1024];
     Color[] col4;
     int count = 0;
@@ -31,9 +34,12 @@ public class FountainScript : MonoBehaviour {
             col1 = Settings.Active.ColorScheme.Colors[0];
             col2 = Settings.Active.ColorScheme.Colors[1];
             col3 = Settings.Active.ColorScheme.Colors[2];
+            col5 = Settings.Active.ColorScheme.Colors[3];
+            col6 = Settings.Active.ColorScheme.Colors[4];
+            col7 = Settings.Active.ColorScheme.Colors[5];
         }
 
-        col4  = new Color[] { col1, col2, col3 };
+        col4  = new Color[] { col1, col2, col3, col5, col6, col7 };
 	}
 	
 	// Update is called once per frame

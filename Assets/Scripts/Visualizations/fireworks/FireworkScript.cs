@@ -6,7 +6,7 @@ public class FireworkScript : MonoBehaviour {
     public int band;
     public int extraHeight;
     float[] samples = new float [1024];
-    Color[] colors = new Color[] { Color.blue, Color.cyan, Color.green, Color.magenta, Color.red, Color.yellow, Color.white };
+    Color[] colors;
     float volMax=0;
     float bassMax = 0;
 
@@ -18,7 +18,8 @@ public class FireworkScript : MonoBehaviour {
 
 
 	void Start () {
-        
+        colors = new Color[] { Settings.Active.ColorScheme.Colors[0], Settings.Active.ColorScheme.Colors[1], Settings.Active.ColorScheme.Colors[2], Settings.Active.ColorScheme.Colors[3], 
+            Settings.Active.ColorScheme.Colors[4], Settings.Active.ColorScheme.Colors[5]};
 	}
 
 	void Update () {
