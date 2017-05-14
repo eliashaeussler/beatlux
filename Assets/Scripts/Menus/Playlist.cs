@@ -142,12 +142,12 @@ public class Playlist : MonoBehaviour {
 		events.triggers.Add (evtClick);
 
 		evtClick.callback.AddListener ((eventData) => {
-			UpdateSelectedFile (file);
+			UpdateSelectedFile (file, true);
 		});
 
 		// Add Event to Button
 		gameObject.transform.Find ("Text").gameObject.GetComponent<Button> ().onClick.AddListener (delegate {
-			UpdateSelectedFile (file);
+			UpdateSelectedFile (file, true);
 		});
 	}
 
@@ -530,7 +530,9 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.Playlist = playlist;
 
 			// Set selected file
-			UpdateSelectedFile (Settings.Selected.Playlist.Files.First ());
+			UpdateSelectedFile (Settings.Selected.Playlist.Files.First (),
+				Settings.Active.File == null || Settings.Active.Playlist == null
+				|| (Settings.Active.File != null && !Settings.Active.Playlist.Equals (Settings.Selected.Playlist)));
 		}
 
 		// Unset selected playlist
@@ -540,10 +542,10 @@ public class Playlist : MonoBehaviour {
 		ScrollToTop ();
 	}
 
-	public void UpdateSelectedFile (FileObj file)
+	public void UpdateSelectedFile (FileObj file, bool updateFile)
 	{
 		// Update selected file
-		Settings.Selected.File = file;
+		if (updateFile) Settings.Selected.File = file;
 
 		// Re-display files and playlists
 		Display ();

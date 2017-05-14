@@ -6,7 +6,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
-using NLayer;
 
 public class Player : MonoBehaviour {
 
@@ -54,9 +53,6 @@ public class Player : MonoBehaviour {
 
 	// Shuffle state
 	private bool isShuffled = false;
-
-	// MP3 reading
-	private bool mp3Reading = false;
 	
 
 
@@ -104,7 +100,9 @@ public class Player : MonoBehaviour {
 		}
 
 		// Play file if current has changed
-		if (oldPos != position && position >= 0 && Settings.Selected.File != null && !Settings.Selected.File.Equals (Settings.Active.File)) {
+		if ((Settings.Active.File != null && !Settings.Active.File.Equals (files [position])) ||
+			(oldPos != position && position >= 0 && Settings.Selected.File != null
+			&& !Settings.Selected.File.Equals (Settings.Active.File))) {
 
 			Play ();
 		}
@@ -158,20 +156,6 @@ public class Player : MonoBehaviour {
 				// Play file
 				if (Path.GetExtension (file.Path) == ".mp3")
 				{
-					print (Environment.OSVersion.Platform);
-					// Get mp3 file
-//					MpegFile mp3 = new MpegFile (file.Path);
-//					int samples = (int) (mp3.Length / mp3.Channels) / sizeof (float);
-//
-//					// Create audio clip
-//					clip = AudioClip.Create (Path.GetFileName (file.Path), samples, mp3.Channels, mp3.SampleRate, false);
-//
-//					// Read samples
-//					StartCoroutine (ReadSamples (mp3, samples));
-//
-//					if (clip != null && samples > 0) {
-//						artist.text = "Wird geladen...";
-//					}
 					clip = MP3Import.StartImport (file.Path);
 					StartPlay ();
 				}
@@ -242,44 +226,6 @@ public class Player : MonoBehaviour {
 		}
 
 		this.artist.text = output;
-	}
-
-	private IEnumerator ReadSamples (MpegFile mp3, int samples)
-	{
-		mp3Reading = true;
-
-		// Settings
-		long pos = 0;
-		long step = mp3.SampleRate * mp3.Channels;
-		float[] buffer = new float [samples * mp3.Channels];
-
-		// Read samples
-		while (pos < buffer.Length)
-		{
-			// Keep player opened
-			canvas.KeepPlayer ();
-
-			// Temporary buffer
-			float[] temp = new float[step];
-
-			// Read samples
-			mp3.ReadSamples (temp, 0, (int) step);
-
-			// Insert into buffer
-			long length = pos + step <= buffer.Length ? step : buffer.Length - pos;
-			Array.Copy (temp, 0, buffer, pos, length);
-
-			// Update position
-			pos += step;
-			yield return pos;
-		}
-
-		// Set data for clip
-		clip.SetData (buffer, 0);
-
-		// Start play
-		StartPlay ();
-		mp3Reading = false;
 	}
 
 	public void ToggleShuffle () {
