@@ -181,17 +181,18 @@ public class SourceFolder : MonoBehaviour {
 
 	public void HistoryBack ()
 	{
-		// Get user folder
-		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-
-		if (!Path.Equals (userPath, Settings.Source.Current))
-		{
+//		// Get user folder
+//		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+//
+//		if (!Path.Equals (userPath, Settings.Source.Current))
+//		{
 			// Get new path
 			string path = Path.GetFullPath (Path.Combine (Settings.Source.Current, @".."));
+		print (Environment.GetFolderPath (Environment.SpecialFolder.MyComputer));
 
 			// Display file contents
 			Initialize (path);
-		}
+//		}
 	}
 
 	public static void DestroyAll ()
