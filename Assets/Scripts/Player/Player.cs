@@ -211,7 +211,7 @@ public class Player : MonoBehaviour {
 		{
 			// Get artists and title
 			TagLib.File tags = TagLib.File.Create (Settings.Active.File.Path);
-			string artist = tags.Tag.FirstAlbumArtistSort;
+			string artist = tags.Tag.FirstAlbumArtist;
 			string title = tags.Tag.Title;
 
 			// Set artists and title
