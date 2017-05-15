@@ -109,7 +109,7 @@ public class Player : MonoBehaviour {
 
 		// Show player if mouse moves
 		if (Input.mousePosition.y <= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)) {
-
+			
 			canvas.KeepPlayer ();
 		}
 	}
@@ -211,7 +211,7 @@ public class Player : MonoBehaviour {
 		{
 			// Get artists and title
 			TagLib.File tags = TagLib.File.Create (Settings.Active.File.Path);
-			string artist = tags.Tag.FirstAlbumArtist;
+			string artist = tags.Tag.FirstPerformer;
 			string title = tags.Tag.Title;
 
 			// Set artists and title
@@ -311,11 +311,8 @@ public class Player : MonoBehaviour {
 
 	public void UpdateTime (float value)
 	{
-		if (audio != null && audio.clip != null
-			&& audio.clip.length > 0) {
-
+		if (audio != null && audio.clip != null && audio.clip.length > 0) {
 			currentTime.text = FormatTime (value * audio.clip.length);
-		
 		} else {
 			timeline.value = 0;
 		}
@@ -323,16 +320,19 @@ public class Player : MonoBehaviour {
 
 	public void SetVolume (float value)
 	{
-		// Set volume
-		audio.volume = value;
+		if (audio.volume != value)
+		{
+			// Set volume
+			audio.volume = value;
 
-		// Update slider
-		if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
-		if (volumeSliderRight.value != value) volumeSliderRight.value = value;
+			// Update slider
+			if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
+			if (volumeSliderRight.value != value) volumeSliderRight.value = value;
 
-		// Update UI
-		volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
-		volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+			// Update UI
+			volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+			volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+		}
 	}
 
 	public void TogglePlay ()

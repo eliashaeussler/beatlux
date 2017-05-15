@@ -51,6 +51,7 @@ public class VizPlayer : MonoBehaviour {
 		// Start visualization if current has changed
 		if (oldPos != position && Settings.Selected.Visualization != null
 			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+
 			StartViz ();
 		}
 	}

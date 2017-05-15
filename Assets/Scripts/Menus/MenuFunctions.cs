@@ -150,10 +150,10 @@ public class MenuFunctions : MonoBehaviour {
 
 	public void Dismiss ()
 	{
-		Settings.Selected.Visualization = null;
-		Settings.Selected.ColorScheme = null;
-		Settings.Selected.Playlist = null;
-		Settings.Selected.File = null;
+		Settings.Selected.Visualization = Settings.Active.Visualization;
+		Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
+		Settings.Selected.Playlist = Settings.Active.Playlist;
+		Settings.Selected.File = Settings.Active.File;
 
 		StartVisualization ();
 	}
