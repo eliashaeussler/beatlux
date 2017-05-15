@@ -35,8 +35,8 @@ public class Area : MonoBehaviour {
 		// Check if mouse is in range
 		if ((Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
 			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
-			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y)
-		{
+			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y) {
+
 			canvas.ShowPlayer ();
 		}
 	}

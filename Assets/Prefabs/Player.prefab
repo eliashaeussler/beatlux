@@ -126,6 +126,7 @@ GameObject:
   - 224: {fileID: 224000010918332578}
   - 222: {fileID: 222000010270727748}
   - 114: {fileID: 114000013424151106}
+  - 114: {fileID: 114000013502045446}
   m_Layer: 0
   m_Name: Artist
   m_TagString: Untagged
@@ -387,6 +388,7 @@ GameObject:
   - 222: {fileID: 222000013379893208}
   - 114: {fileID: 114000012124925220}
   - 114: {fileID: 114000010197673274}
+  - 114: {fileID: 114000012857972258}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -438,6 +440,7 @@ GameObject:
   - 224: {fileID: 224000011177664092}
   - 222: {fileID: 222000013563681432}
   - 114: {fileID: 114000013417537148}
+  - 114: {fileID: 114000013361267346}
   m_Layer: 0
   m_Name: Visualization
   m_TagString: Untagged
@@ -2167,6 +2170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7612f203cc5f5418bb67d0fe875399b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 114000013817911306}
   previous: {fileID: 1000012082020600}
   next: {fileID: 1000010816108162}
   shuffle: {fileID: 1000010500325194}
@@ -2595,6 +2599,18 @@ MonoBehaviour:
   m_PreferredHeight: 60
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &114000012857972258
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011516406046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ae43e84daeb94a7cb8fecc10d7e384c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 114000013817911306}
 --- !u!114 &114000012868606418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2924,6 +2940,24 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
+--- !u!114 &114000013361267346
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011839850670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: 45
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
 --- !u!114 &114000013416221848
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3107,6 +3141,24 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114000013502045446
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010785218930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: 55
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
 --- !u!114 &114000013543770244
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3353,7 +3405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wrapper: {fileID: 1000013866171882}
-  displayLength: 4
+  displayLength: 3
 --- !u!114 &114000013860513900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3999,8 +4051,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -27.635754}
-  m_SizeDelta: {x: 1080, y: 55.271507}
+  m_AnchoredPosition: {x: 540, y: -27.5}
+  m_SizeDelta: {x: 1080, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010921873366
 RectTransform:
@@ -4153,10 +4205,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 224000013285085938}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -77.63576}
-  m_SizeDelta: {x: 1080, y: 44.728493}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 540, y: 22.5}
+  m_SizeDelta: {x: 1080, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011427725952
 RectTransform:
@@ -4472,7 +4524,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_SizeDelta: {x: -100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013411323188
 RectTransform:

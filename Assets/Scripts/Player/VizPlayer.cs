@@ -7,6 +7,9 @@ using System;
 
 public class VizPlayer : MonoBehaviour {
 
+	// Player canvas
+	public PlayerCanvas canvas;
+
 	// UI elements
 	public GameObject previous;
 	public GameObject next;
@@ -19,7 +22,7 @@ public class VizPlayer : MonoBehaviour {
 	private int position;
 
 	// Shuffle state
-	private bool isShuffled = false;
+	private bool isShuffled;
 
 
 
@@ -35,6 +38,14 @@ public class VizPlayer : MonoBehaviour {
 
 	void Update ()
 	{
+
+		// Reset old position and shuffle state if playlist has changed
+		if (Settings.Selected.Visualization != null && !Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+
+			oldPos = -2;
+			isShuffled = false;
+		}
+
 		// Check for updated visualization
 		if ((Settings.Selected.Visualization != null
 			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization))
@@ -71,8 +82,7 @@ public class VizPlayer : MonoBehaviour {
 
 	private void StartViz ()
 	{
-		if (Settings.Selected.Visualization != null
-			&& Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
+		if (Settings.Selected.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
 		{
 			// Set old position
 			oldPos = position;
@@ -97,6 +107,9 @@ public class VizPlayer : MonoBehaviour {
 
 			// Reset selected visualization
 			Settings.Selected.Visualization = null;
+
+			// Keep player active
+			canvas.KeepPlayer ();
 		}
 	}
 

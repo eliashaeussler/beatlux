@@ -18,9 +18,6 @@ public class Player : MonoBehaviour {
 
 
 
-	// Player canvas
-	public PlayerCanvas canvas;
-
 	// Audio source and clip
 	public AudioSource audio;
 	private AudioClip clip;
@@ -106,12 +103,6 @@ public class Player : MonoBehaviour {
 
 			Play ();
 		}
-
-		// Show player if mouse moves
-		if (Input.mousePosition.y <= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)) {
-			
-			canvas.KeepPlayer ();
-		}
 	}
 
 
@@ -174,9 +165,10 @@ public class Player : MonoBehaviour {
 						}
 					}
 
-					if (clip != null && clip.length > 0)
-					{
+					if (clip != null && clip.length > 0) {
 						StartPlay ();
+					} else {
+						Next ();
 					}
 				}
 			}
