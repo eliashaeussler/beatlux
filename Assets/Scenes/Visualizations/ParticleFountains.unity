@@ -222,7 +222,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 165650086
+  randomSeed: -593877100
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -2054,7 +2054,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -444369932
+  randomSeed: -1361624443
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -3886,7 +3886,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -494317495
+  randomSeed: -754857629
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -5661,7 +5661,7 @@ GameObject:
   - 198: {fileID: 136220751}
   - 199: {fileID: 136220750}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5777,7 +5777,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -499758796
+  randomSeed: -1034582320
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -7523,7 +7523,7 @@ GameObject:
   - 198: {fileID: 151115044}
   - 199: {fileID: 151115045}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7580,7 +7580,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 883424899
+  randomSeed: 817185609
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -13177,7 +13177,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 595313544
+  randomSeed: 1989442934
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -15015,7 +15015,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -2063098691
+  randomSeed: 1714389512
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -16737,7 +16737,7 @@ GameObject:
   - 198: {fileID: 326805708}
   - 199: {fileID: 326805707}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16853,7 +16853,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 762170883
+  randomSeed: 495630328
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -24158,7 +24158,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1284221997
+  randomSeed: -1319110763
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -26020,7 +26020,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1865673757
+  randomSeed: 240069070
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -27854,7 +27854,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 218649264
+  randomSeed: 893494592
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -29682,7 +29682,7 @@ Prefab:
     - target: {fileID: 198000011739543684, guid: 0b69a2cbb9b64ed42b6e062dd22fe045,
         type: 2}
       propertyPath: randomSeed
-      value: -1635742625
+      value: -2072597196
       objectReference: {fileID: 0}
     - target: {fileID: 198000011159562836, guid: 0b69a2cbb9b64ed42b6e062dd22fe045,
         type: 2}
@@ -29723,6 +29723,14 @@ Prefab:
         type: 2}
       propertyPath: InitialModule.maxNumParticles
       value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010994024754, guid: 0b69a2cbb9b64ed42b6e062dd22fe045, type: 2}
+      propertyPath: m_Name
+      value: SubEmitterDeathBig
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000013257796804, guid: 0b69a2cbb9b64ed42b6e062dd22fe045, type: 2}
+      propertyPath: m_Name
+      value: SubEmitterDeathBig2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b69a2cbb9b64ed42b6e062dd22fe045, type: 2}
@@ -31628,7 +31636,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1828579274
+  randomSeed: -1561581937
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -35229,7 +35237,7 @@ GameObject:
   - 198: {fileID: 670770000}
   - 199: {fileID: 670769999}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35345,7 +35353,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1204655804
+  randomSeed: -311355106
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -37194,7 +37202,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1165109194
+  randomSeed: -1972585031
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -39045,7 +39053,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -716863331
+  randomSeed: 1905400956
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -42629,7 +42637,7 @@ GameObject:
   - 198: {fileID: 851577526}
   - 199: {fileID: 851577525}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42745,7 +42753,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -676043505
+  randomSeed: 1656894870
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -48177,7 +48185,7 @@ GameObject:
   - 198: {fileID: 902757575}
   - 199: {fileID: 902757576}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48234,7 +48242,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1033675070
+  randomSeed: -757937988
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -50039,7 +50047,7 @@ GameObject:
   - 198: {fileID: 933551148}
   - 199: {fileID: 933551149}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50096,7 +50104,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1215317677
+  randomSeed: 1773499668
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -53739,7 +53747,7 @@ GameObject:
   - 198: {fileID: 934235754}
   - 199: {fileID: 934235755}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53796,7 +53804,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1719504602
+  randomSeed: 1326042933
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -55656,7 +55664,7 @@ GameObject:
   - 198: {fileID: 963422702}
   - 199: {fileID: 963422703}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55713,7 +55721,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1635236757
+  randomSeed: -327618795
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -57518,7 +57526,7 @@ GameObject:
   - 198: {fileID: 1008181533}
   - 199: {fileID: 1008181534}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57575,7 +57583,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 748107551
+  randomSeed: -772679774
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -59380,7 +59388,7 @@ GameObject:
   - 198: {fileID: 1071185943}
   - 199: {fileID: 1071185944}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59437,7 +59445,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 2022221785
+  randomSeed: -1997146330
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -63137,7 +63145,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1409759895
+  randomSeed: 530323264
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -65028,7 +65036,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1621691997
+  randomSeed: -601808209
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -68669,7 +68677,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1763779843
+  randomSeed: 532815514
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -72394,7 +72402,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1032612550
+  randomSeed: -801149839
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -76005,7 +76013,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 112048555
+  randomSeed: -856000376
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -77839,7 +77847,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1906362349
+  randomSeed: -65390135
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -79614,7 +79622,7 @@ GameObject:
   - 198: {fileID: 1378807943}
   - 199: {fileID: 1378807942}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79730,7 +79738,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1094623346
+  randomSeed: -902382403
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -87032,7 +87040,7 @@ GameObject:
   - 198: {fileID: 1566636245}
   - 199: {fileID: 1566636246}
   m_Layer: 0
-  m_Name: SubEmitterBirth
+  m_Name: SubEmitterBirth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87089,7 +87097,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1963284655
+  randomSeed: -1598974261
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -88894,7 +88902,7 @@ GameObject:
   - 198: {fileID: 1607884698}
   - 199: {fileID: 1607884697}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89010,7 +89018,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1277294052
+  randomSeed: -1915668760
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -90813,7 +90821,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1173741283
+  randomSeed: -1918055166
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -94450,7 +94458,7 @@ GameObject:
   - 198: {fileID: 1673692086}
   - 199: {fileID: 1673692085}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94566,7 +94574,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1403256188
+  randomSeed: -1317764680
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -96369,7 +96377,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1747990627
+  randomSeed: 635010470
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -98203,7 +98211,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1323841736
+  randomSeed: -1126189264
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -100096,7 +100104,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1663588781
+  randomSeed: -571790507
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -101915,7 +101923,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 2095328411
+  randomSeed: 1522515748
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -103690,7 +103698,7 @@ GameObject:
   - 198: {fileID: 1852565991}
   - 199: {fileID: 1852565990}
   m_Layer: 0
-  m_Name: SubEmitterBirth (1)
+  m_Name: SubEmitterBirth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103806,7 +103814,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 783515872
+  randomSeed: 1237527309
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -111141,7 +111149,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 197090998
+  randomSeed: 1842833596
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -113034,7 +113042,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1999875272
+  randomSeed: -1944954778
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -116710,7 +116718,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: -1325045704
+  randomSeed: -1501062171
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -118489,7 +118497,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 1707606580
+  randomSeed: -1064786761
   InitialModule:
     serializedVersion: 2
     enabled: 1
@@ -120323,7 +120331,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 504688
+  randomSeed: -145426054
   InitialModule:
     serializedVersion: 2
     enabled: 1

@@ -16,10 +16,11 @@ public class FireworkScript : MonoBehaviour {
     float dbValue;
 
 
-
+    // Initialising all the given colors
 	void Start () {
         colors = new Color[] { Settings.Active.ColorScheme.Colors[0], Settings.Active.ColorScheme.Colors[1], Settings.Active.ColorScheme.Colors[2], Settings.Active.ColorScheme.Colors[3], 
             Settings.Active.ColorScheme.Colors[4], Settings.Active.ColorScheme.Colors[5]};
+        GameObject.Find("BigBang").GetComponent<ParticleSystem>().Stop();
 	}
 
 	void Update () {
@@ -38,24 +39,22 @@ public class FireworkScript : MonoBehaviour {
 
         if (volMax < vol) volMax = vol;
         
-        /**
-        //decible stuff
-        float sum = 0;
-
-        for (int i = 0; i < qSamples; i++)
-        {
-            sum += samples[i] * samples[i];
-        }
-
-        rmsValue = Mathf.Sqrt(sum / qSamples);
-        dbValue = 20 * Mathf.Log10(rmsValue / refValue);
-        print(dbValue);
-        */
-
+        // if a volumedifference is big enough, a big rocket is fired
         if (AudioPeer.freqBands[0] >= bassMax * 15)
-        {              
+        {
+            ParticleSystem sys = GameObject.Find("SubEmitterDeathBig").GetComponent<ParticleSystem>();
+            ParticleSystem sys1 = GameObject.Find("SubEmitterDeathBig2").GetComponent<ParticleSystem>();
+            var col1 = sys.colorOverLifetime;
+            var col2 = sys1.colorOverLifetime;
+            col1.enabled = true;
+            col2.enabled = true;
+            Gradient grad11 = new Gradient();
+            Gradient grad12 = new Gradient();
+            grad11.SetKeys(new GradientColorKey[] { new GradientColorKey(colors[Random.Range(0, colors.Length)], 0.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) });
+            grad12.SetKeys(new GradientColorKey[] { new GradientColorKey(colors[Random.Range(0, colors.Length)], 0.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) });
+            col1.color = new ParticleSystem.MinMaxGradient(grad11, grad12);
+            col2.color = new ParticleSystem.MinMaxGradient(grad11, grad12);
             GameObject.Find("BigBang").GetComponent<ParticleSystem>().Play();
-            //print(bassMax);
         }
         bassMax = AudioPeer.freqBands[0];
 
@@ -93,8 +92,22 @@ public class FireworkScript : MonoBehaviour {
             });
                 }
             }
-            
 
+            var children2 = this.GetComponentsInChildren<Transform>();
+            foreach (var child1 in children2)
+            {
+                if (child1.name == "SubEmitterBirth2")
+                {
+                    ParticleSystem paSy1 = child1.GetComponent<ParticleSystem>();
+                    var col3 = paSy1.colorOverLifetime;
+                    col3.enabled = true;
+                    Gradient grad3 = new Gradient();
+                    Gradient grad4 = new Gradient();
+                    grad3.SetKeys(new GradientColorKey[] { new GradientColorKey(colors[Random.Range(0, colors.Length)], 0.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) });
+                    grad4.SetKeys(new GradientColorKey[] { new GradientColorKey(colors[Random.Range(0, colors.Length)], 0.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) });
+                    col3.color = new ParticleSystem.MinMaxGradient(grad3, grad4);
+                }
+            }
         }
 	}
 }
