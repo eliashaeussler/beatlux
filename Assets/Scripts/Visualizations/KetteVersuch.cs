@@ -368,9 +368,9 @@ public class KetteVersuch : MonoBehaviour
         {
             for (int j = 0; j < ketAr[i].Length; j++)
             {
-                ketAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randKet[i][j]] * 10));
-                ketAr[i][j].GetComponent<Light>().intensity = spectrum[randKet[i][j]] * 10;
-                ketAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randKet[i][j]] * 10;
+                ketAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randKet[i][j]] * 7));
+                ketAr[i][j].GetComponent<Light>().intensity = spectrum[randKet[i][j]] * 7;
+                ketAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randKet[i][j]] * 7;
             }
 
 
@@ -380,9 +380,9 @@ public class KetteVersuch : MonoBehaviour
         {
             for (int j = 0; j < haengAr[i].Length; j++)
             {
-                haengAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randHaeng[i][j]] * 10));
-                haengAr[i][j].GetComponent<Light>().intensity = spectrum[randHaeng[i][j]] * 10;
-                haengAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randHaeng[i][j]] * 10;
+                haengAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randHaeng[i][j]] * 7));
+                haengAr[i][j].GetComponent<Light>().intensity = spectrum[randHaeng[i][j]] * 7;
+                haengAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randHaeng[i][j]] * 7;
             }
 
         }
