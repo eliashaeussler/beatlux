@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Bubbles : MonoBehaviour {
 
-
+    public static float timing = 5f;
     /*
      * Class to store spheres and different values connected to them
      * 
@@ -14,6 +14,7 @@ public class Bubbles : MonoBehaviour {
         public GameObject theSphere;
         public int size;
         public int speed;
+        public Vector3 prevScale;
 
 
         /*
@@ -28,6 +29,7 @@ public class Bubbles : MonoBehaviour {
 			this.theSphere = (GameObject)Instantiate(sphere, pos, Quaternion.identity, Settings.MenuManager.vizContents);
             this.theSphere.GetComponent<Rigidbody>().AddForce(0, speed*500, 0);
             this.size = size;
+            prevScale = new Vector3 (size, size, size);
             this.speed = speed;
         }
 
@@ -45,14 +47,26 @@ public class Bubbles : MonoBehaviour {
             Vector3 scale;
             if(fl > 1)
             {
-            scale = new Vector3(size * fl, size * fl, size * fl);
+            scale.x = Mathf.Lerp(prevScale.x, fl*size*3, Time.deltaTime * timing);
+            scale.y = Mathf.Lerp(prevScale.y, fl*size*3, Time.deltaTime * timing);
+            scale.z = Mathf.Lerp(prevScale.z, fl*size*3, Time.deltaTime * timing);
             this.theSphere.transform.localScale = scale;
+            prevScale = scale;
+            
+            
 
             }
             else
             {
-              scale = new Vector3(size, size, size);
-              this.theSphere.transform.localScale = scale;
+
+                    scale.x = Mathf.Lerp(prevScale.x,size, Time.deltaTime * timing);
+                    scale.y = Mathf.Lerp(prevScale.y,size, Time.deltaTime * timing);
+                    scale.z = Mathf.Lerp(prevScale.z,size, Time.deltaTime * timing);
+                    this.theSphere.transform.localScale = scale;
+                    prevScale = scale;
+
+                
+
             }
             
 
@@ -103,7 +117,7 @@ public class Bubbles : MonoBehaviour {
 
         //Adding up first 20 floats in spectrum to determine a volume for the bass
         float bass = 0;
-        for( int i = 0; i<20; i++)
+        for( int i = 0; i<30; i++)
         {
             if (spectrum[i] >= 0)
             {
