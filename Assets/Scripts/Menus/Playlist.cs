@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.IO;
+using System.Linq;
 
 public class Playlist : MonoBehaviour {
 
@@ -17,24 +18,23 @@ public class Playlist : MonoBehaviour {
 	// Playlists
 	public List<PlaylistObj> Playlists;
 
+	// Playlist to toggle
+	public PlaylistObj togglePlaylist;
 
 
 
-	public void Start ()
+
+	void Start ()
 	{
 		// Select playlists from database
 		Load ();
 
-		// Set selected playlist
-		if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null) {
-			Settings.Selected.Playlist = Settings.Active.Playlist;
-		}
+		// Set selected elements
+		MenuFunctions.SetSelected ();
 
-		// Set selected file
-		if (Settings.Selected.File == null && Settings.Active.File != null &&
-		    Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains (Settings.Active.File)) {
-
-			Settings.Selected.File = Settings.Active.File;
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
 		}
 
 		// Display playlists
@@ -42,6 +42,15 @@ public class Playlist : MonoBehaviour {
 
 		// Close database connection
 		Database.Close ();
+	}
+
+	void Update ()
+	{
+		if (togglePlaylist != null)
+		{
+			ToggleFiles (togglePlaylist, true);
+			togglePlaylist = null;
+		}
 	}
 
 
@@ -123,12 +132,12 @@ public class Playlist : MonoBehaviour {
 		events.triggers.Add (evtClick);
 
 		evtClick.callback.AddListener ((eventData) => {
-			UpdateSelectedFile (file);
+			UpdateSelectedFile (file, true);
 		});
 
 		// Add Event to Button
 		gameObject.transform.Find ("Text").gameObject.GetComponent<Button> ().onClick.AddListener (delegate {
-			UpdateSelectedFile (file);
+			UpdateSelectedFile (file, true);
 		});
 	}
 
@@ -136,6 +145,10 @@ public class Playlist : MonoBehaviour {
 	{
 		if (playlist != null)
 		{
+			// Navigation for buttons
+			Navigation nav = new Navigation ();
+			nav.mode = Navigation.Mode.None;
+
 			// Set name
 			string name = "#" + playlist.ID + (file != null ? ("." + file.ID) : "");
 
@@ -216,6 +229,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add text
 			TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
+			mainTextArrow.color = Color.white;
 
 			if (file == null) {
 				mainTextArrow.text = playlist.Equals (Settings.Selected.Playlist)
@@ -247,7 +261,7 @@ public class Playlist : MonoBehaviour {
 			{
 				mainTextListening.text = IconFont.LISTENING;
 				mainTextListening.fontSize = 30;
-				mainTextListening.color = file == null ? Color.white : new Color (0.7f, 0.7f, 0.7f);
+				mainTextListening.color = file == null ? Color.white : Settings.GetColor (180, 180, 180);
 			}
 			else if (file != null && playlist.Equals (Settings.Selected.Playlist) && file.Equals (Settings.Selected.File))
 			{
@@ -266,6 +280,7 @@ public class Playlist : MonoBehaviour {
 			LayoutElement mainLayoutElementListening = mainListening.AddComponent<LayoutElement> ();
 			mainLayoutElementListening.minWidth = file == null ? 40 : 32;
 
+
 			// Create text GameObject
 			GameObject mainText = new GameObject ("Text");
 			mainText.transform.SetParent (main.transform);
@@ -280,7 +295,7 @@ public class Playlist : MonoBehaviour {
 			if (file == null) {
 				text.color = Color.white;
 			} else if (playlist.Equals (Settings.Active.Playlist) && file.Equals (Settings.Active.File)) {
-				text.color = new Color (0.7f, 0.7f, 0.7f);
+				text.color = Settings.GetColor (180, 180, 180);
 			} else {
 				text.color = Color.gray;
 			}
@@ -295,6 +310,7 @@ public class Playlist : MonoBehaviour {
 			// Add button
 			Button buttonText = mainText.AddComponent<Button> ();
 			buttonText.transition = Selectable.Transition.Animation;
+			buttonText.navigation = nav;
 
 			// Add animator
 			Animator animatorText = mainText.AddComponent<Animator> ();
@@ -345,6 +361,7 @@ public class Playlist : MonoBehaviour {
 				// Add text
 				TextUnicode editText = edit.AddComponent<TextUnicode> ();
 				editText.text = IconFont.EDIT;
+				editText.color = Color.white;
 
 				// Set text alignment
 				editText.alignment = TextAnchor.MiddleRight;
@@ -359,6 +376,7 @@ public class Playlist : MonoBehaviour {
 				// Add button
 				Button buttonEditEvt = edit.AddComponent<Button> ();
 				buttonEditEvt.transition = Selectable.Transition.Animation;
+				buttonEditEvt.navigation = nav;
 
 				// Add button onclick event
 				buttonEditEvt.onClick.AddListener (delegate {
@@ -378,6 +396,7 @@ public class Playlist : MonoBehaviour {
 			// Add text
 			Text deleteText = delete.AddComponent<Text> ();
 			deleteText.text = IconFont.TRASH;
+			deleteText.color = Color.white;
 
 			// Set text alignment
 			deleteText.alignment = TextAnchor.MiddleRight;
@@ -392,6 +411,7 @@ public class Playlist : MonoBehaviour {
 			// Add button
 			Button buttonDeleteEvt = delete.AddComponent<Button> ();
 			buttonDeleteEvt.transition = Selectable.Transition.Animation;
+			buttonDeleteEvt.navigation = nav;
 
 			// Add button onclick event
 			buttonDeleteEvt.onClick.AddListener (delegate {
@@ -442,10 +462,6 @@ public class Playlist : MonoBehaviour {
 
 	public void ToggleFiles (PlaylistObj playlist, bool forceOpen)
 	{
-		// Set playlist as active playlist
-//		if (!forceOpen && playlist.Files.Count > 0)
-//			Settings.Selected.Playlist = playlist;
-
 		// Show or hide playlist files
 		bool opened = false;
 		foreach (PlaylistObj p in Playlists)
@@ -498,31 +514,28 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.File = null;
 		}
 
-		if (opened && Settings.Selected.Playlist != playlist)
+		if ((opened && Settings.Selected.Playlist != playlist) || forceOpen)
 		{
 			// Set selected playlist
-			Settings.Selected.Playlist = opened ? playlist : null;
+			Settings.Selected.Playlist = playlist;
 
-			// Unset selected file
-			Settings.Selected.File = Settings.Selected.Playlist.Files [0];
-
-			// Add icon to selected file
-			Transform file = transform.Find ("#" + Settings.Selected.Playlist.ID + "/Contents/#" +
-				Settings.Selected.Playlist.ID + "." + Settings.Selected.File.ID + "/Listening");
-			if (file != null) file.GetComponent<Text> ().text = IconFont.DROPDOWN_CLOSED;
+			// Set selected file
+			UpdateSelectedFile (Settings.Selected.Playlist.Files.First (),
+				Settings.Active.File == null || Settings.Active.Playlist == null
+				|| (Settings.Active.File != null && !Settings.Active.Playlist.Equals (Settings.Selected.Playlist)));
 		}
 
 		// Unset selected playlist
-		if (!opened) Settings.Selected.Playlist = null;
+		if (!opened && !forceOpen) Settings.Selected.Playlist = null;
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();
 	}
 
-	public void UpdateSelectedFile (FileObj file)
+	public void UpdateSelectedFile (FileObj file, bool updateFile)
 	{
 		// Update selected file
-		Settings.Selected.File = file;
+		if (updateFile) Settings.Selected.File = file;
 
 		// Re-display files and playlists
 		Display ();
@@ -877,7 +890,7 @@ public class Playlist : MonoBehaviour {
 				foreach (string id in fileIDs)
 				{
 					FileObj file = GetFile (Int64.Parse (id), false);
-					if (file != null) {
+					if (file != null && File.Exists (file.Path)) {
 						files.Add (file);
 					}
 				}
@@ -1092,12 +1105,6 @@ public class Playlist : MonoBehaviour {
 				// Close database connection
 				cmd.Dispose ();
 				Database.Close ();
-
-				// Add file to interface
-				DisplayFile (playlist, file);
-
-				// Re-order files
-				transform.Find ("#" + playlist.ID + "/Contents/#" + playlist.ID + "." + file.ID).SetSiblingIndex (playlist.Files.IndexOf (file));
 
 				return (long) (result > 0 ? Database.Constants.Successful : Database.Constants.QueryFailed);
 			}

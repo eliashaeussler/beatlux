@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +7,64 @@ using System;
 
 public class VizPlayer : MonoBehaviour {
 
+	// Player canvas
+	public PlayerCanvas canvas;
+
 	// UI elements
 	public GameObject previous;
 	public GameObject next;
 	public GameObject shuffle;
+	public Button logo;
 
 	// Visualizations
-	private VisualizationObj activeViz;
 	private List<VisualizationObj> visualizations;
+	private int oldPos;
 	private int position;
 
-	private bool isShuffle = Settings.Player.ShuffleViz;
+	// Shuffle state
+	private bool isShuffled;
 
 
+
+	void Start ()
+	{
+		// Set logo onClick listener
+		logo.onClick.AddListener (delegate {
+
+			Settings.Selected.Visualization = Settings.Defaults.Visualization;
+
+		});
+	}
 
 	void Update ()
 	{
-		// Set visualization order
-		ToggleShuffle (Settings.Player.ShuffleViz);
 
-		// Set active visualization
-		activeViz = Settings.Active.Visualization;
+		// Reset old position and shuffle state if playlist has changed
+		if (Settings.Selected.Visualization != null && !Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+
+			oldPos = -2;
+			isShuffled = false;
+		}
+
+		// Check for updated visualization
+		if ((Settings.Selected.Visualization != null
+			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization))
+		    || visualizations == null) {
+
+			ToggleShuffle (Settings.Player.ShuffleViz);
+		}
+
+		// Set current position
+		if (Settings.Selected.Visualization != null) {
+			position = visualizations.IndexOf (Settings.Selected.Visualization);
+		}
+
+		// Start visualization if current has changed
+		if (oldPos != position && Settings.Selected.Visualization != null
+			&& !Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+
+			StartViz ();
+		}
 	}
 
 
@@ -37,40 +74,43 @@ public class VizPlayer : MonoBehaviour {
 		// Instantiate list
 		visualizations = new List<VisualizationObj> ();
 
-		// Take all visualizations
+		// Get all visualizations
 		foreach (VisualizationObj viz in Settings.Visualizations) {
 			visualizations.Add (viz);
 		}
-
-		// Set position in list
-		if (Settings.Visualizations.Contains (Settings.Active.Visualization)) {
-			position = Array.IndexOf (Settings.Visualizations, Settings.Active.Visualization);
-		} else {
-			position = -1;
-		}
 	}
 
-	private bool Select (VisualizationObj viz)
+	private void StartViz ()
 	{
-		if (viz != null && Application.CanStreamedLevelBeLoaded (viz.BuildNumber))
+		if (Settings.Selected.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
 		{
-			// Set as active visualization
-			Settings.Selected.Visualization = viz;
+			// Set old position
+			oldPos = position;
 
-			// Reset color scheme
-			Settings.Selected.ColorScheme = ColorScheme.GetDefault (viz);
+			// Set color scheme
+			if (Settings.Selected.ColorScheme != null
+				&& Settings.Selected.ColorScheme.Visualization.Equals (Settings.Selected.Visualization)) {
+					
+				Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
+			} else {
+				Settings.Active.ColorScheme = ColorScheme.GetDefault (Settings.Selected.Visualization);
+			}
 
-			// Get level
-			VisualizationObj selectedViz = Settings.MenuManager.StartVisualization (false);
+			// Reset selected color scheme
+			Settings.Selected.ColorScheme = null;
 
-			// Start level
-			if (selectedViz != null) Settings.MenuManager.StartLevel (selectedViz.BuildNumber);
+			// Set active visualization
+			Settings.Active.Visualization = Settings.Selected.Visualization;
 
+			// Start visualization
+			Settings.MenuManager.StartLevel (Settings.Selected.Visualization.BuildNumber);
 
-			return visualizations.IndexOf (selectedViz) != position;
+			// Reset selected visualization
+			Settings.Selected.Visualization = null;
+
+			// Keep player active
+			canvas.KeepPlayer ();
 		}
-
-		return false;
 	}
 
 	public void ToggleShuffle () {
@@ -83,34 +123,32 @@ public class VizPlayer : MonoBehaviour {
 		Settings.Player.ShuffleViz = state;
 
 		// Set visualizations
-		if (visualizations == null || !Settings.Player.ShuffleViz ||
-		    activeViz != Settings.Active.Visualization) {
-
+		if (visualizations == null || !Settings.Player.ShuffleViz) {
 			SetVisualizations ();
 		}
 
-		// Update playlist
-		if (isShuffle != state)
+		// Update visualizations list
+		if (Settings.Player.ShuffleViz && !isShuffled)
 		{
-			if (Settings.Player.ShuffleViz)
-			{
-				// Re-order visualizations
-				System.Random rand = new System.Random ();
-				int n = visualizations.Count;
-				while (n > 1) {
-					n--;
-					int k = rand.Next (n + 1);
-					VisualizationObj val = visualizations [k];
-					visualizations [k] = visualizations [n];
-					visualizations [n] = val;
-				}
-
-				// Set position
-				position = visualizations.IndexOf (Settings.Active.Visualization);
+			// Re-order visualizations
+			System.Random rand = new System.Random ();
+			int n = visualizations.Count;
+			while (n > 1) {
+				n--;
+				int k = rand.Next (n + 1);
+				VisualizationObj val = visualizations [k];
+				visualizations [k] = visualizations [n];
+				visualizations [n] = val;
 			}
-
-			isShuffle = state;
 		}
+
+		// Set selected visualization
+		if (Settings.Selected.Visualization == null) {
+			Settings.Selected.Visualization = Settings.Active.Visualization;
+		}
+
+		// Set shuffle
+		isShuffled = Settings.Player.ShuffleViz;
 
 		// Update UI
 		shuffle.GetComponent<Text> ().color = Settings.Player.ShuffleViz ? Player.COLOR_ENABLED : Player.COLOR_DISABLED;
@@ -122,61 +160,33 @@ public class VizPlayer : MonoBehaviour {
 
 	// Select next visualization
 	public void Next ()
-	{ 
-		if (visualizations.Count > 0)
-		{
-			bool found = false;
-			int tempPos = position;
-
-			// Try to select next visualization
-			while (!found)
-			{
-				// Get next element in list
-				tempPos = GetVizIndex (tempPos, 1);
-
-				// Select next element in list
-				found = Select (visualizations [tempPos]);
-				if (tempPos == position) break;
-			}
-		}
+	{
+		Settings.Selected.Visualization = GetViz (1);
 	}
 
 	// Select previous visualization
 	public void Previous ()
 	{
-		if (visualizations.Count > 0)
-		{
-			bool found = false;
-			int tempPos = position;
-
-			// Try to select previous visualization
-			while (!found)
-			{
-				// Get previous element in list
-				tempPos = GetVizIndex (tempPos, -1);
-
-				// Select previous element in list
-				found = Select (visualizations [tempPos]);
-				if (tempPos == position) break;
-			}
-		}
+		Settings.Selected.Visualization = GetViz (-1);
 	}
 
 
 
 	//-- HELPER METHODS
 
-	public int GetVizIndex (int position, int step)
+	public VisualizationObj GetViz (int step)
 	{
+		int pos = position;
+
 		if (visualizations.Count > 0)
 		{
 			// Next file
-			if (step == 1) return position < visualizations.Count-1 ? position+1 : 0;
+			if (step == 1) pos = position < visualizations.Count-1 ? position+1 : 0;
 
 			// Previous file
-			else if (step == -1) return position > 0 ? position-1 : visualizations.Count-1;
+			else if (step == -1) pos = position > 0 ? position-1 : visualizations.Count-1;
 		}
 
-		return position;
+		return visualizations [pos];
 	}
 }

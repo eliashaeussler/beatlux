@@ -17,6 +17,8 @@ public class Visualization : MonoBehaviour {
 	// Color scheme object
 	public ColorScheme ColorSchemes;
 
+	public static List<VisualizationObj> tempViz;
+
 
 
 	void Start ()
@@ -24,9 +26,12 @@ public class Visualization : MonoBehaviour {
 		// Select visualizations from database
 		Load ();
 
-		// Set opened visualization
-		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
-			Settings.Selected.Visualization = Settings.Active.Visualization;
+		// Set selected elements
+		MenuFunctions.SetSelected ();
+
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
 		}
 
 		// Display visualizations
@@ -112,10 +117,19 @@ public class Visualization : MonoBehaviour {
 				VisualizationObj currentViz = viz;
 				button.onClick.AddListener (delegate {
 
-					Settings.Selected.Visualization = currentViz;
-					Settings.Selected.ColorScheme = null;
-					ColorSchemes.Display ();
-					Display ();
+					if (!currentViz.Equals (Settings.Selected.Visualization))
+					{
+						Settings.Selected.Visualization = currentViz;
+
+						if (Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
+							Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
+						} else {
+							Settings.Selected.ColorScheme = ColorScheme.GetDefault (currentViz);
+						}
+
+						ColorSchemes.Display ();
+						Display ();
+					}
 
 				});
 
@@ -198,7 +212,7 @@ public class Visualization : MonoBehaviour {
             cmd.Dispose ();
 
 			// Clone visualizations array
-			MenuFunctions.tempViz = Visualizations;
+			tempViz = Visualizations;
 		}
 
 		// Close database connection
@@ -243,6 +257,26 @@ public class Visualization : MonoBehaviour {
 		if (closeConnection) Database.Close ();
 
 		return null;
+	}
+
+
+
+	//-- VISUALIZATION SEARCH
+
+	public void SearchVisualizations (string s)
+	{
+		// Get Visualization object
+		Visualization viz = GameObject.Find ("VizContent").GetComponent<Visualization> ();
+
+		// Do search or reset
+		if (s.Length > 0) {
+			viz.Visualizations = tempViz.Where (x => x.Name.IndexOf (s, StringComparison.OrdinalIgnoreCase) >= 0).ToList ();
+		} else {
+			viz.Visualizations = tempViz;
+		}
+
+		// Display visualizations
+		viz.Display ();
 	}
     
 }

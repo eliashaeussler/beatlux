@@ -521,11 +521,6 @@ public class ColorScheme : MonoBehaviour {
 		return false;
 	}
 
-	public static ColorSchemeObj GetDefault ()
-	{
-		return GetDefault (Settings.Active.Visualization);
-	}
-
 	public static ColorSchemeObj GetDefault (VisualizationObj viz)
 	{
 		if (viz != null)

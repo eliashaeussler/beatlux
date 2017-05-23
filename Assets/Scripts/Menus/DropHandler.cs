@@ -10,7 +10,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 		Playlist pl = GameObject.Find ("PlaylistContent").GetComponent <Playlist> ();
 
 		// Get file path
-		string dir = DragHandler.item.name;
+		string dir = DragHandler.dir;
 
 		// Get file object if available
 		FileObj file = pl.GetFile (dir);
@@ -27,7 +27,6 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 
 			// Add file and show playlist
 			long added = pl.AddFile (file, playlist);
-			pl.ToggleFiles (playlist, true);
 
 			// Show dialog
 			Dialog dialog = GameObject.Find ("Dialog").GetComponent<Dialog> ();
@@ -53,6 +52,8 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 				break;
 
 			default:
+				// Toggle files
+				pl.togglePlaylist = playlist;
 				break;
 
 			}

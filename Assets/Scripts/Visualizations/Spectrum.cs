@@ -33,7 +33,7 @@ public class Spectrum : MonoBehaviour
 
     void Update()
     {
-        float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
+		float[] spectrum = Settings.MenuManager.audio.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
 
         /**
          * Scaling the height of each cube, based on the value in the spectrum-array

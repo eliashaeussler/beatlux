@@ -5,7 +5,7 @@ using System.Timers;
 public class PlayerCanvas : MonoBehaviour {
 
 	public GameObject wrapper;
-	public int displayLength = 4;
+	public float displayLength = 3;
 
 	private Coroutine timer;
 	private bool canShow;
@@ -15,6 +15,7 @@ public class PlayerCanvas : MonoBehaviour {
 	void Start ()
 	{
 		// Show player at the beginning
+		canShow = true;
 		ShowPlayer ();
 	}
 
@@ -59,6 +60,11 @@ public class PlayerCanvas : MonoBehaviour {
 
 		// TODO fade out wrapper
 
+		HidePlayerImmediate ();
+	}
+
+	public void HidePlayerImmediate ()
+	{
 		// Hide player
 		wrapper.SetActive (false);
 

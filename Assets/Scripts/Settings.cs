@@ -10,7 +10,7 @@ public class Settings {
 		new VisualizationObj ("Bubbles",			4,  6, "Watercolor_2"),
 		new VisualizationObj ("Hexagons",			2,  7, "Geo_3"),
 		new VisualizationObj ("Lichterketten",		5,  8, null),
-		new VisualizationObj ("Particle Fountains",	3,  9, null),
+		new VisualizationObj ("Particle Fountains",	6,  9, null),
 		new VisualizationObj ("Spektrum",			3, 10, "Nightsky")
 	};
 
@@ -101,9 +101,12 @@ public class Settings {
 				Settings.Visualizations [3].Name,
 				new Color []
 				{
-					GetColor (243, 225, 125),
-					GetColor (125, 243, 156),
-					GetColor (243, 153, 149)
+					GetColor (255, 26, 229),
+					GetColor (23, 191, 255),
+					GetColor (20, 255, 53),
+					GetColor (232, 23, 83),
+					GetColor (255, 147, 12),
+					GetColor (255, 232, 51)
 				}
 			},
 

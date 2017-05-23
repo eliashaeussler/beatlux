@@ -20,9 +20,7 @@ public class Area : MonoBehaviour {
 		trans = GetComponent<RectTransform> ();
 
 		// Get size
-		size = trans.sizeDelta;
-		if (size.x == 0) size.x = Camera.main.pixelWidth;
-		if (size.y == 0) size.y = Camera.main.pixelHeight;
+		GetRealSize ();
 
 		// Set x and y range
 		GetRange ();
@@ -37,11 +35,26 @@ public class Area : MonoBehaviour {
 		// Check if mouse is in range
 		if ((Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
 			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
-			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y)
-		{
+			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y) {
+
 			canvas.ShowPlayer ();
 		}
 	}
+
+	private void GetRealSize ()
+	{
+		// Get scale
+		size = trans.sizeDelta;
+
+		// Change with current scale
+		size.x *= canvas.transform.localScale.x;
+		size.y *= canvas.transform.localScale.y;
+
+		// Change if area is completely stretched
+		if (size.x == 0) size.x = Camera.main.pixelWidth;
+		if (size.y == 0) size.y = Camera.main.pixelHeight;
+	}
+
 	private void GetRange ()
 	{
 		// IMPORTANT: mouse (0,0) is bottom-left

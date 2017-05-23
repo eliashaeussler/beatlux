@@ -4,14 +4,12 @@ using System.Collections;
 //[RequireComponent (typeof (AudioSource))]
 public class AudioPeer : MonoBehaviour {
 
-//    AudioSource aSource;
     public static float[] samples = new float[512];
     public static float[] freqBands = new float[8];
 
 
 	// Use this for initialization
 	void Start () {
-//        aSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -47,15 +45,4 @@ public class AudioPeer : MonoBehaviour {
             freqBands[i] = average*10;
         }
     }
-
-    /*
-     * 20-60
-     * 60-250
-     * 250-500
-     * 500-2000
-     * 2000-4000
-     * 4000-6000
-     * 6000-20000
-     * 
-     * */
 }

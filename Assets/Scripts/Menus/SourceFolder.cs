@@ -18,6 +18,11 @@ public class SourceFolder : MonoBehaviour {
 		".aiff"
 	};
 
+	public static List<String> sDirs;
+	public static List<String> sFiles;
+	public static bool Searching;
+	private BackgroundThread thread;
+
 
 	
 	void Start ()
@@ -77,22 +82,64 @@ public class SourceFolder : MonoBehaviour {
 			GameObject obj = new GameObject (item);
 			obj.transform.SetParent (gameObject.transform);
 
-			// Add RectTransform element
-			RectTransform trans = obj.AddComponent<RectTransform> ();
-			trans.pivot = new Vector2 (0, 0.5f);
+			// Add Horizontal Layout Group
+			HorizontalLayoutGroup hlg = obj.AddComponent<HorizontalLayoutGroup> ();
+			hlg.spacing = 20;
+			hlg.childAlignment = TextAnchor.MiddleLeft;
+			hlg.childForceExpandWidth = false;
+			hlg.childForceExpandHeight = true;
+
+			// Set RectTransform
+			RectTransform trans = obj.GetComponent<RectTransform> ();
 			trans.localScale = Vector3.one;
 
+
+			// Create image GameObject
+			GameObject goImage = new GameObject ("Image");
+			goImage.transform.SetParent (obj.transform);
+
+			// Add text
+			TextUnicode textImage = goImage.AddComponent<TextUnicode> ();
+
+			textImage.color = Settings.GetColor (180, 180, 180);
+			textImage.text = isDir ? IconFont.FOLDER : IconFont.MUSIC;
+			textImage.alignment = TextAnchor.MiddleLeft;
+			textImage.font = IconFont.font;
+			textImage.fontSize = 30;
+
+			// Add RectTransform
+			RectTransform imageTrans = goImage.GetComponent<RectTransform> ();
+			imageTrans.localScale = Vector3.one;
+
 			// Add Layout Element
-			LayoutElement layoutElement = obj.AddComponent<LayoutElement> ();
+			LayoutElement imageLayout = goImage.AddComponent<LayoutElement> ();
+			imageLayout.minWidth = 30;
+
+
+			// Create text GameObject
+			GameObject goText = new GameObject ("Text");
+			goText.transform.SetParent (obj.transform);
+
+			// Add RectTransform element
+			RectTransform textTrans = goText.AddComponent<RectTransform> ();
+			textTrans.pivot = new Vector2 (0.5f, 0.5f);
+			textTrans.localScale = Vector3.one;
+
+			// Add Layout Element
+			LayoutElement layoutElement = goText.AddComponent<LayoutElement> ();
 			layoutElement.minHeight = 30;
 			layoutElement.preferredHeight = 30;
 
 			// Add Drag Handler
-			if (!isDir) obj.AddComponent<DragHandler> ();
+			if (!isDir) goText.AddComponent<DragHandler> ();
 
 			// Add Button
-			Button button = obj.AddComponent<Button> ();
+			Button button = goText.AddComponent<Button> ();
 			button.transition = Selectable.Transition.Animation;
+
+			Navigation nav = new Navigation ();
+			nav.mode = Navigation.Mode.None;
+			button.navigation = nav;
 
 			// Add OnClick Handler
 			string currentItem = item;
@@ -118,31 +165,34 @@ public class SourceFolder : MonoBehaviour {
 			}
 
 			// Add Animator
-			Animator animator = obj.AddComponent<Animator> ();
+			Animator animator = goText.AddComponent<Animator> ();
 			animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
 
 			// Add Text
-			Text text = obj.AddComponent<Text> ();
+			Text text = goText.AddComponent<Text> ();
+
 			text.color = Color.white;
 			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
 			text.text = Path.GetFileName (item);
 			text.fontSize = 30;
+			text.alignment = TextAnchor.MiddleLeft;
 		}
 	}
 
 	public void HistoryBack ()
 	{
-		// Get user folder
-		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-
-		if (!Path.Equals (userPath, Settings.Source.Current))
-		{
+//		// Get user folder
+//		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+//
+//		if (!Path.Equals (userPath, Settings.Source.Current))
+//		{
 			// Get new path
 			string path = Path.GetFullPath (Path.Combine (Settings.Source.Current, @".."));
+		print (Environment.GetFolderPath (Environment.SpecialFolder.MyComputer));
 
 			// Display file contents
 			Initialize (path);
-		}
+//		}
 	}
 
 	public static void DestroyAll ()
@@ -190,6 +240,102 @@ public class SourceFolder : MonoBehaviour {
 
 		return elements;
 	}
+
+
+
+	//-- FILE SEARCH
+
+	public void SearchFiles (string s)
+	{
+		Searching = s.Length > 0;
+
+		if (!Searching)
+		{
+			// Search done
+			Invoke ("HideProgress", 0.01f);
+			SourceFolder.Initialize ();
+		}
+		else
+		{
+			// Reset results
+			sDirs = new List<String> ();
+			sFiles = new List<String> ();
+
+			// Dispose current thread
+			if (thread != null && thread.IsBusy) {
+				thread.Abort ();
+				thread.Dispose ();
+			}
+
+			// Initalize thread
+			thread = new BackgroundThread ();
+			thread.WorkerSupportsCancellation = true;
+			thread.DoWork += delegate {
+
+				// Destroy elements
+				MainThreadDispatcher.Instance ().Enqueue (SourceFolder.DestroyAll);
+
+				// Get search results
+				GetResults (s);
+
+				// Display search results
+				MainThreadDispatcher.Instance ().Enqueue (delegate {
+					SourceFolder.Display (sDirs, sFiles, true);
+				});
+
+				// Hide progress
+				MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+
+			};
+
+			// Run thread
+			thread.RunWorkerAsync ();
+		}
+	}
+
+	private void GetResults (string pattern)
+	{
+		// Get results
+		string path = Settings.Source.Current;
+		FileSearch (path, pattern);
+	}
+
+	private void FileSearch (string folder, string pattern)
+	{
+		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
+			sDirs.Add (folder);
+		}
+
+		// Get files
+		string[] files = Directory.GetFiles (folder).Where (x =>
+			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
+			&& Path.GetFileName (x).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0
+			&& SourceFolder.IsSupportedFile (x)
+		).ToArray ();
+
+		// Add file if file name contains pattern
+		foreach (string file in files) {
+			sFiles.Add (file);
+		}
+
+		// Get directories
+		string[] dirs = Directory.GetDirectories (folder).Where (x =>
+			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
+		).ToArray ();
+
+		// Jump into sub directory
+		foreach (string dir in dirs) {
+			FileSearch (dir, pattern);
+		}
+	}
+
+	public void HideProgress () {
+		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
+	}
+
+
+
+	//-- HELPER METHODS
 
 	public static bool IsSupportedFile (string file)
 	{

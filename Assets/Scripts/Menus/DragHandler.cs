@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 	public static GameObject item;
+	public static string dir;
+
 	private GameObject cloned;
 	private Vector3 startPos;
 	private Vector2 startPivot;
@@ -15,6 +17,9 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	{
 		// Get element
 		item = gameObject;
+
+		// Get dir
+		dir = transform.parent.name;
 
 		// Get start transformations
 		startPos = transform.position;

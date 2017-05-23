@@ -18,11 +18,9 @@ public class Player : MonoBehaviour {
 
 
 
-	// Player canvas
-	public PlayerCanvas canvas;
-
-	// Audio source (component of Main Camera)
+	// Audio source and clip
 	public AudioSource audio;
+	private AudioClip clip;
 
 	// UI elements
 	public GameObject play;
@@ -45,19 +43,18 @@ public class Player : MonoBehaviour {
 	private bool userChangedSlider = false;
 	private bool continuePlay = true;
 
-	// Playlist
-	private PlaylistObj activePlaylist;
+	// Files
 	private List<FileObj> files;
+	private int oldPos;
 	private int position;
+
+	// Shuffle state
+	private bool isShuffled = false;
 	
 
 
 	void Start ()
 	{
-		// Set audio source
-		audio = Settings.MenuManager.audio;
-
-		// Set volume
 		SetVolume (Settings.Player.Volume);
 	}
 
@@ -73,117 +70,192 @@ public class Player : MonoBehaviour {
 		UpdatePlayButton ();
 		UpdateSlider ();
 
-		// Play first file if playlist changed
-		if (activePlaylist != Settings.Active.Playlist)
-		{
-			activePlaylist = Settings.Active.Playlist;
-			ToggleShuffle (Settings.Player.Shuffle, true);
-			Play (Settings.Active.File ?? files [0]);
+		// Reset old position and shuffle state if playlist has changed
+		if (Settings.Selected.Playlist != null && !Settings.Selected.Playlist.Equals (Settings.Active.Playlist)) {
+
+			oldPos = -1;
+			isShuffled = false;
+		}
+
+		// Check for updated playlist or file
+		if (Settings.Selected.Playlist != null || (Settings.Selected.File != null && !Settings.Selected.File.Equals (Settings.Active.File)) || files == null) {
+
+			ToggleShuffle (Settings.Player.Shuffle);
 		}
 
 		// Play next file
-		if (!audio.isPlaying && continuePlay) {
+		if (Settings.Selected.File == null && files.Count > 0 && audio.clip != null && audio.time == audio.clip.length) {
+			
 			Next ();
 		}
 
-		// Show player if mouse moves
-		if (Input.mousePosition.y <= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)) {
-			canvas.KeepPlayer ();
+		// Set current position
+		if (Settings.Selected.File != null) {
+			position = files.IndexOf (Settings.Selected.File);
+		} else if (Settings.Active.File != null) {
+			position = files.IndexOf (Settings.Active.File);
+		}
+
+		// Play file if current has changed
+		if ((Settings.Active.File != null && !Settings.Active.File.Equals (files [position])) ||
+			(oldPos != position && position >= 0 && Settings.Selected.File != null
+			&& !Settings.Selected.File.Equals (Settings.Active.File))) {
+
+			Play ();
 		}
 	}
 
 
 
-	private void SetPlaylist (bool play)
+	private void SetFiles ()
 	{
 		// Instantiate list
 		files = new List<FileObj> ();
 
+		// Set active playlist
+		if (Settings.Selected.Playlist != null) {
+			Settings.Active.Playlist = Settings.Selected.Playlist;
+		}
+
 		// Get files from active playlist
 		if (Settings.Active.Playlist != null)
 		{
-			// Take all files from playlist
 			foreach (FileObj file in Settings.Active.Playlist.Files) {
 				files.Add (file);
 			}
+		}
 
-			// Set position in list
-			if (Settings.Active.File != null && Settings.Active.Playlist.Files.Contains (Settings.Active.File))
+		// Reset selected playlist
+		Settings.Selected.Playlist = null;
+	}
+
+	private void Play ()
+	{
+		if (File.Exists (Settings.Selected.File.Path))
+		{
+			// Set active file
+			Settings.Active.File = Settings.Selected.File;
+
+			// Reset selected file
+			Settings.Selected.File = null;
+
+			// Get active file
+			FileObj file = Settings.Active.File;
+
+			if (file != null)
 			{
-				if (!Settings.Player.Shuffle)
+				// Play file
+				if (Path.GetExtension (file.Path) == ".mp3")
 				{
-					int index = Settings.Active.Playlist.Files.IndexOf (Settings.Active.File);
-					if (position != index && play) Play (Settings.Active.File);
-					position = index;
+					clip = MP3Import.StartImport (file.Path);
+					StartPlay ();
+				}
+				else
+				{
+					// Get audio resource
+					WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
+					clip = resource.GetAudioClip (true, false);
+
+					// Wait until file is loaded
+					while (clip.loadState != AudioDataLoadState.Loaded)
+					{
+						if (clip.loadState == AudioDataLoadState.Failed) {
+							Next ();
+							return;
+						}
+					}
+
+					if (clip != null && clip.length > 0) {
+						StartPlay ();
+					} else {
+						Next ();
+					}
 				}
 			}
-			else
-			{
-				position = 0;
-			}
+		}
+		else
+		{
+			// Try to play next file
+			Next ();
 		}
 	}
 
-	private bool Play (FileObj file)
+	private void StartPlay ()
 	{
-		if (File.Exists (file.Path))
+		// Set old position
+		oldPos = position;
+
+		// Update current audio source
+		audio.clip = clip;
+
+		// Reset time
+		audio.time = 0;
+
+		// Play audio
+		audio.Play ();
+
+		// Set full time
+		fullTime.text = FormatTime (audio.clip.length);
+
+		// Set artist and title
+		string output = "";
+		if (Settings.Active.File != null)
 		{
-			// Get audio resource
-			WWW resource = new WWW ("file:///" + file.Path.Replace ('\\', '/').TrimStart (new char [] { '/' }));
-			AudioClip clip = resource.audioClip;
+			// Get artists and title
+			TagLib.File tags = TagLib.File.Create (Settings.Active.File.Path);
+			string artist = tags.Tag.FirstPerformer;
+			string title = tags.Tag.Title;
 
-			// Wait until file is loaded
-			while (clip.loadState != AudioDataLoadState.Loaded)
-			{
-				if (clip.loadState == AudioDataLoadState.Failed) {
-					return false;
-				}
-			}
+			// Set artists and title
+			if (artist != null && artist.Length > 0)
+				output = artist + " – ";
 
-			if (clip.length > 0)
-			{
-				// Update current audio source
-				audio.clip = clip;
-
-				// Reset time
-				audio.time = 0;
-
-				// Play audio
-				audio.Play ();
-
-				// Set as active file
-				Settings.Active.File = file;
-
-				// Set full time
-				fullTime.text = FormatTime (audio.clip.length);
-
-				// Update position
-				position = files.IndexOf (file);
-
-				// Get artists and title
-				TagLib.File tags = TagLib.File.Create (file.Path);
-				string artist = tags.Tag.FirstAlbumArtistSort;
-				string title = tags.Tag.Title;
-
-				// Set artists and title
-				string output = "";
-				if (artist != null && artist.Length > 0)
-					output = artist + " – ";
-				
-				if (title != null && title.Length > 0) {
-					output += title;
-				} else {
-					output += Path.GetFileNameWithoutExtension (file.Path);
-				}
-
-				this.artist.text = output;
-
-
-				return true;
+			if (title != null && title.Length > 0) {
+				output += title;
+			} else {
+				output += Path.GetFileNameWithoutExtension (Settings.Active.File.Path);
 			}
 		}
 
-		return false;
+		this.artist.text = output;
+	}
+
+	public void ToggleShuffle () {
+		ToggleShuffle (!Settings.Player.Shuffle);
+	}
+
+	public void ToggleShuffle (bool state)
+	{
+		// Change shuffle
+		Settings.Player.Shuffle = state;
+
+		// Set files
+		if (files == null || !Settings.Player.Shuffle
+			|| (Settings.Selected.Playlist != null && !Settings.Selected.Playlist.Equals (Settings.Active.Playlist))) {
+
+			SetFiles ();
+		}
+
+		// Update playlist
+		if (Settings.Player.Shuffle && !isShuffled)
+		{
+			// Re-order files
+			System.Random rand = new System.Random ();
+			int n = files.Count;
+			while (n > 1) {
+				n--;
+				int k = rand.Next (n + 1);
+				FileObj val = files [k];
+				files [k] = files [n];
+				files [n] = val;
+			}
+		}
+
+		// Set shuffle
+		isShuffled = Settings.Player.Shuffle;
+
+		// Update UI
+		shuffle.GetComponent<Text> ().color = Settings.Player.Shuffle ? COLOR_ENABLED : COLOR_DISABLED;
 	}
 
 	private void UpdatePlayButton ()
@@ -196,10 +268,13 @@ public class Player : MonoBehaviour {
 
 	private void UpdateSlider ()
 	{
-		if (audio != null && audio.isPlaying && audio.clip != null && audio.clip.length != 0 && !userChangedSlider)
-		{
+		if (audio != null && audio.isPlaying
+			&& audio.clip != null
+			&& audio.clip.length != 0 && !userChangedSlider) {
+
 			// Update slider value
-			timeline.value = audio.time / audio.clip.length;
+			timeline.value = audio.time
+				/ audio.clip.length;
 		}
 	}
 
@@ -217,8 +292,12 @@ public class Player : MonoBehaviour {
 
 	private void SetAudioTime (float value)
 	{
-		if (audio != null && audio.clip != null && audio.clip.length != 0 && userChangedSlider) {
-			audio.time = value < 1 ? value * audio.clip.length : audio.clip.length - 0.1f;
+		if (audio != null && audio.clip != null
+			&& audio.clip.length != 0 && userChangedSlider) {
+
+			audio.time = value < 1
+				? value * audio.clip.length
+				: audio.clip.length - 0.1f;
 		}
 	}
 
@@ -233,16 +312,19 @@ public class Player : MonoBehaviour {
 
 	public void SetVolume (float value)
 	{
-		// Set volume
-		audio.volume = value;
+		if (audio.volume != value)
+		{
+			// Set volume
+			audio.volume = value;
 
-		// Update slider
-		if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
-		if (volumeSliderRight.value != value) volumeSliderRight.value = value;
+			// Update slider
+			if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
+			if (volumeSliderRight.value != value) volumeSliderRight.value = value;
 
-		// Update UI
-		volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
-		volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+			// Update UI
+			volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+			volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+		}
 	}
 
 	public void TogglePlay ()
@@ -273,41 +355,9 @@ public class Player : MonoBehaviour {
 		audio.loop = state;
 
 		// Update UI
-		repeat.GetComponent<Text> ().color = audio.loop ? COLOR_ENABLED : COLOR_DISABLED;
-	}
-
-	public void ToggleShuffle () {
-		ToggleShuffle (!Settings.Player.Shuffle, false);
-	}
-
-	public void ToggleShuffle (bool state, bool play)
-	{
-		// Change shuffle
-		Settings.Player.Shuffle = state;
-
-		// Set playlist
-		SetPlaylist (play);
-
-		// Update playlist
-		if (Settings.Player.Shuffle)
-		{
-			// Re-order files
-			System.Random rand = new System.Random ();
-			int n = files.Count;
-			while (n > 1) {
-				n--;
-				int k = rand.Next (n + 1);
-				FileObj val = files [k];
-				files [k] = files [n];
-				files [n] = val;
-			}
-
-			// Set position
-			position = files.IndexOf (Settings.Active.File);
-		}
-
-		// Update UI
-		shuffle.GetComponent<Text> ().color = Settings.Player.Shuffle ? COLOR_ENABLED : COLOR_DISABLED;
+		repeat.GetComponent<Text> ().color = audio.loop
+			? COLOR_ENABLED
+			: COLOR_DISABLED;
 	}
 
 
@@ -317,43 +367,13 @@ public class Player : MonoBehaviour {
 	// Play next clip
 	public void Next ()
 	{
-		if (files != null && files.Count > 0)
-		{
-			bool found = false;
-			int tempPos = position;
-
-			// Try to play next file
-			while (!found)
-			{
-				// Get next element in list
-				tempPos = GetFileIndex (tempPos, 1);
-
-				// Play next element in list
-				found = Play (files [tempPos]);
-				if (tempPos == position) break;
-			}
-		}
+		Settings.Selected.File = GetFile (1);
 	}
 
 	// Play previous clip
 	public void Previous ()
 	{
-		if (files != null && files.Count > 0)
-		{
-			bool found = false;
-			int tempPos = position;
-
-			// Try to play previous file
-			while (!found)
-			{
-				// Get previous element in list
-				tempPos = GetFileIndex (tempPos, -1);
-
-				// Play previous element in list
-				found = Play (files [tempPos]);
-				if (tempPos == position) break;
-			}
-		}
+		Settings.Selected.File = GetFile (-1);
 	}
 	
 	
@@ -366,18 +386,20 @@ public class Player : MonoBehaviour {
 		return ts.Minutes.ToString () + ":" + ts.Seconds.ToString ().PadLeft (2, '0');
 	}
 
-	public int GetFileIndex (int position, int step)
+	public FileObj GetFile (int step)
 	{
+		int pos = position;
+
 		if (files.Count > 0)
 		{
 			// Next file
-			if (step == 1) return position < files.Count-1 ? position+1 : 0;
+			if (step == 1) pos = position < files.Count-1 ? position+1 : 0;
 
 			// Previous file
-			else if (step == -1) return position > 0 ? position-1 : files.Count-1;
+			else if (step == -1) pos = position > 0 ? position-1 : files.Count-1;
 		}
 
-		return position;
+		return files [pos];
 	}
 
 }

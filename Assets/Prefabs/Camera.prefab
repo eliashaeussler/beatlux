@@ -23,6 +23,7 @@ GameObject:
   - 114: {fileID: 114000011751511550}
   - 54: {fileID: 54000013263331746}
   - 135: {fileID: 135000012922007996}
+  - 114: {fileID: 114000011099100404}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -145,6 +146,19 @@ MonoBehaviour:
   speed: 10
   mouseSensitivity: 3
   permitmove: 1
+--- !u!114 &114000011099100404
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012422047624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f904e919835132409fa96f6fab2785b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boundaries: {fileID: 1000012909584292, guid: e5610e272d07507469d6e3d5d325e8a7, type: 2}
+  mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
 --- !u!114 &114000011751511550
 MonoBehaviour:
   m_ObjectHideFlags: 1
