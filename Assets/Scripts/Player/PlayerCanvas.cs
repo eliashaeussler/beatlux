@@ -7,6 +7,7 @@ public class PlayerCanvas : MonoBehaviour {
 	public GameObject wrapper;
 	public float displayLength = 3;
 
+	private CameraController ctrl;
 	private Coroutine timer;
 	private bool canShow;
 
@@ -14,6 +15,9 @@ public class PlayerCanvas : MonoBehaviour {
 
 	void Start ()
 	{
+		// Get Camera Controller reference
+		ctrl = Camera.main.transform.parent.GetComponent<CameraController> ();
+
 		// Show player at the beginning
 		canShow = true;
 		ShowPlayer ();
@@ -21,6 +25,9 @@ public class PlayerCanvas : MonoBehaviour {
 
 	void Update ()
 	{
+		// Update Camera Controller reference
+		ctrl = Camera.main.transform.parent.GetComponent<CameraController> ();
+
 		if (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
 		{
 			canShow = true;
@@ -38,6 +45,9 @@ public class PlayerCanvas : MonoBehaviour {
 
 			// Show player wrapper
 			wrapper.SetActive (true);
+
+			// Disable camera moving
+			if (ctrl != null) ctrl.permitmove = false;
 
 			// Fade out after x seconds
 			KeepPlayer ();
@@ -67,6 +77,9 @@ public class PlayerCanvas : MonoBehaviour {
 	{
 		// Hide player
 		wrapper.SetActive (false);
+
+		// Disable camera moving
+		if (ctrl != null) ctrl.permitmove = true;
 
 		// Do not show player again if mouse does not move
 		canShow = false;

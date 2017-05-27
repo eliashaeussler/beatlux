@@ -5,14 +5,16 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
     public float speed = 10f;
     public float mouseSensitivity = 3f;
-    public bool permitmove = true;
+    public bool permitmove = false;
 
     private CameraMover move;
+	private PlayerCanvas player;
 
     void Start()
     {
         
         move = GetComponent<CameraMover>();
+		player = GameObject.Find ("PlayerCanvas").GetComponent<PlayerCanvas> ();
     }
 
     void Update()
@@ -41,6 +43,12 @@ public class CameraController : MonoBehaviour {
         if (Input.GetKeyDown("space"))
         {
             permitmove = !permitmove;
+
+			if (permitmove) {
+				player.HidePlayerImmediate ();
+			} else {
+				player.ShowPlayer ();
+			}
         }
 
         if (Input.GetKeyDown(KeyCode.R))
