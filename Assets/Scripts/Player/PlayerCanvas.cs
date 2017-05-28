@@ -39,8 +39,8 @@ public class PlayerCanvas : MonoBehaviour {
 
 	public void ShowPlayer ()
 	{
-		if (canShow)
-		{
+//		if (canShow)
+//		{
 			// TODO fade in wrapper
 
 			// Show player wrapper
@@ -51,7 +51,7 @@ public class PlayerCanvas : MonoBehaviour {
 
 			// Fade out after x seconds
 			KeepPlayer ();
-		}
+//		}
 	}
 
 	public void KeepPlayer ()
@@ -59,7 +59,7 @@ public class PlayerCanvas : MonoBehaviour {
 		if (wrapper.activeSelf)
 		{
 			if (timer != null) StopCoroutine (timer);
-			timer = StartCoroutine (HidePlayer ());
+//			timer = StartCoroutine (HidePlayer ());
 		}
 	}
 

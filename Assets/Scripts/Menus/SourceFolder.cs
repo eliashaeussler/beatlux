@@ -188,7 +188,6 @@ public class SourceFolder : MonoBehaviour {
 //		{
 			// Get new path
 			string path = Path.GetFullPath (Path.Combine (Settings.Source.Current, @".."));
-		print (Environment.GetFolderPath (Environment.SpecialFolder.MyComputer));
 
 			// Display file contents
 			Initialize (path);
