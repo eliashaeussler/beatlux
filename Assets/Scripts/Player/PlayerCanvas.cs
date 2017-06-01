@@ -41,37 +41,32 @@ public class PlayerCanvas : MonoBehaviour {
 	{
 //		if (canShow)
 //		{
-			// TODO fade in wrapper
-
 			// Show player wrapper
 			wrapper.SetActive (true);
 
 			// Disable camera moving
 			if (ctrl != null) ctrl.permitmove = false;
 
-			// Fade out after x seconds
-			KeepPlayer ();
+//			// Fade out after x seconds
+//			KeepPlayer ();
 //		}
 	}
 
-	public void KeepPlayer ()
+	/*public void KeepPlayer ()
 	{
 		if (wrapper.activeSelf)
 		{
 			if (timer != null) StopCoroutine (timer);
-//			timer = StartCoroutine (HidePlayer ());
+			timer = StartCoroutine (HidePlayer ());
 		}
-	}
+	}*/
 
-	public IEnumerator HidePlayer ()
+	/*public IEnumerator HidePlayer ()
 	{
 		// Wait for x seconds
 		yield return new WaitForSeconds (displayLength);
-
-		// TODO fade out wrapper
-
 		HidePlayerImmediate ();
-	}
+	}*/
 
 	public void HidePlayerImmediate ()
 	{

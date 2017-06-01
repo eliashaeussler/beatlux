@@ -220,7 +220,10 @@ public class Playlist : MonoBehaviour {
 			mainHlg.padding = new RectOffset (0, (file == null ? 65 : 30), 0, 0);
 
 			// Add Drop Handler script
-			if (file == null) gameObject.AddComponent <DropHandler> ();
+			if (file == null) {
+				gameObject.AddComponent<DropHandler> ();
+				gameObject.AddComponent<Image> ().color = Color.clear;
+			}
 
 
 			// Create arrow text GameObject

@@ -164,6 +164,10 @@ public class ColorScheme : MonoBehaviour {
 			Text text = mainText.AddComponent<Text> ();
 			text.text = colorScheme.Name;
 
+			if (colorScheme.Name == Settings.Selected.Visualization.Name) {
+				text.text += " (Standard)";
+			}
+
 			// Set text alignment
 			text.alignment = TextAnchor.MiddleLeft;
 
@@ -406,6 +410,43 @@ public class ColorScheme : MonoBehaviour {
 					ColorPicker.SetActive (true);
 
 				});
+			}
+			else
+			{
+				// Create Overlay GameObject
+				GameObject overlay = new GameObject ("Overlay");
+				overlay.transform.SetParent (image.transform);
+
+				// Add RectTransform
+				RectTransform trans = overlay.AddComponent<RectTransform> ();
+				trans.anchorMin = Vector2.zero;
+				trans.anchorMax = Vector2.one;
+				trans.offsetMin = Vector2.zero;
+				trans.offsetMax = Vector2.zero;
+
+				// Add Image
+				Image overlayImg = overlay.AddComponent<Image> ();
+				overlayImg.color = new Color (0, 0, 0, 0.5f);
+
+
+				// Create Text GameObject
+				GameObject text = new GameObject ("Text");
+				text.transform.SetParent (overlay.transform);
+
+				// Add RectTransform
+				RectTransform textTrans = text.AddComponent<RectTransform> ();
+				textTrans.anchorMin = Vector2.zero;
+				textTrans.anchorMax = Vector2.one;
+				textTrans.offsetMin = Vector2.zero;
+				textTrans.offsetMax = Vector2.zero;
+
+				// Add Text
+				TextUnicode textText = text.AddComponent<TextUnicode> ();
+				textText.text = IconFont.CLOSE; // TODO change!!!
+				textText.color = Color.white;
+				textText.font = IconFont.font;
+				textText.fontSize = 20;
+				textText.alignment = TextAnchor.MiddleCenter;
 			}
 		}
 	}

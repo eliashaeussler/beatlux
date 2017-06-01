@@ -8,7 +8,7 @@ public class PlayerControl : MonoBehaviour {
 
 	void Start ()
 	{
-		canvas.KeepPlayer ();
+//		canvas.KeepPlayer ();
 	}
 
 	void Update ()
@@ -16,7 +16,7 @@ public class PlayerControl : MonoBehaviour {
 		// Show player if mouse moves
 		if (Input.mousePosition.y <= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)) {
 
-			canvas.KeepPlayer ();
+//			canvas.KeepPlayer ();
 		}
 	}
 }

@@ -9,7 +9,8 @@ public class Menu : MonoBehaviour {
 	{
 		if (Input.mousePosition.y >= transform.position.y && (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0))
 		{
-			canvas.KeepPlayer ();
+//			canvas.KeepPlayer ();
+
 		}
 	}
 }

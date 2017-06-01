@@ -35,7 +35,7 @@ public class Database {
 
 		QueryFailed = -10,
 		DuplicateFound = -11,
-		EmptyInputValue = -12
+		EmptyInputValue = -12,
 	}
 
 
@@ -173,7 +173,7 @@ public class Database {
 				{
 					// Insert default color scheme
 					string sql = "INSERT INTO color_scheme (name, viz_id, colors) VALUES (@Name, @Viz_ID, @Colors)";
-					SqliteCommand cmd = new SqliteCommand (sql, Database.Connection);
+					SqliteCommand cmd = new SqliteCommand (sql, Connection);
 
 					// Add Parameters to statement
 					cmd.Parameters.Add (new SqliteParameter ("Name", viz.Name));
@@ -196,6 +196,44 @@ public class Database {
 		}
 	}
 
+	public static void InsertDefaultPlaylist ()
+	{
+		if (GetConnection () != null)
+		{
+			// Database command
+			SqliteCommand cmd = new SqliteCommand (Connection);
+
+			// Query statement
+			string sql = "SELECT id FROM playlist LIMIT 1";
+			cmd.CommandText = sql;
+
+			// Get sql results
+			SqliteDataReader reader = cmd.ExecuteReader ();
+
+
+			if (!reader.HasRows)
+			{
+				// Dispose command
+				cmd.Dispose ();
+
+				// Create default playlist
+				sql = "INSERT INTO playlist (name) VALUES(@Name)";
+				cmd = new SqliteCommand (sql, Connection);
+
+				// Add parameters
+				cmd.Parameters.Add (new SqliteParameter ("Name", "Neue Playlist"));
+
+				// Send query
+				cmd.ExecuteNonQuery ();
+			}
+
+
+			// Close reader
+			reader.Close ();
+			cmd.Dispose ();
+		}
+	}
+
 
 
 	// Get instance (Singleton)
@@ -209,6 +247,7 @@ public class Database {
 			CreateTables ();
 			InsertDefaultViz ();
 			InsertDefaultCS ();
+			InsertDefaultPlaylist ();
 		}
 
 		// Return database connection

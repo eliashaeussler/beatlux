@@ -6,6 +6,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 
 	public void OnDrop (PointerEventData eventData)
 	{
+		print (gameObject);
 		// Get reference to playlist object
 		Playlist pl = GameObject.Find ("PlaylistContent").GetComponent <Playlist> ();
 
