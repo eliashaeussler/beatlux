@@ -18,8 +18,15 @@ public class Playlist : MonoBehaviour {
 	// Playlists
 	public List<PlaylistObj> Playlists;
 
+	// Last created playlist
+	public long lastPlaylist;
+
 	// Playlist to toggle
 	public PlaylistObj togglePlaylist;
+
+	// File to add to new playlist
+	public FileObj fileToAdd;
+	public bool showingDialog;
 
 
 
@@ -46,11 +53,37 @@ public class Playlist : MonoBehaviour {
 
 	void Update ()
 	{
+		// Toggle playlist
 		if (togglePlaylist != null)
 		{
 			ToggleFiles (togglePlaylist, true);
 			togglePlaylist = null;
 		}
+
+		// Create playlist and add file
+		if (fileToAdd != null && lastPlaylist > 0)
+		{
+			// Get last playlist
+			PlaylistObj last = Playlists.Find (x => x.ID == lastPlaylist);
+
+			if (last != null) {
+				AddFile (fileToAdd, last);
+				togglePlaylist = last;
+			}
+
+			// Unset file to add
+			fileToAdd = null;
+			showingDialog = false;
+		}
+
+		if (fileToAdd != null && !showingDialog) 
+		{
+			showingDialog = true;
+			ShowDialog ("PL_ADD");
+		}
+
+		// Reset last created playlist
+		lastPlaylist = 0;
 	}
 
 
@@ -221,7 +254,7 @@ public class Playlist : MonoBehaviour {
 
 			// Add Drop Handler script
 			if (file == null) {
-				gameObject.AddComponent<DropHandler> ();
+				//gameObject.AddComponent<DropHandler> ();
 				gameObject.AddComponent<Image> ().color = Color.clear;
 			}
 
@@ -987,6 +1020,9 @@ public class Playlist : MonoBehaviour {
 				// Close database connection
 				cmd.Dispose ();
 				Database.Close ();
+
+				// Set last created playlist
+				lastPlaylist = id;
 
 				return id;
 			}

@@ -1801,9 +1801,10 @@ GameObject:
   - 114: {fileID: 1333428147}
   - 114: {fileID: 1333428150}
   - 114: {fileID: 1333428151}
+  - 114: {fileID: 1333428152}
   m_Layer: 5
   m_Name: Playlists
-  m_TagString: Untagged
+  m_TagString: PlaylistDrop
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1922,6 +1923,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!114 &1333428152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1333428145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213a9a206f1374dca9f92962e1fabec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1363007018
 GameObject:
   m_ObjectHideFlags: 0
@@ -3100,17 +3112,17 @@ Prefab:
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 960.09314
+      value: 959.99994
       objectReference: {fileID: 0}
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -985
+      value: -1345
       objectReference: {fileID: 0}
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 1820.1863
+      value: 1819.9999
       objectReference: {fileID: 0}
     - target: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
         type: 2}

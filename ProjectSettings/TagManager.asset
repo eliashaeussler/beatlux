@@ -7,6 +7,7 @@ TagManager:
   - LightDone
   - Cubes
   - Light
+  - PlaylistDrop
   layers:
   - Default
   - TransparentFX

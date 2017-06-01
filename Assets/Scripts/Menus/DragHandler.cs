@@ -61,5 +61,31 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		transform.GetComponent<RectTransform> ().pivot = startPivot;
 		transform.position = startPos;
 		transform.SetSiblingIndex (startIndex);
+
+		// Check if element was dragged correctly
+		GameObject dropObj = eventData.pointerCurrentRaycast.gameObject;
+		GameObject dropHandler = FindParentWithTag (dropObj, "PlaylistDrop");
+
+		if (dropHandler != null)
+		{
+			dropHandler.GetComponent<DropHandler> ().OnDrop (eventData);
+		}
+	}
+
+
+
+	private GameObject FindParentWithTag (GameObject child, string tag)
+	{
+		Transform t = child.transform;
+		while (t.parent != null)
+		{
+			if (t.parent.tag == tag) {
+				return t.parent.gameObject;
+			}
+
+			t = t.parent.transform;
+		}
+
+		return null;
 	}
 }
