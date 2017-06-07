@@ -23,6 +23,10 @@ public class SourceFolder : MonoBehaviour {
 	public static bool Searching;
 	private BackgroundThread thread;
 
+	private Coroutine dblClick;
+	private GameObject dblClickGo;
+	private float dblClickWait = 0.5f;
+
 
 	
 	void Start ()
@@ -151,6 +155,7 @@ public class SourceFolder : MonoBehaviour {
 			}
 			else
 			{
+				string currentFile = item;
 				button.onClick.AddListener (delegate {
 
 					// Get reference to playlist object
@@ -159,7 +164,17 @@ public class SourceFolder : MonoBehaviour {
 					// Get file object if available
 					FileObj file = pl.GetFile (currentItem);
 
-					// TODO insert file into database (if not already exists), then set file as pl.activeFile
+					// Get source folder object
+					SourceFolder sf = GameObject.Find ("FileContent").GetComponent<SourceFolder> ();
+
+					if (sf.DoubleClicked (goText))
+					{
+						// Get drop area
+						GameObject dropObj = GameObject.FindGameObjectWithTag ("PlaylistDrop");
+
+						// Insert file
+						DropHandler.InsertFile (currentFile, dropObj, dropObj);
+					}
 
 				});
 			}
@@ -202,7 +217,7 @@ public class SourceFolder : MonoBehaviour {
 		}
 	}
 
-	public static  List<string> GetDirs (string Path)
+	public static List<string> GetDirs (string Path)
 	{
 		// Get directories
 		string[] dirs = Directory.GetDirectories (Path).Where (x =>
@@ -339,6 +354,45 @@ public class SourceFolder : MonoBehaviour {
 	public static bool IsSupportedFile (string file)
 	{
 		return SupportedFormats.Contains (Path.GetExtension (file).ToLower ());
+	}
+
+	public bool DoubleClicked (GameObject obj)
+	{
+		// Stop coroutine
+		if (dblClick != null) {
+			StopCoroutine (dblClick);
+		}
+
+		print (dblClickGo == obj);
+		if (dblClickGo != null && dblClickGo == obj)
+		{
+			// Second click
+			HideDoubleClickImmediate ();
+			return true;
+		}
+		else
+		{
+			// First click
+			StartCoroutine (HideDoubleClick (obj));
+			return false;
+		}
+	}
+
+	private IEnumerator HideDoubleClick (GameObject obj)
+	{
+		// Set clicked game object
+		dblClickGo = obj;
+		
+		// Wait
+		yield return new WaitForSeconds (dblClickWait);
+
+		// Hide double click
+		HideDoubleClickImmediate ();
+	}
+
+	private void HideDoubleClickImmediate ()
+	{
+		dblClickGo = null;
 	}
 
 }
