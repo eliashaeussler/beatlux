@@ -29,7 +29,10 @@ public class IconFont : MonoBehaviour {
 	public const string ARROW_LEFT = "\ue913";
 	public const string ARROW_BACK = "\ue914";
 	public const string HOME = "\ue915";
-	public const string VIZ_NEXT = "\ue916";
-	public const string VIZ_PREV = "\ue917";
+	public const string VIZ_NEXT_OLD = "\ue916";
+	public const string VIZ_PREV_OLD = "\ue917";
+	public const string VIZ_NEXT = "\ue918";
+	public const string VIZ_PREV = "\ue919";
+	public const string LOCK = "\ue91a";
 
 }

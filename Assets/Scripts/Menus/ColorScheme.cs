@@ -442,10 +442,10 @@ public class ColorScheme : MonoBehaviour {
 
 				// Add Text
 				TextUnicode textText = text.AddComponent<TextUnicode> ();
-				textText.text = IconFont.CLOSE; // TODO change!!!
+				textText.text = IconFont.LOCK;
 				textText.color = Color.white;
 				textText.font = IconFont.font;
-				textText.fontSize = 20;
+				textText.fontSize = 24;
 				textText.alignment = TextAnchor.MiddleCenter;
 			}
 		}

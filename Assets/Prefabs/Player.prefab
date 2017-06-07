@@ -1975,7 +1975,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: \ue917
+  m_Text: \ue919
 --- !u!114 &114000011549282662
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3243,7 +3243,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: \ue916
+  m_Text: \ue918
 --- !u!114 &114000013744827252
 MonoBehaviour:
   m_ObjectHideFlags: 1
