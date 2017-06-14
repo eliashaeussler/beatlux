@@ -135,7 +135,7 @@ public class Settings {
 	{
 		public static float Volume = 0.6f;
 		public static bool Shuffle = false;
-		public static bool Repeat = false;
+		public static int RepeatMode = -1; // -1=off, 0=all, 1=single
 		public static bool ShuffleViz = false;
 	}
 

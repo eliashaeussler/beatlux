@@ -66,7 +66,7 @@ public class Player : MonoBehaviour {
 		}
 
 		// Update UI elements
-		ToggleRepeat (Settings.Player.Repeat);
+		ToggleRepeat (Settings.Player.RepeatMode);
 		UpdatePlayButton ();
 		UpdateSlider ();
 
@@ -344,20 +344,30 @@ public class Player : MonoBehaviour {
 	
 	}
 
-	public void ToggleRepeat () {
-		ToggleRepeat (!Settings.Player.Repeat);
+	public void ToggleRepeat ()
+	{
+		if (Settings.Player.RepeatMode < 1) {
+			Settings.Player.RepeatMode++;
+		} else {
+			Settings.Player.RepeatMode = -1;
+		}
+		ToggleRepeat (Settings.Player.RepeatMode);
 	}
 
-	public void ToggleRepeat (bool state)
+	public void ToggleRepeat (int mode)
 	{
 		// Change loop
-		Settings.Player.Repeat = state;
-		audio.loop = state;
+		Settings.Player.RepeatMode = mode;
+		audio.loop = mode == 0;
 
 		// Update UI
-		repeat.GetComponent<Text> ().color = audio.loop
-			? COLOR_ENABLED
-			: COLOR_DISABLED;
+		Text text = repeat.GetComponent<Text> ();
+		text.text = mode == 1
+			? IconFont.REPEAT_SINGLE
+			: IconFont.REPEAT;
+		text.color = mode == -1
+			? COLOR_DISABLED
+			: COLOR_ENABLED;
 	}
 
 
