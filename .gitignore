@@ -1,0 +1,6 @@
+Library/
+Temp/
+*.csproj
+beatlux.sln
+beatlux.userprefs
+beatlux.usertasks
