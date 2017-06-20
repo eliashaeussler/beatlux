@@ -41,8 +41,10 @@ public class Visualization : MonoBehaviour {
 		ColorSchemes.Display ();
 
         // Close database connection
-        Database.Close ();
-	
+		Database.Close ();
+
+		// Show or hide start button
+		MenuManager.ToggleStart ();
 	}
 
 
@@ -129,6 +131,9 @@ public class Visualization : MonoBehaviour {
 
 						ColorSchemes.Display ();
 						Display ();
+
+						// Show or hide start button
+						MenuManager.ToggleStart ();
 					}
 
 				});

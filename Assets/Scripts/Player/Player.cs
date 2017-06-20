@@ -84,10 +84,13 @@ public class Player : MonoBehaviour {
 		}
 
 		// Play next file
-		if (Settings.Selected.File == null && files.Count > 0 && audio.clip != null && audio.time == audio.clip.length) {
+		if (Settings.Selected.File == null && files.Count > 0 && audio.clip != null && !audio.isPlaying && continuePlay) {
 			
 			Next ();
 		}
+
+		// Stop playing continously
+		continuePlay = audio.isPlaying;
 
 		// Set current position
 		if (Settings.Selected.File != null) {
@@ -358,7 +361,7 @@ public class Player : MonoBehaviour {
 	{
 		// Change loop
 		Settings.Player.RepeatMode = mode;
-		audio.loop = mode == 0;
+		audio.loop = mode == 1;
 
 		// Update UI
 		Text text = repeat.GetComponent<Text> ();
@@ -377,12 +380,17 @@ public class Player : MonoBehaviour {
 	// Play next clip
 	public void Next ()
 	{
-		Settings.Selected.File = GetFile (1);
+		if (position < files.Count - 1 || (position == files.Count - 1 && (Settings.Player.RepeatMode == 0 || !continuePlay)))
+		{
+			continuePlay = true;
+			Settings.Selected.File = GetFile (1);
+		}
 	}
 
 	// Play previous clip
 	public void Previous ()
 	{
+		continuePlay = true;
 		Settings.Selected.File = GetFile (-1);
 	}
 	

@@ -64,7 +64,7 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		// Set default visualization
 		if (Settings.Selected.Visualization == null) {
-			Settings.Selected.Visualization = Settings.Defaults.Visualization;
+			Settings.Selected.Visualization = Settings.Visualizations.First ();
 		}
 
 		// Set default color scheme
@@ -213,5 +213,14 @@ public class MenuFunctions : MonoBehaviour {
 			if (viz.BuildNumber == level) return true;
 
 		return false;
+	}
+
+	public static void ToggleStart ()
+	{
+		// Get start button reference
+		GameObject start = GameObject.Find ("Canvas/Wrapper/Start");
+
+		// Show or hide start button
+		start.SetActive (Settings.Selected.Playlist != null || Settings.Selected.Visualization != null);
 	}
 }

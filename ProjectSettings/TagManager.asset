@@ -8,6 +8,7 @@ TagManager:
   - Cubes
   - Light
   - PlaylistDrop
+  - StartButton
   layers:
   - Default
   - TransparentFX

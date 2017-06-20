@@ -49,6 +49,9 @@ public class Playlist : MonoBehaviour {
 
 		// Close database connection
 		Database.Close ();
+
+		// Show or hide start button
+		MenuManager.ToggleStart ();
 	}
 
 	void Update ()
@@ -526,6 +529,10 @@ public class Playlist : MonoBehaviour {
 					}
 				}
 			}
+			else if (p == playlist)
+			{
+				opened = true;
+			}
 
 			// Change arrows
 			if (!forceOpen && p != playlist) {
@@ -556,9 +563,16 @@ public class Playlist : MonoBehaviour {
 			Settings.Selected.Playlist = playlist;
 
 			// Set selected file
-			UpdateSelectedFile (Settings.Selected.Playlist.Files.First (),
-				Settings.Active.File == null || Settings.Active.Playlist == null
-				|| (Settings.Active.File != null && !Settings.Active.Playlist.Equals (Settings.Selected.Playlist)));
+			if (Settings.Selected.Playlist.Files.Count > 0)
+			{
+				UpdateSelectedFile (Settings.Selected.Playlist.Files.First (),
+					Settings.Active.File == null || Settings.Active.Playlist == null
+					|| (Settings.Active.File != null && !Settings.Active.Playlist.Equals (Settings.Selected.Playlist)));
+			}
+			else
+			{
+				Settings.Selected.File = null;
+			}
 		}
 
 		// Unset selected playlist
@@ -566,6 +580,9 @@ public class Playlist : MonoBehaviour {
 
 		// Scroll to top if scrollbar is hidden
 		ScrollToTop ();
+
+		// Toggle start button
+		MenuManager.ToggleStart ();
 	}
 
 	public void UpdateSelectedFile (FileObj file, bool updateFile)

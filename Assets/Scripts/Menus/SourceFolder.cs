@@ -363,7 +363,6 @@ public class SourceFolder : MonoBehaviour {
 			StopCoroutine (dblClick);
 		}
 
-		print (dblClickGo == obj);
 		if (dblClickGo != null && dblClickGo == obj)
 		{
 			// Second click

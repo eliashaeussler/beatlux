@@ -33,6 +33,9 @@ public class ColorScheme : MonoBehaviour {
 		PickerObj.onValueChanged.AddListener (col => {
 			UpdateColor (Settings.Selected.ColorScheme, ActiveColorID, col);
 		});
+
+		// Show or hide start button
+		MenuManager.ToggleStart ();
 	}
 
 
