@@ -40,6 +40,11 @@ public class CameraMover : MonoBehaviour {
        
     }
 
+    protected void LateUpdate()
+    {
+        transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
+    }
+
     public void Move(Vector3 _velocity)
     {
         velocity = _velocity;
