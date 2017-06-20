@@ -7,6 +7,7 @@ public class SettingManager : MonoBehaviour {
 
     //Referencing all the options from the menu
     public Toggle fullscreenToggle;
+    public Toggle tutorialToggle;
     public Dropdown resolutionDropdown;
     public Dropdown textureQualityDropdown;
     public Dropdown antialiasingDropdown;
@@ -39,6 +40,7 @@ public class SettingManager : MonoBehaviour {
 
         //Listeners for all options, delegating the appropriate methode on change of value
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
+        tutorialToggle.onValueChanged.AddListener(delegate { OnTutorialToggle(); });
         resolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
@@ -58,6 +60,11 @@ public class SettingManager : MonoBehaviour {
     public void OnFullscreenToggle()
     {
        gameSettings.fullscreen = Screen.fullScreen = fullscreenToggle.isOn;
+    }
+
+    public void OnTutorialToggle()
+    {
+        gameSettings.tutorial = tutorialToggle.isOn;
     }
 
     public void OnResolutionChange()
