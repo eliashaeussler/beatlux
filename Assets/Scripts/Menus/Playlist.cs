@@ -39,11 +39,6 @@ public class Playlist : MonoBehaviour {
 		// Set selected elements
 		MenuFunctions.SetSelected ();
 
-		// Set start button
-		if (Settings.Active.File != null) {
-			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
-		}
-
 		// Display playlists
 		Display ();
 
@@ -52,6 +47,11 @@ public class Playlist : MonoBehaviour {
 
 		// Show or hide start button
 		MenuManager.ToggleStart ();
+
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
+		}
 	}
 
 	void Update ()

@@ -29,11 +29,6 @@ public class Visualization : MonoBehaviour {
 		// Set selected elements
 		MenuFunctions.SetSelected ();
 
-		// Set start button
-		if (Settings.Active.File != null) {
-			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
-		}
-
 		// Display visualizations
 		Display ();
 
@@ -45,6 +40,11 @@ public class Visualization : MonoBehaviour {
 
 		// Show or hide start button
 		MenuManager.ToggleStart ();
+
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
+		}
 	}
 
 

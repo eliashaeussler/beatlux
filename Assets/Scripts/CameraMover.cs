@@ -10,7 +10,7 @@ public class CameraMover : MonoBehaviour {
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
-    private bool permitmove = true;
+    private bool permitmove = false;
     private bool resetPosition = false;
    
 

@@ -16,7 +16,7 @@ public class PlayerCanvas : MonoBehaviour {
 	void Start ()
 	{
 		// Get Camera Controller reference
-		ctrl = Camera.main.transform.parent.GetComponent<CameraController> ();
+		ctrl = Camera.main.GetComponent<CameraController> ();
 
 		// Show player at the beginning
 		canShow = true;
@@ -26,7 +26,7 @@ public class PlayerCanvas : MonoBehaviour {
 	void Update ()
 	{
 		// Update Camera Controller reference
-		ctrl = Camera.main.transform.parent.GetComponent<CameraController> ();
+		ctrl = Camera.main.GetComponent<CameraController> ();
 
 		if (Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
 		{

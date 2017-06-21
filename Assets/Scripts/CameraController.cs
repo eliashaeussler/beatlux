@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour {
     }
 
     void Update()
-    {
+	{
         float xMov = Input.GetAxisRaw("Horizontal");
 
 
@@ -71,8 +71,5 @@ public class CameraController : MonoBehaviour {
         move.Permission(permitmove);
 
         move.Rotate(rotation);
-        
-
-
     }
 }
