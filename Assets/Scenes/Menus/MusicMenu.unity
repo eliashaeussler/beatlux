@@ -1007,6 +1007,50 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
+--- !u!1 &494842559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 494842560}
+  - 114: {fileID: 494842561}
+  m_Layer: 0
+  m_Name: '[0]TextForMusic'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &494842560
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 494842559}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -696.0647, y: -445.28122, z: 0}
+  m_LocalScale: {x: 1.7250674, y: 1.7250674, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1127931266}
+  m_RootOrder: 0
+--- !u!114 &494842561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 494842559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c37254e394984a4ca8410206ab4cfa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 0
+  Explanation: "<b>Suchleiste</b> - Eingabefl\xE4che zum vereinfachten Auffinden von
+    Songs\n\n<b>Pfadangabe</b> - Anzeige des ausgew\xE4hlten Pfades\n\n<b>Song-/Ordnerliste</b>
+    - Liste aller Songs/Ordner des aktuellen Pfads\n\nLinksklick um fortzufahren..."
 --- !u!1 &515287737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,6 +1576,58 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &1127931264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1127931266}
+  - 114: {fileID: 1127931265}
+  m_Layer: 5
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1127931265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1127931264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154602a5d4b11f94bb8df0610b97411a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tutorials: []
+  ExpText: {fileID: 1530480282}
+--- !u!224 &1127931266
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1127931264}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5796875, y: 0.5796875, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 494842560}
+  - {fileID: 1540826422}
+  - {fileID: 1666962851}
+  - {fileID: 1966743467}
+  - {fileID: 1543742264}
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 960, y: 614.12396}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1169949306
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,6 +2143,11 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!224 &1397312431 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+    type: 2}
+  m_PrefabInternal: {fileID: 2112872452}
 --- !u!1 &1403810141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,6 +2315,114 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
+--- !u!114 &1530480282 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000013482491100, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+    type: 2}
+  m_PrefabInternal: {fileID: 2112872452}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!1 &1540826421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1540826422}
+  - 114: {fileID: 1540826423}
+  m_Layer: 5
+  m_Name: '[1]ClickPlaylist'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1540826422
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1540826421}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1127931266}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1540826423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1540826421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114df7c03ba697b4d866a5cd376f7dde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 1
+  Explanation: '<b>Playlist</b> - Liste aller erstellten Playlists
+
+
+    Erstelle mit dem <b>+</b> Symbol eine neue Playlist'
+  graphic: {fileID: 21300000, guid: 59df6bdb0153cc44ebd855a3b9e44178, type: 3}
+--- !u!1 &1543742263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1543742264}
+  - 114: {fileID: 1543742265}
+  m_Layer: 5
+  m_Name: '[4]NewTab'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1543742264
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1543742263}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1127931266}
+  m_RootOrder: 4
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1543742265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1543742263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5152e22ab62532c498c4f5c59c95a3c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 4
+  Explanation: '<b>Tabs</b> - Man kann zwischen Musik und Visualisierung hin und her
+    wechseln.
+
+
+    Klicke nun auf das Visualisierungstab...'
 --- !u!1 &1553443065
 GameObject:
   m_ObjectHideFlags: 0
@@ -2739,6 +2948,48 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9715cdda89bc34c75858f49e40eb563b, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1666962850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1666962851}
+  - 114: {fileID: 1666962852}
+  m_Layer: 0
+  m_Name: '[2]NamePlaylist'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1666962851
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1666962850}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -696.0647, y: -445.28122, z: 0}
+  m_LocalScale: {x: 1.7250674, y: 1.7250674, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1127931266}
+  m_RootOrder: 2
+--- !u!114 &1666962852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1666962850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ced407549f238e459653d424d2b56bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 2
+  Explanation: "<b>Playlist</b> - Gebe deiner neuen Playlist einen Namen und best\xE4tige"
 --- !u!1 &1695277479
 GameObject:
   m_ObjectHideFlags: 0
@@ -3174,6 +3425,49 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224000010516097976, guid: 9715cdda89bc34c75858f49e40eb563b,
     type: 2}
   m_PrefabInternal: {fileID: 1634102658}
+--- !u!1 &1966743466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1966743467}
+  - 114: {fileID: 1966743468}
+  m_Layer: 0
+  m_Name: '[3]DragDropDClick'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1966743467
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1966743466}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -696.0647, y: -445.2812, z: 0}
+  m_LocalScale: {x: 1.7250673, y: 1.7250673, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1127931266}
+  m_RootOrder: 3
+--- !u!114 &1966743468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1966743466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48dcf4c0a0867b74a961ddd704b3e338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Order: 3
+  Explanation: "<b>Playlist</b> - F\xFCge einen neuen Track per Drag&Drop oder Doppelklick
+    hinzu"
 --- !u!1 &2025802265
 GameObject:
   m_ObjectHideFlags: 0
@@ -3308,6 +3602,7 @@ RectTransform:
   m_Children:
   - {fileID: 1420040636}
   - {fileID: 93541497}
+  - {fileID: 1397312431}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
@@ -3578,6 +3873,106 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!1001 &2112872452
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2033832944}
+    m_Modifications:
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 1228
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000012365220568, guid: 4b4c96ab79c4cbd4dae0da69c716ce70,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 4b4c96ab79c4cbd4dae0da69c716ce70, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &2113995381
 GameObject:
   m_ObjectHideFlags: 0
