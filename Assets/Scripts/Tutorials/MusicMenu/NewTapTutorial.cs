@@ -9,6 +9,7 @@ public class NewTapTutorial : Tutorial {
         if (EventSystem.current.currentSelectedGameObject == GameObject.Find("Visualisierung"))
         {
             TutorialManager.Instace.CompletedTutorial();
+            
         }
     }
 }

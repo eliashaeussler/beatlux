@@ -8,8 +8,6 @@ public class Tutorial : MonoBehaviour {
     public string Explanation;
 
 	void Awake () {
-
-
         TutorialManager.Instace.Tutorials.Add(this);
 	}
     

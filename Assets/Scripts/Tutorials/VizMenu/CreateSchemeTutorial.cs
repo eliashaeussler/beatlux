@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CreatePlaylistTutorial : Tutorial {
+public class CreateSchemeTutorial : Tutorial2 {
 
     public Sprite graphic = new Sprite();
 
@@ -12,8 +12,7 @@ public class CreatePlaylistTutorial : Tutorial {
         //GameObject.Find("FocusShape").GetComponent<Image>().sprite = graphic;
         if (EventSystem.current.currentSelectedGameObject == GameObject.Find("Add"))
         {
-            TutorialManager.Instace.CompletedTutorial();
+            TutorialManager2.Instace.CompletedTutorial();
         }
     }
-	
 }
