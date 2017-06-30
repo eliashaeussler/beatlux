@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class KeyTutorial : Tutorial 
+public class KeyTutorial : Tutorial3 
 {
     public List<string> Keys = new List<string>();
 
@@ -19,7 +19,7 @@ public class KeyTutorial : Tutorial
 
         if (Keys.Count == 0)
         {
-            TutorialManager.Instace.CompletedTutorial();
+            TutorialManager3.Instace.CompletedTutorial();
         }
     }
 }
