@@ -9,6 +9,7 @@ public class SettingManager : MonoBehaviour {
     public Toggle fullscreenToggle;
     public Toggle tutorialToggle;
     public Dropdown resolutionDropdown;
+    public Dropdown languageDropdown;
     public Dropdown textureQualityDropdown;
     public Dropdown antialiasingDropdown;
     public Button applyButton;
@@ -42,7 +43,7 @@ public class SettingManager : MonoBehaviour {
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
         tutorialToggle.onValueChanged.AddListener(delegate { OnTutorialToggle(); });
         resolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
-        textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
+        languageDropdown.onValueChanged.AddListener(delegate { OnLanguageChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
         antialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
         applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
@@ -53,6 +54,9 @@ public class SettingManager : MonoBehaviour {
         {
             resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
         }
+
+        
+
         LoadSettings();
     }
 
@@ -84,6 +88,12 @@ public class SettingManager : MonoBehaviour {
         gameSettings.antialiasing = QualitySettings.antiAliasing = (int)Mathf.Pow(2f, antialiasingDropdown.value);
     }
 
+    public void OnLanguageChange()
+    {
+        gameSettings.language = languageDropdown.value;
+       
+    }
+
     public void OnMirrorsChange()
     {
         gameSettings.mirrors = mirrorDropdown.value;
@@ -110,6 +120,7 @@ public class SettingManager : MonoBehaviour {
         {
             gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
 
+            languageDropdown.value = gameSettings.language;
             antialiasingDropdown.value = gameSettings.antialiasing;
             textureQualityDropdown.value = gameSettings.textureQuality;
             resolutionDropdown.value = gameSettings.resolutionIndex;

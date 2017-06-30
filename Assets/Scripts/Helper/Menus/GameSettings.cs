@@ -1,6 +1,7 @@
 ﻿public class GameSettings {
     public bool fullscreen;
     public bool tutorial;
+    public int language;
     public int textureQuality;
     public int antialiasing;
     public int resolutionIndex;
