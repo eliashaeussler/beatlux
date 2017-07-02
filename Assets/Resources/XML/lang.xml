@@ -15,6 +15,7 @@
         <string name="mirrors">Mirror Surfaces</string>
         <string name="back">Back</string>
         <string name="save">Save</string>
+
         <string name="off">Off</string>
         <string name="low">Low</string>
         <string name="medium">Medium</string>
@@ -47,7 +48,13 @@
         <string name="low">Niedrig</string>
         <string name="medium">Mittel</string>
         <string name="high">Hoch</string>
+        <string name="ok">OK</string>
+        <string name="cancel">Abbrechen</string>
 
+        <string name="music">Musik</string>
+        <string name="viz">Visualisierungen</string>
+        <string name="plHeader">Neue Playlist erstellen</string>
+        <string name="plInput">Wie soll die neue Playlist heißen?</string>
     </German>
 
     
