@@ -19,6 +19,13 @@
         <string name="low">Low</string>
         <string name="medium">Medium</string>
         <string name="high">High</string>
+        <string name="ok">OK</string>
+        <string name="cancel">Cancel</string>
+
+        <string name="music">Music</string>
+        <string name="viz">Visualisations</string>
+        <string name="plHeader">Create new playlist</string>
+        <string name="plInput">Choose the name of your new playlist</string>
     </English>
 
     <German>

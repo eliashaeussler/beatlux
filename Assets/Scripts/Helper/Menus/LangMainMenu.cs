@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine.UI;
 
 public class LangMainMenu : MonoBehaviour {
-    public GameSettings gameSettings;
+    
 
     public Text start;
     public Text settings;
@@ -25,7 +25,7 @@ public class LangMainMenu : MonoBehaviour {
     public Dropdown antialiasingDropdown;
     public Dropdown mirrorDropdown;
 
-
+    public GameSettings gameSettings;
     private Lang LangManager;
     private string currentLang = "English";
     // Use this for initialization
