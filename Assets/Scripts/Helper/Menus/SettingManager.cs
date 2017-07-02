@@ -16,9 +16,11 @@ public class SettingManager : MonoBehaviour {
     public Dropdown mirrorDropdown;
 
     public GameSettings gameSettings;
+    public GameObject langManager;
     public GameObject mirrors;
     //Storage for all available resolutions
     public Resolution[] resolutions;
+
 
     void Start()
     {
@@ -91,7 +93,26 @@ public class SettingManager : MonoBehaviour {
     public void OnLanguageChange()
     {
         gameSettings.language = languageDropdown.value;
-       
+
+        
+        string currentLang = "English";
+
+        switch (languageDropdown.value)
+        {
+            case 0:
+                currentLang = "English";
+                break;
+
+            case 1:
+                currentLang = "German";
+                break;
+
+            default:
+                break;
+        }
+
+        langManager.GetComponent<LangMainMenu>().setTexts(currentLang);
+    
     }
 
     public void OnMirrorsChange()

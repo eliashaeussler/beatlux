@@ -53,6 +53,19 @@ public class LangMainMenu : MonoBehaviour {
             }
         }
         LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
+        setTexts(currentLang);
+       
+
+        /**
+            DROPDOWNS NOT WORKING YET!!!!!!!!!!
+        textureQualityDropdown.options.Clear();
+        //textureQualityDropdown.options.Add(new Dropdown.OptionsData() { text = LangManager.getString("low") });
+        textureQualityDropdown.options.Add(new Dropdown.OptionsData(LangManager.getString("low")));
+        **/
+    }
+	public void setTexts(string _currentLang)
+    {
+        LangManager.setLanguage(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), _currentLang);
 
         start.text = LangManager.getString("start");
         settings.text = LangManager.getString("settings");
@@ -67,15 +80,8 @@ public class LangMainMenu : MonoBehaviour {
         mirrors.text = LangManager.getString("mirrors");
         back.text = LangManager.getString("back");
         save.text = LangManager.getString("save");
-
-        /**
-            DROPDOWNS NOT WORKING YET!!!!!!!!!!
-        textureQualityDropdown.options.Clear();
-        //textureQualityDropdown.options.Add(new Dropdown.OptionsData() { text = LangManager.getString("low") });
-        textureQualityDropdown.options.Add(new Dropdown.OptionsData(LangManager.getString("low")));
-        **/
+        Debug.Log("Texts set to " + _currentLang);
     }
-	
 	// Update is called once per frame
 	void Update () {
         
