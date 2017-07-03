@@ -159,7 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   mouseSensitivity: 3
-  permitmove: 1
+  permitmove: 0
 --- !u!114 &114000013050108824
 MonoBehaviour:
   m_ObjectHideFlags: 1
