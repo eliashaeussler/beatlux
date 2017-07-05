@@ -71,6 +71,7 @@ public class SettingManager : MonoBehaviour {
     public void OnTutorialToggle()
     {
         gameSettings.tutorial = tutorialToggle.isOn;
+        Settings.Player.TutorialTog = gameSettings.tutorial;
     }
 
     public void OnResolutionChange()

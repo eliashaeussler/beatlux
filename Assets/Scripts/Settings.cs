@@ -137,6 +137,8 @@ public class Settings {
 		public static bool Shuffle = false;
 		public static int RepeatMode = -1; // -1=off, 0=all, 1=single
 		public static bool ShuffleViz = false;
+
+        public static bool TutorialTog = true;
 	}
 
 
