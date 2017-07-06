@@ -16,6 +16,9 @@ public class Player : MonoBehaviour {
 	// Volume rotation constants
 	public static int VOLUME_ROTATION_MAX = 137;
 
+	// Color rotation constants
+	public static int COLOR_ROTATION_MAX = 138;
+
 
 
 	// Audio source and clip
@@ -34,10 +37,10 @@ public class Player : MonoBehaviour {
 	public Text artist;
 	public Text visualization;
 	public Slider timeline;
-	public Transform volumeLeft;
-	public Transform volumeRight;
-	public Slider volumeSliderLeft;
-	public Slider volumeSliderRight;
+	public Transform volumeCircle;
+	public Slider volumeSlider;
+	public Transform colorCircle;
+	public Transform colorElement;
 
 	// Defines player states (set by user or default)
 	private bool userChangedSlider = false;
@@ -60,9 +63,11 @@ public class Player : MonoBehaviour {
 
 	void Update ()
 	{
-		// Set visualization
-		if (Settings.Active.Visualization != null) {
+		// Set visualization and colors from color scheme
+		if (Settings.Active.Visualization != null)
+		{
 			visualization.text = Settings.Active.Visualization.Name;
+			SetColors ();
 		}
 
 		// Update UI elements
@@ -321,12 +326,48 @@ public class Player : MonoBehaviour {
 			audio.volume = value;
 
 			// Update slider
-			if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
-			if (volumeSliderRight.value != value) volumeSliderRight.value = value;
+			if (volumeSlider.value != value) volumeSlider.value = value;
 
 			// Update UI
-			volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
-			volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+			volumeCircle.localRotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+		}
+	}
+
+	public void SetColors ()
+	{
+		if ( (Settings.Active.Visualization != null && Settings.Active.ColorScheme != null)
+			|| (Settings.Active.Visualization.Equals (Settings.Defaults.Visualization)) )
+		{
+			// Get colors from color scheme
+			Color[] colors = Settings.Active.Visualization.Equals (Settings.Defaults.Visualization)
+				? new Color[] { Color.white }
+				: Settings.Active.ColorScheme.Colors;
+
+			// Add or remove color elements
+			if (colorCircle.childCount < colors.Length)
+			{
+				for (int i=0; i < colors.Length - colorCircle.childCount; i++)
+				{
+					Instantiate (colorElement, colorCircle);
+				}
+			}
+			else if (colorCircle.childCount > colors.Length)
+			{
+				for (int i=colorCircle.childCount-1; i >= colors.Length; i--)
+				{
+					GameObject.DestroyImmediate (colorCircle.GetChild (i).gameObject);
+				}
+			}
+
+			// Set colors and rotation
+			float angle = (float) COLOR_ROTATION_MAX / colors.Length;
+			for (int i=0; i < colors.Length && i < colorCircle.childCount; i++)
+			{
+				Transform child = colorCircle.GetChild (i);
+				child.GetComponent<Image> ().color = colors [i];
+				float rotation = (colors.Length - i) * -angle;
+				child.GetComponent<RectTransform> ().localRotation = Quaternion.AngleAxis (rotation, Vector3.forward);
+			}
 		}
 	}
 
