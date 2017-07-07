@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DelayTutorial : MonoBehaviour {
 
     private bool Temp;
-    
+    private List<GameObject> list = new List<GameObject>();
 
     void Awake()
     {
+        list.Add(GameObject.Find("FocusShape"));
+        list.Add(GameObject.Find("TutorialManager"));
         if (Settings.Player.TutorialTog == true)
         {
             GameObject.Find("FocusShape").SetActive(true);
@@ -26,8 +29,8 @@ public class DelayTutorial : MonoBehaviour {
     {
         if (Settings.Player.TutorialTog != Temp)
         {
-            GameObject.Find("FocusShape").SetActive(Temp);
-            GameObject.Find("TutorialManager").SetActive(Temp);
+            list[0].SetActive(Settings.Player.TutorialTog);
+            list[1].SetActive(Settings.Player.TutorialTog);
             Temp = Settings.Player.TutorialTog;
         }
         
