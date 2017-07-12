@@ -107,7 +107,7 @@ public class Dialog : MonoBehaviour {
 	{
 		if (inputField != null)
 		{
-			// TODO funktioniert nicht
+			// TODO Not working.
 			inputField.ActivateInputField ();
 			inputField.Select ();
 		}
