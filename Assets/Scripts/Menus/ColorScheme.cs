@@ -1,62 +1,50 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Mono.Data.Sqlite;
-using System.Data;
-using System;
-using System.Collections.Generic;
 using UnityEngine.UI;
-using System.IO;
 using UnityEngine.EventSystems;
 
+using Mono.Data.Sqlite;
+
+using System;
+using System.Collections;
+using System.Data;
+using System.Collections.Generic;
+using System.IO;
+
+/// <summary>
+/// Provides methods to display color schemes of a given visualization inside the UI.
+/// </summary>
 public class ColorScheme : MonoBehaviour {
 
-    public GameSettings gameSettings;
-    private Lang LangManager;
-    private string currentLang = "English";
-
-	// Dialog reference
+	/// <summary>
+	/// Dialog to display info messages and to provide user input ability.
+	/// </summary>
 	public Dialog Dialog;
 
-    // Color schemes
+    /// <summary>
+    /// List of available color schemes of the selected visualization.
+    /// </summary>
 	public static List<ColorSchemeObj> ColorSchemes;
 
-	// Color Picker GameObject
+	/// <summary>
+	/// The <see cref="UnityEngine.GameObject" /> holding the color picker.
+	/// </summary>
 	public GameObject ColorPicker;
 
-	// Color Picker Script
+	/// <summary>
+	/// The color picker object which provides methods for the user to select any color for a color scheme.
+	/// </summary>
 	public ColorPicker PickerObj;
 
-	// Current selected color
+	/// <summary>
+	/// The current by the user selected color.
+	/// </summary>
 	public static GameObject ActiveColor;
+
+	/// <summary>
+	/// The id of the current by the user selected color.
+	/// </summary>
 	public static int ActiveColorID;
 
-    void OnEnable()
-    {
-
-
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
-
-            switch (gameSettings.language)
-            {
-                case 0:
-                    currentLang = "English";
-                    break;
-
-                case 1:
-                    currentLang = "German";
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
-
-
-
-    }
 
 	void Start ()
 	{
@@ -68,9 +56,7 @@ public class ColorScheme : MonoBehaviour {
 		// Show or hide start button
 		MenuManager.ToggleStart ();
 	}
-
-
-
+		
 	public void Display ()
 	{
 		if (Database.Connect ())
@@ -665,8 +651,8 @@ public class ColorScheme : MonoBehaviour {
 				if (Settings.Selected.Visualization != null)
 				{
 					// UI elements
-					Dialog.SetHeading (LangManager.getString("newColor"));
-                    Dialog.SetInputField("", LangManager.getString("nameColor"));
+					Dialog.SetHeading (Settings.MenuManager.LangManager.getString("newColor"));
+					Dialog.SetInputField("", Settings.MenuManager.LangManager.getString("nameColor"));
 
 					// Events
 					button.onClick.AddListener (delegate {
@@ -678,19 +664,19 @@ public class ColorScheme : MonoBehaviour {
 						// Color scheme name already taken
 						case (long) Database.Constants.DuplicateFound:
 
-                                Dialog.SetInfo(LangManager.getString("existsColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsColor"));
 							break;
 
 						// Database query failed
 						case (long) Database.Constants.QueryFailed:
 
-                            Dialog.SetInfo(LangManager.getString("noColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noColor"));
 							break;
 
 						// No user input
 						case (long) Database.Constants.EmptyInputValue:
 
-                            Dialog.SetInfo(LangManager.getString("nameColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("nameColor"));
 							break;
 
 						default:
@@ -703,9 +689,10 @@ public class ColorScheme : MonoBehaviour {
 				}
 				else
 				{
+					print (Settings.MenuManager.LangManager);
 					Dialog.ShowDialog (
-                        LangManager.getString("noChosenColor"),
-                        LangManager.getString("chooseColor")
+						Settings.MenuManager.LangManager.getString("noChosenColor"),
+						Settings.MenuManager.LangManager.getString("chooseColor")
 					);
 				}
 
@@ -719,7 +706,7 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-                    Dialog.SetHeading(LangManager.getString("editColor"));
+					Dialog.SetHeading(Settings.MenuManager.LangManager.getString("editColor"));
 					Dialog.SetInputField (colorScheme.Name, colorScheme.Name);
 
 					// Events
@@ -740,19 +727,19 @@ public class ColorScheme : MonoBehaviour {
 						// Color scheme name already taken
 						case (long) Database.Constants.DuplicateFound:
 
-                                Dialog.SetInfo(LangManager.getString("existsColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsColor"));
 							break;
 
 						// Database query failed
 						case (long) Database.Constants.QueryFailed:
 
-                            Dialog.SetInfo(LangManager.getString("noEditColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noEditColor"));
 							break;
 
 						// No user input
 						case (long) Database.Constants.EmptyInputValue:
 
-                            Dialog.SetInfo(LangManager.getString("nameColor"));
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("nameColor"));
 							break;
 
 						default:
@@ -780,8 +767,8 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-                    Dialog.SetHeading(LangManager.getString("deleteColor"));
-					Dialog.SetText (LangManager.getString("sureDelete"));
+					Dialog.SetHeading(Settings.MenuManager.LangManager.getString("deleteColor"));
+					Dialog.SetText (Settings.MenuManager.LangManager.getString("sureDelete"));
 
 					// Events
 					button.onClick.AddListener (delegate {

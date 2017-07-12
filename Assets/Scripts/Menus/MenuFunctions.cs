@@ -10,6 +10,10 @@ using UnityEngine.UI;
 
 public class MenuFunctions : MonoBehaviour {
 
+	public GameSettings gameSettings;
+	public Lang LangManager;
+	protected string currentLang = "English";
+
 	public AudioSource audio;
 	public GameObject player;
 	public GameObject playerControl;
@@ -34,6 +38,27 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Load main menu
 		StartLevel (defaultStart);
+	}
+
+	void OnEnable ()
+	{
+		gameSettings = JsonUtility.FromJson<GameSettings> (File.ReadAllText (Application.persistentDataPath + "/gamesettings.json"));
+
+		if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
+			switch (gameSettings.language) {
+			case 0:
+				currentLang = "English";
+				break;
+
+			case 1:
+				currentLang = "German";
+				break;
+
+			default:
+				break;
+			}
+		}
+		LangManager = new Lang (Path.Combine (Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
 	}
 
 

@@ -105,7 +105,7 @@ public class SourceFolder : MonoBehaviour {
 			// Add text
 			TextUnicode textImage = goImage.AddComponent<TextUnicode> ();
 
-			textImage.color = Settings.GetColor (180, 180, 180);
+			textImage.color = Settings.GetColorFromRgb (180, 180, 180);
 			textImage.text = isDir ? IconFont.FOLDER : IconFont.MUSIC;
 			textImage.alignment = TextAnchor.MiddleLeft;
 			textImage.font = IconFont.font;

@@ -66,10 +66,10 @@ public class Settings {
 				Settings.Visualizations [0].Name,
 				new Color []
 				{
-					GetColor (243, 233, 177),
-					GetColor (172, 231, 243),
-					GetColor (243, 205, 233),
-					GetColor (190, 255, 252)
+					GetColorFromRgb (243, 233, 177),
+					GetColorFromRgb (172, 231, 243),
+					GetColorFromRgb (243, 205, 233),
+					GetColorFromRgb (190, 255, 252)
 				}
 			},
 
@@ -78,8 +78,8 @@ public class Settings {
 				Settings.Visualizations [1].Name,
 				new Color []
 				{
-					GetColor (66, 70, 110),
-					GetColor (58, 98, 171)
+					GetColorFromRgb (66, 70, 110),
+					GetColorFromRgb (58, 98, 171)
 				}
 			},
 
@@ -88,11 +88,11 @@ public class Settings {
 				Settings.Visualizations [2].Name,
 				new Color []
 				{
-					GetColor (242, 80, 166),
-					GetColor (242, 209, 60),
-					GetColor (84, 191, 60),
-					GetColor (37, 176, 217),
-					GetColor (242, 84, 44)
+					GetColorFromRgb (242, 80, 166),
+					GetColorFromRgb (242, 209, 60),
+					GetColorFromRgb (84, 191, 60),
+					GetColorFromRgb (37, 176, 217),
+					GetColorFromRgb (242, 84, 44)
 				}
 			},
 
@@ -101,12 +101,12 @@ public class Settings {
 				Settings.Visualizations [3].Name,
 				new Color []
 				{
-					GetColor (255, 26, 229),
-					GetColor (23, 191, 255),
-					GetColor (20, 255, 53),
-					GetColor (232, 23, 83),
-					GetColor (255, 147, 12),
-					GetColor (255, 232, 51)
+					GetColorFromRgb (255, 26, 229),
+					GetColorFromRgb (23, 191, 255),
+					GetColorFromRgb (20, 255, 53),
+					GetColorFromRgb (232, 23, 83),
+					GetColorFromRgb (255, 147, 12),
+					GetColorFromRgb (255, 232, 51)
 				}
 			},
 
@@ -115,9 +115,9 @@ public class Settings {
 				Settings.Visualizations [4].Name,
 				new Color []
 				{
-					GetColor (6, 104, 255),
-					GetColor (0, 242, 255),
-					GetColor (27, 240, 96)
+					GetColorFromRgb (6, 104, 255),
+					GetColorFromRgb (0, 242, 255),
+					GetColorFromRgb (27, 240, 96)
 				}
 			}
 		};
@@ -127,7 +127,7 @@ public class Settings {
 	public abstract class Input
 	{
 		public static int MaxLength = 30;
-		public static Color InfoColor = GetColor (250, 80, 80);
+		public static Color InfoColor = GetColorFromRgb (250, 80, 80);
 	}
 
 	//-- PLAYER SETTINGS
@@ -144,7 +144,7 @@ public class Settings {
 
 
 	//-- HELPER METHODS
-	public static Color GetColor (int r, int g, int b)
+	public static Color GetColorFromRgb (int r, int g, int b)
 	{
 		if (r >= 0 && r <= 255 &&
 		    g >= 0 && g <= 255 &&

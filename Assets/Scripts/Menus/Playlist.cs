@@ -13,10 +13,6 @@ using System.Linq;
 public class Playlist : MonoBehaviour
 {
 
-    public GameSettings gameSettings;
-    private Lang LangManager;
-    private string currentLang = "English";
-
     // Dialog reference
     public Dialog Dialog;
 
@@ -32,35 +28,6 @@ public class Playlist : MonoBehaviour
     // File to add to new playlist
     public FileObj fileToAdd;
     public bool showingDialog;
-
-    
-    void OnEnable()
-    {
-
-
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
-
-            switch (gameSettings.language)
-            {
-                case 0:
-                    currentLang = "English";
-                    break;
-
-                case 1:
-                    currentLang = "German";
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
-
-
-
-    }
 
 
     void Start()
@@ -83,7 +50,7 @@ public class Playlist : MonoBehaviour
         // Set start button
         if (Settings.Active.File != null)
         {
-            GameObject.Find("Start/Button/Text").GetComponent<Text>().text = LangManager.getString("continue");
+            GameObject.Find("Start/Button/Text").GetComponent<Text>().text = Settings.MenuManager.LangManager.getString("continue");
         }
         
     }
@@ -345,7 +312,7 @@ public class Playlist : MonoBehaviour
             {
                 mainTextListening.text = IconFont.LISTENING;
                 mainTextListening.fontSize = 30;
-                mainTextListening.color = file == null ? Color.white : Settings.GetColor(180, 180, 180);
+                mainTextListening.color = file == null ? Color.white : Settings.GetColorFromRgb(180, 180, 180);
             }
             else if (file != null && playlist.Equals(Settings.Selected.Playlist) && file.Equals(Settings.Selected.File))
             {
@@ -382,7 +349,7 @@ public class Playlist : MonoBehaviour
             }
             else if (playlist.Equals(Settings.Active.Playlist) && file.Equals(Settings.Active.File))
             {
-                text.color = Settings.GetColor(180, 180, 180);
+                text.color = Settings.GetColorFromRgb(180, 180, 180);
             }
             else
             {
@@ -834,8 +801,8 @@ public class Playlist : MonoBehaviour
                 case "PL_ADD":
 
                     // UI elements
-                    Dialog.SetHeading(LangManager.getString("newPlaylist"));
-                    Dialog.SetInputField("", LangManager.getString("namePlaylist"));
+                    Dialog.SetHeading(Settings.MenuManager.LangManager.getString("newPlaylist"));
+                    Dialog.SetInputField("", Settings.MenuManager.LangManager.getString("namePlaylist"));
 
                     // Events
                     button.onClick.AddListener(delegate
@@ -851,19 +818,19 @@ public class Playlist : MonoBehaviour
                             // Playlist name already taken
                             case (long)Database.Constants.DuplicateFound:
 
-                                Dialog.SetInfo(LangManager.getString("existsPlaylist"));
+                                Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsPlaylist"));
                                 break;
 
                             // Database query failed
                             case (long)Database.Constants.QueryFailed:
 
-                                Dialog.SetInfo(LangManager.getString("noPlaylist"));
+                                Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noPlaylist"));
                                 break;
 
                             // No user input
                             case (long)Database.Constants.EmptyInputValue:
 
-                                Dialog.SetInfo(LangManager.getString("namePlaylist"));
+                                Dialog.SetInfo(Settings.MenuManager.LangManager.getString("namePlaylist"));
                                 break;
 
                             default:
@@ -885,7 +852,7 @@ public class Playlist : MonoBehaviour
                     if (playlist != null)
                     {
                         // UI elements
-                        Dialog.SetHeading(LangManager.getString("editPlaylist"));
+                        Dialog.SetHeading(Settings.MenuManager.LangManager.getString("editPlaylist"));
                         Dialog.SetInputField(playlist.Name, playlist.Name);
 
                         // Events
@@ -902,19 +869,19 @@ public class Playlist : MonoBehaviour
                                 // Playlist name already taken
                                 case (long)Database.Constants.DuplicateFound:
 
-                                    Dialog.SetInfo(LangManager.getString("existsPlaylist"));
+                                    Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsPlaylist"));
                                     break;
 
                                 // Database query failed
                                 case (long)Database.Constants.QueryFailed:
 
-                                    Dialog.SetInfo(LangManager.getString("noEditPlaylist"));
+                                    Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noEditPlaylist"));
                                     break;
 
                                 // No user input
                                 case (long)Database.Constants.EmptyInputValue:
 
-                                    Dialog.SetInfo(LangManager.getString("namePlaylist"));
+                                    Dialog.SetInfo(Settings.MenuManager.LangManager.getString("namePlaylist"));
                                     break;
 
                                 default:
@@ -940,8 +907,8 @@ public class Playlist : MonoBehaviour
                     if (playlist != null)
                     {
                         // UI elements
-                        Dialog.SetHeading(LangManager.getString("deletePlaylist"));
-                        Dialog.SetText(LangManager.getString("sureDelete"));
+                        Dialog.SetHeading(Settings.MenuManager.LangManager.getString("deletePlaylist"));
+                        Dialog.SetText(Settings.MenuManager.LangManager.getString("sureDelete"));
 
                         // Events
                         button.onClick.AddListener(delegate

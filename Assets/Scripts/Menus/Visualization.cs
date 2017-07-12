@@ -13,11 +13,7 @@ using UnityEngine.SceneManagement;
 public class Visualization : MonoBehaviour {
 
 
-    public GameSettings gameSettings;
-    private Lang LangManager;
-    private string currentLang = "English";
-
-	// Color schemes
+    // Color schemes
     public List<VisualizationObj> Visualizations = new List<VisualizationObj> ();
 
 	// Color scheme object
@@ -25,36 +21,7 @@ public class Visualization : MonoBehaviour {
 
 	public static List<VisualizationObj> tempViz;
 
-    void OnEnable()
-    {
-
-
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
-
-            switch (gameSettings.language)
-            {
-                case 0:
-                    currentLang = "English";
-                    break;
-
-                case 1:
-                    currentLang = "German";
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
-
-
-
-    }
-
-
-	void Start ()
+    void Start ()
 	{
 		// Select visualizations from database
 		Load ();
@@ -76,7 +43,7 @@ public class Visualization : MonoBehaviour {
 
 		// Set start button
 		if (Settings.Active.File != null) {
-			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = LangManager.getString("continue");
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = Settings.MenuManager.LangManager.getString("continue");
 		}
 	}
 

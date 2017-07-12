@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
+
 using System.Collections;
 
+/// <summary>
+/// Provides variables to display icons using the icon font.
+/// </summary>
 public class IconFont : MonoBehaviour {
 
+	/// <summary>
+	/// The icon font resource.
+	/// </summary>
 	public static Font font = Resources.Load<Font> ("Fonts/beatlux");
-
-	//-- ICON CONSTANTS
 
 	public const string VISUALIZATION = "\ue900";
 	public const string DROPDOWN_OPENED = "\ue901";
