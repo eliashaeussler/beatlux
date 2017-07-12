@@ -2194,6 +2194,8 @@ MonoBehaviour:
   viz: {fileID: 70122652}
   ok: {fileID: 297990218}
   cancel: {fileID: 297990217}
+  search: {fileID: 1712950257}
+  playlistName: {fileID: 668900327}
 --- !u!4 &1368887129
 Transform:
   m_ObjectHideFlags: 0

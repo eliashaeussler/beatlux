@@ -4,7 +4,8 @@ using Mono.Data.Sqlite;
 using System.Data;
 using System;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
+using System.IO;
 /// <summary>
 /// Database class offers connection to the local database. It should be
 /// only one connection opened which is realized through the use of the
@@ -17,6 +18,9 @@ using System.Collections.Generic;
 /// </summary>
 public class Database {
 
+    
+    
+
 	// Database name
 	private static string NAME = "beatlux.db";
 
@@ -26,7 +30,14 @@ public class Database {
 	// Database connection
 	public static SqliteConnection Connection;
 
+    
 
+
+        
+
+
+
+    
 
 	// Enums for error handling
 	public enum Constants : long
@@ -43,11 +54,14 @@ public class Database {
 	// Object initialization
 	private Database ()
 	{
+        
 		// Path to database
 		string uri = "Data Source=" + Application.dataPath + "/" + NAME;
 
 		// Connect to database
 		Connection = Connect (uri);
+
+        
 	}
 
 	// Connect to dataabse
@@ -221,7 +235,7 @@ public class Database {
 				cmd = new SqliteCommand (sql, Connection);
 
 				// Add parameters
-				cmd.Parameters.Add (new SqliteParameter ("Name", "Neue Playlist"));
+				cmd.Parameters.Add (new SqliteParameter ("Name", "Playlist"));
 
 				// Send query
 				cmd.ExecuteNonQuery ();

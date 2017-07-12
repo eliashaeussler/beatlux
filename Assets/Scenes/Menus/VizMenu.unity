@@ -1502,6 +1502,8 @@ MonoBehaviour:
   viz: {fileID: 2004180699}
   ok: {fileID: 552868427}
   cancel: {fileID: 552868426}
+  search: {fileID: 1482698308}
+  color: {fileID: 1751632353}
 --- !u!4 &213467026
 Transform:
   m_ObjectHideFlags: 0

@@ -40,7 +40,6 @@ public class FountainScript : MonoBehaviour {
         col4  = new Color[] { col1, col2, col3, col5, col6, col7 };
 	}
 	
-	// Update is called once per frame
 	void Update () {
 
         AudioListener.GetOutputData(samples, 0);

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+    <!--><string name=""></string> -->
 <languages>
    <English>
         <string name="start">Start</string>
@@ -22,11 +23,35 @@
         <string name="high">High</string>
         <string name="ok">OK</string>
         <string name="cancel">Cancel</string>
+        <string name="continue">Continue</string>
 
         <string name="music">Music</string>
         <string name="viz">Visualisations</string>
         <string name="plHeader">Create new playlist</string>
         <string name="plInput">Choose the name of your new playlist</string>
+        <string name="search">Search</string>
+        <string name="newPlaylist">Create a new playlist</string>
+        <string name="namePlaylist">Please name your new playlist</string>
+        <string name="playlist">Playlist</string>
+        <string name="existsPlaylist">A playlist with the chosen name already exists!</string>
+        <string name="noPlaylist">Could not create playlist</string>
+        <string name="editPlaylist">Edit playlist</string>
+        <string name="noEditPlaylist">Could not edit playlist</string>
+        <string name="deletePlaylist">Delete playlist</string>
+        <string name="sureDelete">Are you sure?</string>
+        <string name="color">Colorscheme</string>
+        <string name="newColor">Create a new colorscheme</string>
+        <string name="nameColor">Please name your new colorscheme</string>
+        <string name="noColor">Could not create colorscheme</string>
+        <string name="existsColor">A colorscheme with the chosen name already exists!</string>
+        <string name="noChosenColor">No visualisation chosen</string>
+        <string name="chooseColor">Please choose a visualisation to add a new colorscheme</string>
+        <string name="editColor">Edit colorscheme</string>
+        <string name="noEditColor">Could not edit colorscheme</string>
+        <string name="deleteColor">Delete colorscheme</string>
+        
+     
+        <string name="tutInfo">Das ist die Info</string>
     </English>
 
     <German>
