@@ -69,12 +69,14 @@
         <string name="mirrors">Spiegelnde Oberflächen</string>
         <string name="back">Zurück</string>
         <string name="save">Speichern</string>
+
         <string name="off">Aus</string>
         <string name="low">Niedrig</string>
         <string name="medium">Mittel</string>
         <string name="high">Hoch</string>
         <string name="ok">OK</string>
         <string name="cancel">Abbrechen</string>
+        <string name="continue">Fortsetzen</string>
 
         <string name="music">Musik</string>
         <string name="viz">Visualisierungen</string>
