@@ -28,7 +28,11 @@ public class LangMainMenu : MonoBehaviour {
     private string currentLang = "English";
     // Use this for initialization
 
-
+    /**
+     * Setting up language file, choosing language and setting texts
+     * 
+     * For more languages, add them in switch-statement
+     **/
     void OnEnable () {
         
         if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)

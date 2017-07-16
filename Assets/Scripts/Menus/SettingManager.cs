@@ -18,6 +18,7 @@ public class SettingManager : MonoBehaviour {
     public GameSettings gameSettings;
     public GameObject langManager;
     public GameObject mirrors;
+
     //Storage for all available resolutions
     public Resolution[] resolutions;
 
@@ -57,20 +58,23 @@ public class SettingManager : MonoBehaviour {
             resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
         }
 
-        
-
         LoadSettings();
     }
 
 
+    /**
+     * Methods that execute all the functions of the settings options, as well as writing them into the gameSettings file
+     **/
     public void OnFullscreenToggle()
     {
        gameSettings.fullscreen = Screen.fullScreen = fullscreenToggle.isOn;
+        Debug.Log(gameSettings.fullscreen);
     }
 
     public void OnTutorialToggle()
     {
         gameSettings.tutorial = tutorialToggle.isOn;
+        Debug.Log(gameSettings.tutorial);
         Settings.Player.TutorialTog = gameSettings.tutorial;
     }
 
@@ -128,29 +132,6 @@ public class SettingManager : MonoBehaviour {
         SaveSettings();
     }
 
-    public void SaveSettings()
-    {
-        string jsonData = JsonUtility.ToJson(gameSettings, true);
-        File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData); //In Windows, saving to "Appdata/LocalLow/HS_Harz_Musikvisualisierung" (foldername => company name in player settings)
-    }
-
-    public void LoadSettings()
-    {
-        resolutionDropdown.RefreshShownValue();
-        //Check if there is a config file
-        if(File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
-
-            languageDropdown.value = gameSettings.language;
-            antialiasingDropdown.value = gameSettings.antialiasing;
-            textureQualityDropdown.value = gameSettings.textureQuality;
-            resolutionDropdown.value = gameSettings.resolutionIndex;
-            fullscreenToggle.isOn = gameSettings.fullscreen;
-            mirrorDropdown.value = gameSettings.mirrors;
-        }
-    }
-
     public void setMirrors()
     {
         switch (gameSettings.mirrors)
@@ -171,5 +152,30 @@ public class SettingManager : MonoBehaviour {
         }
     }
 
-    
+    /**
+     * Save all settings into a json-file
+     **/
+    public void SaveSettings()
+    {
+        string jsonData = JsonUtility.ToJson(gameSettings, true);
+        File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData); //In Windows, saving to "Appdata/LocalLow/HS_Harz_Musikvisualisierung" (foldername => company name in player settings)
+    }
+
+    public void LoadSettings()
+    {
+        resolutionDropdown.RefreshShownValue();
+        //Check if there is a config file
+        if(File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+        {
+            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+
+            languageDropdown.value = gameSettings.language;
+            antialiasingDropdown.value = gameSettings.antialiasing;
+            textureQualityDropdown.value = gameSettings.textureQuality;
+            resolutionDropdown.value = gameSettings.resolutionIndex;
+            fullscreenToggle.isOn = gameSettings.fullscreen;
+            tutorialToggle.isOn = gameSettings.tutorial;
+            mirrorDropdown.value = gameSettings.mirrors;
+        }
+    }   
 }

@@ -1108,8 +1108,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 278985083}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0.22079349}
-  m_AnchorMax: {x: 1, y: 0.7792065}
+  m_AnchorMin: {x: 0, y: 0.44158697}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1256,7 +1256,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255265661}
   m_HandleRect: {fileID: 255265660}
   m_Direction: 2
-  m_Value: 0.5
+  m_Value: 1
   m_Size: 0.558413
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7061,7 +7061,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -25, y: -256.87}
+  m_AnchoredPosition: {x: -25, y: -460}
   m_SizeDelta: {x: -50, y: 920}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1634954531
