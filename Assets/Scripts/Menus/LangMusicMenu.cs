@@ -16,10 +16,15 @@ public class LangMusicMenu : MonoBehaviour {
     public GameSettings gameSettings;
     private Lang LangManager;
     private string currentLang = "English";
-    // Use this for initialization
+    
+
+    /**
+     * Setting up language file, choosing language and setting texts
+     * 
+     * For more languages, add them in switch-statement
+     **/
     void OnEnable()
     {
-
 
         if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
         {
@@ -44,6 +49,10 @@ public class LangMusicMenu : MonoBehaviour {
 
 
     }
+
+    /**
+     *  Sets all the texts to the specified language when called 
+     **/
     public void setTexts(string _currentLang)
     {
         LangManager.setLanguage(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), _currentLang);

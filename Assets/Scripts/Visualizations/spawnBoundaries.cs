@@ -8,7 +8,11 @@ public class spawnBoundaries : MonoBehaviour {
     public GameSettings gameSettings;
     public GameObject mirrors;
     public bool mirrorsOnOff = false;
-    // Use this for initialization
+   
+
+    /**
+     * Spawns invisible walls around the middle of the gameobject it is put on.
+     **/
     void Start()
     {
         Instantiate(boundaries, Vector3.zero, Quaternion.identity, Settings.MenuManager.vizContents);
@@ -34,8 +38,5 @@ public class spawnBoundaries : MonoBehaviour {
 
         }
     }
-	// Update is called once per frame
-	void Update () {
 	
-	}
 }

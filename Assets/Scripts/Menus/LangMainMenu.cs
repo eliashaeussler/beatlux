@@ -26,7 +26,6 @@ public class LangMainMenu : MonoBehaviour {
     public GameSettings gameSettings;
     private Lang LangManager;
     private string currentLang = "English";
-    // Use this for initialization
 
     /**
      * Setting up language file, choosing language and setting texts
@@ -60,7 +59,7 @@ public class LangMainMenu : MonoBehaviour {
     }
 
     /**
-     *  Sets all the text in the mainMenu to the specified language when called 
+     *  Sets all the texts in the mainMenu to the specified language when called 
      **/
 	public void setTexts(string _currentLang)
     {

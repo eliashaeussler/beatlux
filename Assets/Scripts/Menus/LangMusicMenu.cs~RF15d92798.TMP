@@ -3,28 +3,24 @@ using System.Collections;
 using System.IO;
 using UnityEngine.UI;
 
-public class LangVizMenu : MonoBehaviour {
+public class LangMusicMenu : MonoBehaviour {
 
     public Text music;
     public Text viz;
     public Text ok;
     public Text cancel;
     public Text search;
-    public Text color;
+    public Text playlistName;
+
 
     public GameSettings gameSettings;
     private Lang LangManager;
     private string currentLang = "English";
-
-    /**
-    * Setting up language file, choosing language and setting texts
-    * 
-    * For more languages, add them in switch-statement
-    **/
+    // Use this for initialization
     void OnEnable()
     {
 
-       
+
         if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
         {
             gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
@@ -48,10 +44,6 @@ public class LangVizMenu : MonoBehaviour {
 
 
     }
-
-    /**
-     *  Sets all the texts to the specified language when called 
-     **/
     public void setTexts(string _currentLang)
     {
         LangManager.setLanguage(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), _currentLang);
@@ -61,7 +53,6 @@ public class LangVizMenu : MonoBehaviour {
         ok.text = LangManager.getString("ok");
         cancel.text = LangManager.getString("cancel");
         search.text = LangManager.getString("search");
-        color.text = LangManager.getString("color");
-
+        playlistName.text = LangManager.getString("playlist");
     }
 }

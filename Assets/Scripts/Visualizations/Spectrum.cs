@@ -14,8 +14,7 @@ public class Spectrum : MonoBehaviour
 
     void Start()
     {
-        
-       
+            
         /**
          * Initializing the scene, creating a circle of cubes in the radius set above.
          **/
@@ -43,23 +42,7 @@ public class Spectrum : MonoBehaviour
         {
             
             Vector3 previousScale = cubes[i].transform.localScale;
-            /**
-            if (i < numberOfObjects / 2)
-            {
-                cubes[i].GetComponent<Renderer>().material.color = Color.Lerp(colorScheme.Colors[0], colorScheme.Colors[1], t);
-                t += 1f / (numberOfObjects / 2f);
-            }
-            else if (i == numberOfObjects / 2)
-            {
-                t = 0;
-            }
-
-            if(i>= numberOfObjects/2)
-            {
-                cubes[i].GetComponent<Renderer>().material.color = Color.Lerp(colorScheme.Colors[1], colorScheme.Colors[2], t);
-                t += 1f/ (numberOfObjects/2f);
-            }
-            **/
+            
 
             if (i < numberOfObjects / 3)
             {
@@ -86,7 +69,6 @@ public class Spectrum : MonoBehaviour
                 cubes[i].GetComponent<Renderer>().material.color = Color.Lerp(colorScheme.Colors[2], colorScheme.Colors[0], t);
                 t += 1f / (numberOfObjects / 3f);
             }
-            //cubes[i].GetComponent<Renderer>().material.color = Color.Lerp(new Color(0f, 0f, 0f), new Color(1f, 1f, 1f), t);
 
 
             if (spectrum[i] * newScale > 2.3)   //Only update the cube if the height is above set value (1.3)

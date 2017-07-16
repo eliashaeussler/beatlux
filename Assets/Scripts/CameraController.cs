@@ -10,6 +10,9 @@ public class CameraController : MonoBehaviour {
     private CameraMover move;
 	private PlayerCanvas player;
 
+    /**
+     * Initialize the mover
+     **/
     void Start()
     {
         
@@ -17,6 +20,9 @@ public class CameraController : MonoBehaviour {
 		player = GameObject.Find ("PlayerCanvas").GetComponent<PlayerCanvas> ();
     }
 
+    /**
+     * Get inputs from the player, tells the CameraMover what to do.
+     **/
     void Update()
 	{
         float xMov = Input.GetAxisRaw("Horizontal");
@@ -24,6 +30,7 @@ public class CameraController : MonoBehaviour {
 
         float zMov = Input.GetAxisRaw("Vertical");
 
+        //Increase speed when pressing left shift
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
             if (speed < 50)
@@ -32,7 +39,8 @@ public class CameraController : MonoBehaviour {
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.RightShift))
+        //Decrease speed when pressing left shift
+        if (Input.GetKeyDown(KeyCode.RightShift))
         {
             if (speed > 0)
             {
@@ -40,6 +48,7 @@ public class CameraController : MonoBehaviour {
             }
         }
 
+        //Enable/disable movement when pressing shift
         if (Input.GetKeyDown("space"))
         {
             permitmove = !permitmove;
@@ -51,11 +60,13 @@ public class CameraController : MonoBehaviour {
 			}
         }
 
+        //Resets player position to standard when pressing R
         if (Input.GetKeyDown(KeyCode.R))
         {
             move.resPosition();
         }
 
+        //Get basic movement inputs from WASD and Mouse
         Vector3 movHorizontal = transform.right * xMov;
         Vector3 movVertical = transform.forward * zMov;
 
