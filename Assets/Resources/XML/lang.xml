@@ -79,7 +79,27 @@
         <string name="music">Musik</string>
         <string name="viz">Visualisierungen</string>
         <string name="plHeader">Neue Playlist erstellen</string>
-        <string name="plInput">Wie soll die neue Playlist heißen?</string>
+        <string name="plInput">Wähle den Namen der neuen Playlist</string>
+        <string name="search">Suche</string>
+        <string name="newPlaylist">Neue Playlist erstellen</string>
+        <string name="namePlaylist">Wähle den Namen der neuen Playlist</string>
+        <string name="playlist">Playlist</string>
+        <string name="existsPlaylist">Eine Playlist mit diesem Namen existiert bereits!</string>
+        <string name="noPlaylist">Playlist konnte nicht erstellt werden</string>
+        <string name="editPlaylist">Playlist bearbeiten</string>
+        <string name="noEditPlaylist">Playlist konnte nicht bearbeitet werden</string>
+        <string name="deletePlaylist">Playlist löschen</string>
+        <string name="sureDelete">Sicher?</string>
+        <string name="color">Farbschema</string>
+        <string name="newColor">Neues Farbschema erstellen</string>
+        <string name="nameColor">Wähle den Namen des neuen Farbschemas</string>
+        <string name="noColor">Farbschema konnte nicht erstellt werden</string>
+        <string name="existsColor">Ein Farbschema mit diesem Namen existiert bereits!</string>
+        <string name="noChosenColor">Keine Visualisirung ausgewählt</string>
+        <string name="chooseColor">Bitte eine Visualisierung auswählen</string>
+        <string name="editColor">Farbschema bearbeiten</string>
+        <string name="noEditColor">Farbschema konnte nicht bearbeitet werden</string>
+        <string name="deleteColor">Farbschema löschen</string>
     </German>
 
     
