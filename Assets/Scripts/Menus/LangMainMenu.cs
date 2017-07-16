@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.IO;
 using UnityEngine.UI;
 
 public class LangMainMenu : MonoBehaviour {
     
-
     public Text start;
     public Text settings;
     public Text credits;
@@ -33,7 +31,6 @@ public class LangMainMenu : MonoBehaviour {
 
     void OnEnable () {
         
-
         if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
         {
             gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
@@ -52,17 +49,15 @@ public class LangMainMenu : MonoBehaviour {
                     break;
             }
         }
+
         LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
         setTexts(currentLang);
-       
-
-        /**
-            DROPDOWNS NOT WORKING YET!!!!!!!!!!
-        textureQualityDropdown.options.Clear();
-        //textureQualityDropdown.options.Add(new Dropdown.OptionsData() { text = LangManager.getString("low") });
-        textureQualityDropdown.options.Add(new Dropdown.OptionsData(LangManager.getString("low")));
-        **/
+        
     }
+
+    /**
+     *  Sets all the text in the mainMenu to the specified language when called 
+     **/
 	public void setTexts(string _currentLang)
     {
         LangManager.setLanguage(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), _currentLang);
@@ -80,11 +75,20 @@ public class LangMainMenu : MonoBehaviour {
         mirrors.text = LangManager.getString("mirrors");
         back.text = LangManager.getString("back");
         save.text = LangManager.getString("save");
-        Debug.Log("Texts set to " + _currentLang);
-    }
-	// Update is called once per frame
-	void Update () {
-        
 
+        //Add the values to all dropdowns for language support
+        textureQualityDropdown.options.Clear();
+        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
+        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
+        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("low")));
+        antialiasingDropdown.options.Clear();
+        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("off")));
+        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
+        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
+        mirrorDropdown.options.Clear();
+        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("off")));
+        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
+        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
+        Debug.Log("Texts set to " + _currentLang);
     }
 }
