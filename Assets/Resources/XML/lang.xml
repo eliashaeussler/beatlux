@@ -51,7 +51,105 @@
         <string name="deleteColor">Delete colorscheme</string>
         
      
-        <string name="tutInfo">Das ist die Info</string>
+        <string name="MM00">
+          <![CDATA[<b>Searchbar</b> - Inputfield for the finding of songs
+
+<b>Filepath</b> - Shows the current path
+
+<b>Song-/Folderlist</b> - List of all songs/folders at the current path
+
+Click left to continue...]]></string>
+     <string name="MM01">
+       <![CDATA[<b>Playlist</b> - List of all current playlists
+
+Create a new playlist with the <b>+</b> symbol]]>
+     </string>
+     <string name="MM02">
+       <![CDATA[<b>Playlist</b> - Give the playlist a name and accept]]>
+     </string>
+     <string name="MM03">
+       <![CDATA[<b>Playlist</b> - Add a new track per Drag&Drop or doubleclicking]]>
+     </string>
+     <string name="MM04">
+       <![CDATA[<b>Tabs</b> - You can switch between Music and Visualisation
+
+Click on the Visualisationtab...]]>
+     </string>
+     <string name="VM00">
+       <![CDATA[<b>Searchbar</b> - Inputfield for searching visualisations
+
+<b>Visualisationlist</b> - List of all available visualisations
+
+Click left to continue...]]>
+     </string>
+     <string name="VM01">
+       <![CDATA[<b>Colorscheme</b> - List of all Colorschemes
+
+Choose a <b>Visualisation</b> on the left
+
+Press <b>+</b> to create a new scheme...]]>
+     </string>
+     <string name="VM02">
+       <![CDATA[<b>Colorscheme</b> - Name your colorscheme]]>
+     </string>
+     <string name="VM03">
+       <![CDATA[<b>Colorselection</b> - Click on one of the boxes to change the color]]>
+     </string>
+     <string name="VM04">
+       <![CDATA[<b>Start</b> - Click the startbutton to start the musicvisualisation]]>
+     </string>
+     <string name="PM00">
+       <![CDATA[<b>Musicplayer</b> - Controls of the musicplayer:
+
+Play/Pause, For-/Backwards, Shuffle, Repeat
+Volume is controllable through the circle...
+
+Increase the volume to continue... ]]>
+     </string>
+     <string name="PM01">
+       <![CDATA[<b>Visualisation</b> - Controls of the Visualisation:
+
+Play/Pause, For-/Backwards, Shuffle
+The circle shows the colorscheme
+
+Click the bobcat to continue...]]>
+     </string>
+     <string name="PM02">
+       <![CDATA[<b>Controls</b>
+
+Spacebar: Switch between player and movementmode
+
+Please press space...	 ]]>
+     </string>
+     <string name="PM03">
+       <![CDATA[<b>Controls</b>
+
+WASD-Keys: Cameramovement
+
+Mousemovement: Camerarotation 
+
+Please use the WASD-Keys...]]>
+     </string>
+     <string name="PM04">
+       <![CDATA[<b>Controls</b>
+
+Shift-Key: Increase speed
+
+R-Key: Reset camera
+
+Please press R and then space to continue...]]>
+     </string>
+     <string name="PM05">
+       <![CDATA[<b>Mainmenu</b>
+
+<b>Settings</b>
+
+<b>Visualisationmenu</b>
+
+<b>Musicmenu</b>
+
+Please click settings to deactivate the tutorial...]]>
+     </string>
     </English>
 
     <German>
@@ -102,6 +200,107 @@
         <string name="editColor">Farbschema bearbeiten</string>
         <string name="noEditColor">Farbschema konnte nicht bearbeitet werden</string>
         <string name="deleteColor">Farbschema löschen</string>
+
+      <string name="MM00">
+        <![CDATA[<b>Suchleiste</b> - Eingabefläche zum vereinfachten Auffinden von Songs
+
+<b>Pfadangabe</b> - Anzeige des ausgewählten Pfades
+
+<b>Song-/Ordnerliste</b> - Liste aller Songs/Ordner des aktuellen Pfads
+
+Linksklick um fortzufahren...]]>
+      </string>
+      <string name="MM01">
+        <![CDATA[<b>Playlist</b> - Liste aller erstellten Playlists
+
+Erstelle mit dem <b>+</b> Symbol eine neue Playlist]]>
+      </string>
+      <string name="MM02">
+        <![CDATA[<b>Playlist</b> - Gebe deiner neuen Playlist einen Namen und bestätige]]>
+      </string>
+      <string name="MM03">
+        <![CDATA[<b>Playlist</b> - Füge einen neuen Track per Drag&Drop oder Doppelklick hinzu]]>
+      </string>
+      <string name="MM04">
+        <![CDATA[<b>Tabs</b> - Man kann zwischen Musik und Visualisierung hin und her wechseln.
+
+Klicke nun auf das Visualisierungstab...]]>
+      </string>
+      <string name="VM00">
+        <![CDATA[<b>Suchleiste</b> - Eingabefläche zum Suchen von Visualisierungen
+
+<b>Visualisierungsliste</b> - Liste aller verfügbaren Visualisierungen
+
+Linksklick um fortzufahren...]]>
+      </string>
+      <string name="VM01">
+        <![CDATA[<b>Farbschema</b> - Liste aller Farbschemata
+
+Wähle erst links eine <b>Visualisierung</b> aus
+
+Drücke dann <b>+</b> um ein neues Schema zu erstellen...]]>
+      </string>
+      <string name="VM02">
+        <![CDATA[<b>Farbschema</b> - Benenne dein Schema]]>
+      </string>
+      <string name="VM03">
+        <![CDATA[<b>Farbauswahl</b> - Klicke auf eins der Kästchen um seine Farbe zu ändern]]>
+      </string>
+      <string name="VM04">
+        <![CDATA[<b>Start</b> - Drücke den Startbutton um die Musikvisualisierung zu starten]]>
+      </string>
+      <string name="PM00">
+        <![CDATA[<b>Musikplayer</b> - Steuerung der Musikwiedergabe:
+
+Play/Pause, Lied Vor/Zurück, Shuffle, Repeat
+Lautstärke wird durch den Kreis bestimmt...
+
+Erhöhe die Lautstärke um fortzufahren... ]]>
+      </string>
+      <string name="PM01">
+        <![CDATA[<b>Visualisierung</b> - Steuerung der Visualisierung:
+
+Play/Pause, Visualisierung Vor/Zurück, Shuffle
+Im Kreis wird das Farbschema angezeigt
+
+Klicke auf den Luchs um fortzufahren...]]>
+      </string>
+      <string name="PM02">
+        <![CDATA[<b>Steuerung</b>
+
+Leertaste: Zwischen Player und Bewegungsmodus wechseln
+
+Bitte drücke nun die Leertaste...]]>
+      </string>
+      <string name="PM03">
+        <![CDATA[<b>Steuerung</b>
+
+WASD-Tasten: Kamerabewegungen
+
+Mausbewegung: Kameradrehung 
+
+Benutze bitte jetzt die WASD-Tasten...]]>
+      </string>
+      <string name="PM04">
+        <![CDATA[<b>Steuerung</b>
+
+Umschalttaste: Geschwindigkeit erhöhen
+
+R-Taste: Kamera zurücksetzen
+
+Drücke R und danach Leertaste fortzufahren...]]>
+      </string>
+      <string name="PM05">
+        <![CDATA[<b>Hauptmenü</b>
+
+<b>Einstellungen</b>
+
+<b>Visualisierungsauswahl</b>
+
+<b>Musikauswahl</b>
+
+Drücke auf Einstellungen um das Tutorial zu deaktivieren...]]>
+      </string>
     </German>
 
     

@@ -8,6 +8,8 @@ public class TutorialManager3 : MonoBehaviour {
     public List<Tutorial3> Tutorials = new List<Tutorial3>();
     public Text ExpText;
     private static TutorialManager3 instance;
+
+    //creates an instance of the Tutorialmanager
     public static TutorialManager3 Instace
     {
         get
@@ -28,13 +30,18 @@ public class TutorialManager3 : MonoBehaviour {
 
     private Tutorial3 currentTutorial;
 
-    // Use this for initialization
+    // sets the tutorialstart to tutorial 0
     void Start()
+    {
+        Init();
+    }
+
+    public void Init()
     {
         SetNextTutorial(0);
     }
 
-    // Update is called once per frame
+    // if a tutorial is there, checks if sth is happening
     void Update()
     {
         if (currentTutorial)
@@ -43,11 +50,13 @@ public class TutorialManager3 : MonoBehaviour {
         }
     }
 
+    // called if a tutorial is finished
     public void CompletedTutorial()
     {
         SetNextTutorial(currentTutorial.Order + 1);
     }
 
+    // sets next tutorial if possible, else finish
     public void SetNextTutorial(int currentOrder)
     {
         currentTutorial = GetTutorialByOrder(currentOrder);
@@ -58,14 +67,16 @@ public class TutorialManager3 : MonoBehaviour {
             SetNextTutorial(0);
         }
 
-        ExpText.text = currentTutorial.Explanation;
+        ExpText.text = Settings.MenuManager.LangManager.getString("PM0" + currentOrder + "");
     }
 
+    // text if every tutorial is finished
     public void CompletedAllTutorials()
     {
         ExpText.text = "You completed all the tutorials";
     }
 
+    // gets the tutorial order
     public Tutorial3 GetTutorialByOrder(int Order)
     {
         for (int i = 0; i < Tutorials.Count; i++)

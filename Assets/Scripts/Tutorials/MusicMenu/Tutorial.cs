@@ -7,6 +7,7 @@ public class Tutorial : MonoBehaviour {
     [TextArea(6, 15)]
     public string Explanation;
 
+    // called on awake to add tutorials to tutorialmanager
 	void Awake () {
         TutorialManager.Instace.Tutorials.Add(this);
 	}
