@@ -26,9 +26,9 @@ public class MenuFunctions : MonoBehaviour {
 		set { _sett = value; }
 	}
 
+    TextAsset textAsset;
 
-
-	void Start ()
+    void Start ()
 	{
 		// Set MenuManager
 		Settings.MenuManager = this;
@@ -38,13 +38,15 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Load main menu
 		StartLevel (defaultStart);
-	}
+
+        
+    }
 
 	void OnEnable ()
 	{
 		gameSettings = JsonUtility.FromJson<GameSettings> (File.ReadAllText (Application.persistentDataPath + "/gamesettings.json"));
-
-		if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
+        textAsset = (TextAsset)Resources.Load("XML/lang");
+        if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
 			switch (gameSettings.language) {
 			case 0:
 				currentLang = "English";
@@ -58,8 +60,8 @@ public class MenuFunctions : MonoBehaviour {
 				break;
 			}
 		}
-		LangManager = new Lang (Path.Combine (Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
-	}
+        LangManager = new Lang(textAsset, currentLang, false);
+    }
 
 
 

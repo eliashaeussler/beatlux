@@ -26,6 +26,7 @@ public class LangMainMenu : MonoBehaviour {
     public GameSettings gameSettings;
     private Lang LangManager;
     private string currentLang = "English";
+    TextAsset textAsset;
 
     /**
      * Setting up language file, choosing language and setting texts
@@ -33,7 +34,7 @@ public class LangMainMenu : MonoBehaviour {
      * For more languages, add them in switch-statement
      **/
     void OnEnable () {
-        
+        textAsset = (TextAsset)Resources.Load("XML/lang");
         if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
         {
             gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
@@ -53,7 +54,7 @@ public class LangMainMenu : MonoBehaviour {
             }
         }
 
-        LangManager = new Lang(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), currentLang, false);
+        LangManager = new Lang(textAsset, currentLang, false);
         setTexts(currentLang);
         
     }
@@ -63,7 +64,7 @@ public class LangMainMenu : MonoBehaviour {
      **/
 	public void setTexts(string _currentLang)
     {
-        LangManager.setLanguage(Path.Combine(Application.dataPath, "Resources/XML/lang.xml"), _currentLang);
+        LangManager.setLanguage(textAsset, _currentLang);
 
         start.text = LangManager.getString("start");
         settings.text = LangManager.getString("settings");

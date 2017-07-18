@@ -35,15 +35,15 @@ public class Lang
      
     var LangClass : Lang = new Lang(wwwXML.text, currentLang, true)
     */
-    public Lang(string path, string language, bool web)
+    public Lang(TextAsset text, string language, bool web)
     {
         if (!web)
         {
-            setLanguage(path, language);
+            setLanguage(text, language);
         }
         else
         {
-            setLanguageWeb(path, language);
+            setLanguageWeb(text, language);
         }
     }
 
@@ -57,10 +57,10 @@ public class Lang
     If the XML resource is stored on the web rather than on the local system use the
     setLanguageWeb function
     */
-    public void setLanguage(string path, string language)
+    public void setLanguage(TextAsset text, string language)
     {
         var xml = new XmlDocument();
-        xml.Load(path);
+        xml.LoadXml(text.text);
 
         Strings = new Hashtable();
         var element = xml.DocumentElement[language];
@@ -92,10 +92,10 @@ public class Lang
      
     var LangClass : Lang = new Lang(wwwXML.text, currentLang)
     */
-    public void setLanguageWeb(string xmlText, string language)
+    public void setLanguageWeb(TextAsset text, string language)
     {
         var xml = new XmlDocument();
-        xml.Load(new StringReader(xmlText));
+        xml.LoadXml(text.text);
 
         Strings = new Hashtable();
         var element = xml.DocumentElement[language];
