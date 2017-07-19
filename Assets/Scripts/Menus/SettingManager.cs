@@ -27,20 +27,20 @@ public class SettingManager : MonoBehaviour {
     {
         resolutions = Screen.resolutions;   //Saving all resolutions that the current monitor is able to display
 
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            Screen.fullScreen = gameSettings.fullscreen;
-            Screen.SetResolution(resolutions[gameSettings.resolutionIndex].width, resolutions[gameSettings.resolutionIndex].height, Screen.fullScreen);
-            QualitySettings.masterTextureLimit = gameSettings.textureQuality;
-            QualitySettings.antiAliasing = gameSettings.antialiasing;
-            setMirrors();
+		if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
+			Screen.fullScreen = gameSettings.fullscreen;
+			Screen.SetResolution (resolutions [gameSettings.resolutionIndex].width, resolutions [gameSettings.resolutionIndex].height, Screen.fullScreen);
+			QualitySettings.masterTextureLimit = gameSettings.textureQuality;
+			QualitySettings.antiAliasing = gameSettings.antialiasing;
+			setMirrors ();
 
-        }
+		}
     }
 
     void OnEnable()
-    {
-        gameSettings = new GameSettings();
+	{
+		gameSettings = new GameSettings();
+		Debug.Log(gameSettings.tutorial);
 
         //Listeners for all options, delegating the appropriate methode on change of value
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });

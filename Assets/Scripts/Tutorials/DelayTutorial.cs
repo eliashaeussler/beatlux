@@ -9,6 +9,7 @@ public class DelayTutorial : MonoBehaviour {
 
     void Awake()
     {
+		Debug.Log (Settings.Player.TutorialTog);
         list.Add(GameObject.Find("FocusShape2"));
         list.Add(GameObject.Find("TutorialManager"));
         if (Settings.Player.TutorialTog == true)

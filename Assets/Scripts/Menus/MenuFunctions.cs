@@ -44,6 +44,20 @@ public class MenuFunctions : MonoBehaviour {
 
 	void OnEnable ()
 	{
+		if (!File.Exists (Application.persistentDataPath + "/gamesettings.json")) {
+			gameSettings = new GameSettings ();
+			gameSettings.fullscreen = true;
+			gameSettings.tutorial = true;
+			gameSettings.language = 0;
+			gameSettings.textureQuality = 0;
+			gameSettings.antialiasing = 0;
+			gameSettings.resolutionIndex = Screen.resolutions.Length - 1;
+			gameSettings.mirrors = 2;
+			string jsonData = JsonUtility.ToJson (gameSettings, true);
+			File.WriteAllText (Application.persistentDataPath + "/gamesettings.json", jsonData);
+		}
+
+
 		gameSettings = JsonUtility.FromJson<GameSettings> (File.ReadAllText (Application.persistentDataPath + "/gamesettings.json"));
         textAsset = (TextAsset)Resources.Load("XML/lang");
         if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
