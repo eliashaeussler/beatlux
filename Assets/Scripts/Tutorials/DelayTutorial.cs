@@ -9,7 +9,7 @@ public class DelayTutorial : MonoBehaviour {
 
     void Awake()
     {
-        list.Add(GameObject.Find("FocusShape"));
+        list.Add(GameObject.Find("FocusShape2"));
         list.Add(GameObject.Find("TutorialManager"));
         if (Settings.Player.TutorialTog == true)
         {
@@ -19,9 +19,14 @@ public class DelayTutorial : MonoBehaviour {
         }
         else
         {
-            GameObject.Find("FocusShape2").SetActive(false);
-            GameObject.Find("TutorialManager").SetActive(false);
-            Temp = false;
+            if (GameObject.Find("FocusShape2")||GameObject.Find("TutorialManager"))
+            {
+                GameObject.Find("FocusShape2").SetActive(false);
+                GameObject.Find("TutorialManager").SetActive(false);
+                Temp = false;
+
+            }
+            
         }
     }
 
@@ -31,7 +36,7 @@ public class DelayTutorial : MonoBehaviour {
         {
             list[0].SetActive(Settings.Player.TutorialTog);
             list[1].SetActive(Settings.Player.TutorialTog);
-            if (list[1].GetComponent<TutorialManager3>())
+            if (list[1].GetComponent<TutorialManager3>()&&Temp==true)
             {
                 list[1].GetComponent<TutorialManager3>().Init();
             }
