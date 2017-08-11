@@ -1,8 +1,7 @@
 # beatlux
-
-# Synopsis
 Beatlux is a music visualisation software. It features a music player with all the standard functions, as well as some visualisations that react to the music that is playing. You are able to create playlists, customize the visualisations and move through the visualisations freely.
-# Code Example
+
+## Code Example
     
     
       void Start()
@@ -26,18 +25,18 @@ Beatlux is a music visualisation software. It features a music player with all t
 
           }
 New visualisations can be added to the programm as a new scene in Unity. They also have to be added to the database "beatlux.db".
-# Motivation
+## Motivation
 The creation of Beatlux was the result of a student project of the study course "Media-Informatics" at Harz University of Applied Science Wernigerode. The task was to visualize music in any form, so we decided to create a program that does just that.
-# Installation
+## Installation
 To install the program, simply download the appropriate files for your operating system from our website, beatlux.hs-harz.de and run it on your computer.
-# API Reference
+## API Reference
 https://unity3d.com/de/get-unity/download
 https://docs.unity3d.com/ScriptReference/
-# Tests
+## Tests
 Build the project in Unity for your operating system, run it and try it out.
-Contributors
+## Contributors
 Anyone who wants to participate in the development of Beatlux can simply fork the project and change anything, since it's open source.
-# License
+## License
 The MIT License (MIT)
 Copyright (c) 2016 Judah Perez
  
