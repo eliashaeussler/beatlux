@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour {
 	{
 		// Set start button
 		if (Settings.Active.Visualization != null) {
-			start.GetComponent<Text> ().text = "Fortsetzen";
+			start.GetComponent<Text> ().text = Settings.MenuManager.LangManager.getString ("continue");
 		}
 
 		// Set start button click event

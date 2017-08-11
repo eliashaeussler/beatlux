@@ -10,6 +10,10 @@ using UnityEngine.UI;
 
 public class MenuFunctions : MonoBehaviour {
 
+	public GameSettings gameSettings;
+	public Lang LangManager;
+	protected string currentLang = "English";
+
 	public AudioSource audio;
 	public GameObject player;
 	public GameObject playerControl;
@@ -22,9 +26,9 @@ public class MenuFunctions : MonoBehaviour {
 		set { _sett = value; }
 	}
 
+    TextAsset textAsset;
 
-
-	void Start ()
+    void Start ()
 	{
 		// Set MenuManager
 		Settings.MenuManager = this;
@@ -34,7 +38,44 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Load main menu
 		StartLevel (defaultStart);
-	}
+
+        
+    }
+
+	void OnEnable ()
+	{
+		if (!File.Exists (Application.persistentDataPath + "/gamesettings.json")) {
+			gameSettings = new GameSettings ();
+			gameSettings.fullscreen = true;
+			gameSettings.tutorial = true;
+			gameSettings.language = 0;
+			gameSettings.textureQuality = 0;
+			gameSettings.antialiasing = 0;
+			gameSettings.resolutionIndex = Screen.resolutions.Length - 1;
+			gameSettings.mirrors = 2;
+			string jsonData = JsonUtility.ToJson (gameSettings, true);
+			File.WriteAllText (Application.persistentDataPath + "/gamesettings.json", jsonData);
+		}
+
+
+		gameSettings = JsonUtility.FromJson<GameSettings> (File.ReadAllText (Application.persistentDataPath + "/gamesettings.json"));
+        textAsset = (TextAsset)Resources.Load("XML/lang");
+        if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
+			switch (gameSettings.language) {
+			case 0:
+				currentLang = "English";
+				break;
+
+			case 1:
+				currentLang = "German";
+				break;
+
+			default:
+				break;
+			}
+		}
+        LangManager = new Lang(textAsset, currentLang, false);
+    }
 
 
 
@@ -64,7 +105,7 @@ public class MenuFunctions : MonoBehaviour {
 	{
 		// Set default visualization
 		if (Settings.Selected.Visualization == null) {
-			Settings.Selected.Visualization = Settings.Defaults.Visualization;
+			Settings.Selected.Visualization = Settings.Visualizations.First ();
 		}
 
 		// Set default color scheme
@@ -213,5 +254,14 @@ public class MenuFunctions : MonoBehaviour {
 			if (viz.BuildNumber == level) return true;
 
 		return false;
+	}
+
+	public static void ToggleStart ()
+	{
+		// Get start button reference
+		GameObject start = GameObject.Find ("Canvas/Wrapper/Start");
+
+		// Show or hide start button
+		start.SetActive (Settings.Selected.Playlist != null || Settings.Selected.Visualization != null);
 	}
 }

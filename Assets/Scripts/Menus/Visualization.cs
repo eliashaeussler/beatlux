@@ -7,11 +7,13 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Linq;
+using System.IO;
 using UnityEngine.SceneManagement;
 
 public class Visualization : MonoBehaviour {
 
-	// Color schemes
+
+    // Color schemes
     public List<VisualizationObj> Visualizations = new List<VisualizationObj> ();
 
 	// Color scheme object
@@ -19,20 +21,13 @@ public class Visualization : MonoBehaviour {
 
 	public static List<VisualizationObj> tempViz;
 
-
-
-	void Start ()
+    void Start ()
 	{
 		// Select visualizations from database
 		Load ();
 
 		// Set selected elements
 		MenuFunctions.SetSelected ();
-
-		// Set start button
-		if (Settings.Active.File != null) {
-			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = "Fortsetzen";
-		}
 
 		// Display visualizations
 		Display ();
@@ -41,8 +36,15 @@ public class Visualization : MonoBehaviour {
 		ColorSchemes.Display ();
 
         // Close database connection
-        Database.Close ();
-	
+		Database.Close ();
+
+		// Show or hide start button
+		MenuManager.ToggleStart ();
+
+		// Set start button
+		if (Settings.Active.File != null) {
+			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = Settings.MenuManager.LangManager.getString("continue");
+		}
 	}
 
 
@@ -129,6 +131,9 @@ public class Visualization : MonoBehaviour {
 
 						ColorSchemes.Display ();
 						Display ();
+
+						// Show or hide start button
+						MenuManager.ToggleStart ();
 					}
 
 				});

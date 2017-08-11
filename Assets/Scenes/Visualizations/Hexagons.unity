@@ -262,6 +262,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000010517455736, guid: 789156f6b79d96845a01868fed4fa6df,
+        type: 2}
+      propertyPath: permitmove
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000011453730154, guid: 789156f6b79d96845a01868fed4fa6df, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 789156f6b79d96845a01868fed4fa6df, type: 2}
@@ -295,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac85cf1190a5e84890e793bbcb86a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hex: {fileID: 1000010203229858, guid: dffb59621e60aa04ca733567f32eba89, type: 2}
+  hex: {fileID: 1000013087856214, guid: f971c8e0fdac7c9498c651ae92dd6241, type: 2}
   hexNumber: 35
   newScale: 4000
   timing: 1

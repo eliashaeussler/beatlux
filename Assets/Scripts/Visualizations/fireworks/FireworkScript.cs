@@ -58,7 +58,7 @@ public class FireworkScript : MonoBehaviour {
         }
         bassMax = AudioPeer.freqBands[0];
 
-        // if below a certain threshhold, nothing happens
+        // if below a certain threshhold, nothing happens, else particles are created
         if (AudioPeer.freqBands[band] <= 0)
         {
             this.GetComponent<ParticleSystem>().Stop();
@@ -67,7 +67,6 @@ public class FireworkScript : MonoBehaviour {
         {
             this.GetComponent<ParticleSystem>().Play();
             this.GetComponent<ParticleSystem>().startSpeed = 10+ 25 * AudioPeer.freqBands[band]+extraHeight;
-            //this.GetComponent<ParticleSystem>().startLifetime = 0.5f + AudioPeer.freqBands[band];
             this.GetComponent<ParticleSystem>().emission.SetBursts(
                 new ParticleSystem.Burst[]{
                 new ParticleSystem.Burst(0, (short)(10*AudioPeer.freqBands[band]))
@@ -94,6 +93,7 @@ public class FireworkScript : MonoBehaviour {
             }
 
             var children2 = this.GetComponentsInChildren<Transform>();
+            // for each subemmitter another subemitter is created
             foreach (var child1 in children2)
             {
                 if (child1.name == "SubEmitterBirth2")

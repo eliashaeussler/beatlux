@@ -1,30 +1,49 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Mono.Data.Sqlite;
-using System.Data;
-using System;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+using Mono.Data.Sqlite;
+
+using System;
+using System.Collections;
+using System.Data;
+using System.Collections.Generic;
+using System.IO;
+
+/// <summary>
+/// Provides methods to display color schemes of a given visualization inside the UI.
+/// </summary>
 public class ColorScheme : MonoBehaviour {
-	
-	// Dialog reference
+
+	/// <summary>
+	/// Dialog to display info messages and to provide user input ability.
+	/// </summary>
 	public Dialog Dialog;
 
-    // Color schemes
+    /// <summary>
+    /// List of available color schemes of the selected visualization.
+    /// </summary>
 	public static List<ColorSchemeObj> ColorSchemes;
 
-	// Color Picker GameObject
+	/// <summary>
+	/// The <see cref="UnityEngine.GameObject" /> holding the color picker.
+	/// </summary>
 	public GameObject ColorPicker;
 
-	// Color Picker Script
+	/// <summary>
+	/// The color picker object which provides methods for the user to select any color for a color scheme.
+	/// </summary>
 	public ColorPicker PickerObj;
 
-	// Current selected color
+	/// <summary>
+	/// The current by the user selected color.
+	/// </summary>
 	public static GameObject ActiveColor;
-	public static int ActiveColorID;
 
+	/// <summary>
+	/// The id of the current by the user selected color.
+	/// </summary>
+	public static int ActiveColorID;
 
 
 	void Start ()
@@ -33,10 +52,11 @@ public class ColorScheme : MonoBehaviour {
 		PickerObj.onValueChanged.AddListener (col => {
 			UpdateColor (Settings.Selected.ColorScheme, ActiveColorID, col);
 		});
+
+		// Show or hide start button
+		MenuManager.ToggleStart ();
 	}
-
-
-
+		
 	public void Display ()
 	{
 		if (Database.Connect ())
@@ -163,6 +183,10 @@ public class ColorScheme : MonoBehaviour {
 			// Add text
 			Text text = mainText.AddComponent<Text> ();
 			text.text = colorScheme.Name;
+
+			if (colorScheme.Name == Settings.Selected.Visualization.Name) {
+				text.text += " (Standard)";
+			}
 
 			// Set text alignment
 			text.alignment = TextAnchor.MiddleLeft;
@@ -407,6 +431,43 @@ public class ColorScheme : MonoBehaviour {
 
 				});
 			}
+			else
+			{
+				// Create Overlay GameObject
+				GameObject overlay = new GameObject ("Overlay");
+				overlay.transform.SetParent (image.transform);
+
+				// Add RectTransform
+				RectTransform trans = overlay.AddComponent<RectTransform> ();
+				trans.anchorMin = Vector2.zero;
+				trans.anchorMax = Vector2.one;
+				trans.offsetMin = Vector2.zero;
+				trans.offsetMax = Vector2.zero;
+
+				// Add Image
+				Image overlayImg = overlay.AddComponent<Image> ();
+				overlayImg.color = new Color (0, 0, 0, 0.5f);
+
+
+				// Create Text GameObject
+				GameObject text = new GameObject ("Text");
+				text.transform.SetParent (overlay.transform);
+
+				// Add RectTransform
+				RectTransform textTrans = text.AddComponent<RectTransform> ();
+				textTrans.anchorMin = Vector2.zero;
+				textTrans.anchorMax = Vector2.one;
+				textTrans.offsetMin = Vector2.zero;
+				textTrans.offsetMax = Vector2.zero;
+
+				// Add Text
+				TextUnicode textText = text.AddComponent<TextUnicode> ();
+				textText.text = IconFont.LOCK;
+				textText.color = Color.white;
+				textText.font = IconFont.font;
+				textText.fontSize = 24;
+				textText.alignment = TextAnchor.MiddleCenter;
+			}
 		}
 	}
 
@@ -590,8 +651,8 @@ public class ColorScheme : MonoBehaviour {
 				if (Settings.Selected.Visualization != null)
 				{
 					// UI elements
-					Dialog.SetHeading ("Neues Farbschema erstellen");
-					Dialog.SetInputField ("", "Wie soll das neue Farbschema heißen?");
+					Dialog.SetHeading (Settings.MenuManager.LangManager.getString("newColor"));
+					Dialog.SetInputField("", Settings.MenuManager.LangManager.getString("nameColor"));
 
 					// Events
 					button.onClick.AddListener (delegate {
@@ -603,19 +664,19 @@ public class ColorScheme : MonoBehaviour {
 						// Color scheme name already taken
 						case (long) Database.Constants.DuplicateFound:
 
-							Dialog.SetInfo ("Ein Farbschema mit diesem Namen ist für die ausgewählte Visualisierung bereits vorhanden.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsColor"));
 							break;
 
 						// Database query failed
 						case (long) Database.Constants.QueryFailed:
 
-							Dialog.SetInfo ("Das Farbschema konnte nicht erstellt werden.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noColor"));
 							break;
 
 						// No user input
 						case (long) Database.Constants.EmptyInputValue:
 
-							Dialog.SetInfo ("Bitte geben Sie einen Namen für das Farbschema ein.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("nameColor"));
 							break;
 
 						default:
@@ -628,9 +689,10 @@ public class ColorScheme : MonoBehaviour {
 				}
 				else
 				{
+					print (Settings.MenuManager.LangManager);
 					Dialog.ShowDialog (
-						"Keine Visualisierung ausgewählt",
-						"Bitte wählen Sie eine Visualisierung aus, um ein neues Farbschema hinzuzufügen."
+						Settings.MenuManager.LangManager.getString("noChosenColor"),
+						Settings.MenuManager.LangManager.getString("chooseColor")
 					);
 				}
 
@@ -644,7 +706,7 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-					Dialog.SetHeading ("Farbschema bearbeiten");
+					Dialog.SetHeading(Settings.MenuManager.LangManager.getString("editColor"));
 					Dialog.SetInputField (colorScheme.Name, colorScheme.Name);
 
 					// Events
@@ -665,19 +727,19 @@ public class ColorScheme : MonoBehaviour {
 						// Color scheme name already taken
 						case (long) Database.Constants.DuplicateFound:
 
-							Dialog.SetInfo ("Ein Farbschema mit diesem Namen ist für die ausgewählte Visualisierung bereits vorhanden.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("existsColor"));
 							break;
 
 						// Database query failed
 						case (long) Database.Constants.QueryFailed:
 
-							Dialog.SetInfo ("Das Farbschema konnte nicht aktualisiert werden.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("noEditColor"));
 							break;
 
 						// No user input
 						case (long) Database.Constants.EmptyInputValue:
 
-							Dialog.SetInfo ("Bitte geben Sie einen Namen für das Farbschema ein.");
+							Dialog.SetInfo(Settings.MenuManager.LangManager.getString("nameColor"));
 							break;
 
 						default:
@@ -705,8 +767,8 @@ public class ColorScheme : MonoBehaviour {
 				if (colorScheme != null)
 				{
 					// UI elements
-					Dialog.SetHeading ("Farbschema löschen");
-					Dialog.SetText ("Farbschema \"" + colorScheme.Name + "\" endgültig löschen?");
+					Dialog.SetHeading(Settings.MenuManager.LangManager.getString("deleteColor"));
+					Dialog.SetText (Settings.MenuManager.LangManager.getString("sureDelete"));
 
 					// Events
 					button.onClick.AddListener (delegate {

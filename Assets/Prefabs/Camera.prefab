@@ -19,9 +19,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000012003117000}
-  - 114: {fileID: 114000010517455736}
-  - 114: {fileID: 114000011751511550}
-  - 54: {fileID: 54000013263331746}
   - 135: {fileID: 135000012922007996}
   - 114: {fileID: 114000011099100404}
   m_Layer: 0
@@ -42,6 +39,9 @@ GameObject:
   - 20: {fileID: 20000014242465894}
   - 92: {fileID: 92000012439039006}
   - 124: {fileID: 124000012052415240}
+  - 54: {fileID: 54000011606262274}
+  - 114: {fileID: 114000013050108824}
+  - 114: {fileID: 114000011310631126}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -110,12 +110,12 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
---- !u!54 &54000013263331746
+--- !u!54 &54000011606262274
 Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012422047624}
+  m_GameObject: {fileID: 1000014020994800}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -123,7 +123,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 64
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!92 &92000012439039006
 Behaviour:
@@ -132,20 +132,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014020994800}
   m_Enabled: 1
---- !u!114 &114000010517455736
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012422047624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01157996499882346960eb11dfa07912, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
-  mouseSensitivity: 3
-  permitmove: 1
 --- !u!114 &114000011099100404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,12 +145,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boundaries: {fileID: 1000012909584292, guid: e5610e272d07507469d6e3d5d325e8a7, type: 2}
   mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
---- !u!114 &114000011751511550
+  mirrorsOnOff: 0
+--- !u!114 &114000011310631126
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012422047624}
+  m_GameObject: {fileID: 1000014020994800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01157996499882346960eb11dfa07912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 10
+  mouseSensitivity: 3
+  permitmove: 0
+--- !u!114 &114000013050108824
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014020994800}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e504b8cabb0ae1047b88209c4d74aca3, type: 3}

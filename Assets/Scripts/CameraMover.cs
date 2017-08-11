@@ -10,12 +10,14 @@ public class CameraMover : MonoBehaviour {
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
-    private bool permitmove = true;
+    private bool permitmove = false;
     private bool resetPosition = false;
    
 
     
-
+    /**
+     * Set camera in the right position
+     **/
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -23,6 +25,9 @@ public class CameraMover : MonoBehaviour {
         spawnRotation = rb.rotation;
     }
 
+    /**
+     * Actual movement of the camera
+     **/
     void FixedUpdate()
     {
         if (resetPosition)
@@ -40,6 +45,18 @@ public class CameraMover : MonoBehaviour {
        
     }
 
+    /**
+     * Prevent z-movement of camera
+     **/
+    protected void LateUpdate()
+    {
+        transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
+    }
+
+
+    /**
+     * Handover of inputs from controller
+     **/
     public void Move(Vector3 _velocity)
     {
         velocity = _velocity;
@@ -61,6 +78,10 @@ public class CameraMover : MonoBehaviour {
 
     }
 
+
+    /**
+     * Camera movement
+     **/
     void PerformMovement()
     {
         if (velocity != Vector3.zero)
@@ -70,6 +91,9 @@ public class CameraMover : MonoBehaviour {
 
     }
 
+    /**
+     * Camera Rotation
+     **/
     void PerformRotation()
     {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));

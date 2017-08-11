@@ -16,6 +16,9 @@ public class Player : MonoBehaviour {
 	// Volume rotation constants
 	public static int VOLUME_ROTATION_MAX = 137;
 
+	// Color rotation constants
+	public static int COLOR_ROTATION_MAX = 138;
+
 
 
 	// Audio source and clip
@@ -34,10 +37,10 @@ public class Player : MonoBehaviour {
 	public Text artist;
 	public Text visualization;
 	public Slider timeline;
-	public Transform volumeLeft;
-	public Transform volumeRight;
-	public Slider volumeSliderLeft;
-	public Slider volumeSliderRight;
+	public Transform volumeCircle;
+	public Slider volumeSlider;
+	public Transform colorCircle;
+	public Transform colorElement;
 
 	// Defines player states (set by user or default)
 	private bool userChangedSlider = false;
@@ -60,13 +63,15 @@ public class Player : MonoBehaviour {
 
 	void Update ()
 	{
-		// Set visualization
-		if (Settings.Active.Visualization != null) {
+		// Set visualization and colors from color scheme
+		if (Settings.Active.Visualization != null)
+		{
 			visualization.text = Settings.Active.Visualization.Name;
+			SetColors ();
 		}
 
 		// Update UI elements
-		ToggleRepeat (Settings.Player.Repeat);
+		ToggleRepeat (Settings.Player.RepeatMode);
 		UpdatePlayButton ();
 		UpdateSlider ();
 
@@ -84,10 +89,13 @@ public class Player : MonoBehaviour {
 		}
 
 		// Play next file
-		if (Settings.Selected.File == null && files.Count > 0 && audio.clip != null && audio.time == audio.clip.length) {
+		if (Settings.Selected.File == null && files.Count > 0 && audio.clip != null && !audio.isPlaying && continuePlay) {
 			
 			Next ();
 		}
+
+		// Stop playing continously
+		continuePlay = audio.isPlaying;
 
 		// Set current position
 		if (Settings.Selected.File != null) {
@@ -318,12 +326,48 @@ public class Player : MonoBehaviour {
 			audio.volume = value;
 
 			// Update slider
-			if (volumeSliderLeft.value != value) volumeSliderLeft.value = value;
-			if (volumeSliderRight.value != value) volumeSliderRight.value = value;
+			if (volumeSlider.value != value) volumeSlider.value = value;
 
 			// Update UI
-			volumeLeft.rotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
-			volumeRight.rotation = Quaternion.AngleAxis (-value * VOLUME_ROTATION_MAX, Vector3.forward);
+			volumeCircle.localRotation = Quaternion.AngleAxis (value * VOLUME_ROTATION_MAX, Vector3.forward);
+		}
+	}
+
+	public void SetColors ()
+	{
+		if ( (Settings.Active.Visualization != null && Settings.Active.ColorScheme != null)
+			|| (Settings.Active.Visualization.Equals (Settings.Defaults.Visualization)) )
+		{
+			// Get colors from color scheme
+			Color[] colors = Settings.Active.Visualization.Equals (Settings.Defaults.Visualization)
+				? new Color[] { Color.white }
+				: Settings.Active.ColorScheme.Colors;
+
+			// Add or remove color elements
+			if (colorCircle.childCount < colors.Length)
+			{
+				for (int i=0; i < colors.Length - colorCircle.childCount; i++)
+				{
+					Instantiate (colorElement, colorCircle);
+				}
+			}
+			else if (colorCircle.childCount > colors.Length)
+			{
+				for (int i=colorCircle.childCount-1; i >= colors.Length; i--)
+				{
+					GameObject.DestroyImmediate (colorCircle.GetChild (i).gameObject);
+				}
+			}
+
+			// Set colors and rotation
+			float angle = (float) COLOR_ROTATION_MAX / colors.Length;
+			for (int i=0; i < colors.Length && i < colorCircle.childCount; i++)
+			{
+				Transform child = colorCircle.GetChild (i);
+				child.GetComponent<Image> ().color = colors [i];
+				float rotation = (colors.Length - i) * -angle;
+				child.GetComponent<RectTransform> ().localRotation = Quaternion.AngleAxis (rotation, Vector3.forward);
+			}
 		}
 	}
 
@@ -344,20 +388,30 @@ public class Player : MonoBehaviour {
 	
 	}
 
-	public void ToggleRepeat () {
-		ToggleRepeat (!Settings.Player.Repeat);
+	public void ToggleRepeat ()
+	{
+		if (Settings.Player.RepeatMode < 1) {
+			Settings.Player.RepeatMode++;
+		} else {
+			Settings.Player.RepeatMode = -1;
+		}
+		ToggleRepeat (Settings.Player.RepeatMode);
 	}
 
-	public void ToggleRepeat (bool state)
+	public void ToggleRepeat (int mode)
 	{
 		// Change loop
-		Settings.Player.Repeat = state;
-		audio.loop = state;
+		Settings.Player.RepeatMode = mode;
+		audio.loop = mode == 1;
 
 		// Update UI
-		repeat.GetComponent<Text> ().color = audio.loop
-			? COLOR_ENABLED
-			: COLOR_DISABLED;
+		Text text = repeat.GetComponent<Text> ();
+		text.text = mode == 1
+			? IconFont.REPEAT_SINGLE
+			: IconFont.REPEAT;
+		text.color = mode == -1
+			? COLOR_DISABLED
+			: COLOR_ENABLED;
 	}
 
 
@@ -367,12 +421,17 @@ public class Player : MonoBehaviour {
 	// Play next clip
 	public void Next ()
 	{
-		Settings.Selected.File = GetFile (1);
+		if (position < files.Count - 1 || (position == files.Count - 1 && (Settings.Player.RepeatMode == 0 || !continuePlay)))
+		{
+			continuePlay = true;
+			Settings.Selected.File = GetFile (1);
+		}
 	}
 
 	// Play previous clip
 	public void Previous ()
 	{
+		continuePlay = true;
 		Settings.Selected.File = GetFile (-1);
 	}
 	

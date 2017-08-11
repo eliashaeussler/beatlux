@@ -37,7 +37,7 @@ public class Area : MonoBehaviour {
 			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
 			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y) {
 
-			canvas.ShowPlayer ();
+//			canvas.ShowPlayer ();
 		}
 	}
 

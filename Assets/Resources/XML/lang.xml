@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--><string name=""></string> -->
+<languages>
+   <English>
+        <string name="start">Start</string>
+        <string name="settings">Settings</string>
+        <string name="credits">Credits</string>
+        <string name="exit">Exit</string>
+
+        <string name="fullscreen">Fullscreen</string>
+        <string name="tutorial">Tutorial</string>
+        <string name="language">Language</string>
+        <string name="resolution">Resolution</string>
+        <string name="texture">Texture Quality</string>
+        <string name="aa">Antialiasing</string>
+        <string name="mirrors">Mirror Surfaces</string>
+        <string name="back">Back</string>
+        <string name="save">Save</string>
+
+        <string name="off">Off</string>
+        <string name="low">Low</string>
+        <string name="medium">Medium</string>
+        <string name="high">High</string>
+        <string name="ok">OK</string>
+        <string name="cancel">Cancel</string>
+        <string name="continue">Continue</string>
+
+        <string name="music">Music</string>
+        <string name="viz">Visualisations</string>
+        <string name="plHeader">Create new playlist</string>
+        <string name="plInput">Choose the name of your new playlist</string>
+        <string name="search">Search</string>
+        <string name="newPlaylist">Create a new playlist</string>
+        <string name="namePlaylist">Please name your new playlist</string>
+        <string name="playlist">Playlist</string>
+        <string name="existsPlaylist">A playlist with the chosen name already exists!</string>
+        <string name="noPlaylist">Could not create playlist</string>
+        <string name="editPlaylist">Edit playlist</string>
+        <string name="noEditPlaylist">Could not edit playlist</string>
+        <string name="deletePlaylist">Delete playlist</string>
+        <string name="sureDelete">Are you sure?</string>
+        <string name="color">Colorscheme</string>
+        <string name="newColor">Create a new colorscheme</string>
+        <string name="nameColor">Please name your new colorscheme</string>
+        <string name="noColor">Could not create colorscheme</string>
+        <string name="existsColor">A colorscheme with the chosen name already exists!</string>
+        <string name="noChosenColor">No visualisation chosen</string>
+        <string name="chooseColor">Please choose a visualisation to add a new colorscheme</string>
+        <string name="editColor">Edit colorscheme</string>
+        <string name="noEditColor">Could not edit colorscheme</string>
+        <string name="deleteColor">Delete colorscheme</string>
+        
+     
+        <string name="MM00">
+          <![CDATA[<b>Searchbar</b> - Inputfield for the finding of songs
+
+<b>Filepath</b> - Shows the current path
+
+<b>Song-/Folderlist</b> - List of all songs/folders at the current path
+
+Click left to continue...]]></string>
+     <string name="MM01">
+       <![CDATA[<b>Playlist</b> - List of all current playlists
+
+Create a new playlist with the <b>+</b> symbol]]>
+     </string>
+     <string name="MM02">
+       <![CDATA[<b>Playlist</b> - Give the playlist a name and accept]]>
+     </string>
+     <string name="MM03">
+       <![CDATA[<b>Playlist</b> - Add a new track per Drag&Drop or doubleclicking]]>
+     </string>
+     <string name="MM04">
+       <![CDATA[<b>Tabs</b> - You can switch between Music and Visualisation
+
+Click on the Visualisationtab...]]>
+     </string>
+     <string name="VM00">
+       <![CDATA[<b>Searchbar</b> - Inputfield for searching visualisations
+
+<b>Visualisationlist</b> - List of all available visualisations
+
+Click left to continue...]]>
+     </string>
+     <string name="VM01">
+       <![CDATA[<b>Colorscheme</b> - List of all Colorschemes
+
+Choose a <b>Visualisation</b> on the left
+
+Press <b>+</b> to create a new scheme...]]>
+     </string>
+     <string name="VM02">
+       <![CDATA[<b>Colorscheme</b> - Name your colorscheme]]>
+     </string>
+     <string name="VM03">
+       <![CDATA[<b>Colorselection</b> - Click on one of the boxes to change the color]]>
+     </string>
+     <string name="VM04">
+       <![CDATA[<b>Start</b> - Click the startbutton to start the musicvisualisation]]>
+     </string>
+     <string name="PM00">
+       <![CDATA[<b>Musicplayer</b> - Controls of the musicplayer:
+
+Play/Pause, For-/Backwards, Shuffle, Repeat
+Volume is controllable through the circle...
+
+Increase the volume to continue... ]]>
+     </string>
+     <string name="PM01">
+       <![CDATA[<b>Visualisation</b> - Controls of the Visualisation:
+
+Play/Pause, For-/Backwards, Shuffle
+The circle shows the colorscheme
+
+Click the bobcat to continue...]]>
+     </string>
+     <string name="PM02">
+       <![CDATA[<b>Controls</b>
+
+Spacebar: Switch between player and movementmode
+
+Please press space...	 ]]>
+     </string>
+     <string name="PM03">
+       <![CDATA[<b>Controls</b>
+
+WASD-Keys: Cameramovement
+
+Mousemovement: Camerarotation 
+
+Please use the WASD-Keys...]]>
+     </string>
+     <string name="PM04">
+       <![CDATA[<b>Controls</b>
+
+Shift-Key: Increase speed
+
+R-Key: Reset camera
+
+Please press R and then space to continue...]]>
+     </string>
+     <string name="PM05">
+       <![CDATA[<b>Mainmenu</b>
+
+<b>Settings</b>
+
+<b>Visualisationmenu</b>
+
+<b>Musicmenu</b>
+
+Please click settings to deactivate the tutorial...]]>
+     </string>
+    </English>
+
+    <German>
+        <string name="start">Start</string>
+        <string name="settings">Einstellungen</string>
+        <string name="credits">Credits</string>
+        <string name="exit">Beenden</string>
+
+        <string name="fullscreen">Vollbild</string>
+        <string name="tutorial">Tutorial</string>
+        <string name="language">Sprache</string>
+        <string name="resolution">Auflösung</string>
+        <string name="texture">Texturqualität</string>
+        <string name="aa">Antialiasing</string>
+        <string name="mirrors">Spiegelnde Oberflächen</string>
+        <string name="back">Zurück</string>
+        <string name="save">Speichern</string>
+
+        <string name="off">Aus</string>
+        <string name="low">Niedrig</string>
+        <string name="medium">Mittel</string>
+        <string name="high">Hoch</string>
+        <string name="ok">OK</string>
+        <string name="cancel">Abbrechen</string>
+        <string name="continue">Fortsetzen</string>
+
+        <string name="music">Musik</string>
+        <string name="viz">Visualisierungen</string>
+        <string name="plHeader">Neue Playlist erstellen</string>
+        <string name="plInput">Wähle den Namen der neuen Playlist</string>
+        <string name="search">Suche</string>
+        <string name="newPlaylist">Neue Playlist erstellen</string>
+        <string name="namePlaylist">Wähle den Namen der neuen Playlist</string>
+        <string name="playlist">Playlist</string>
+        <string name="existsPlaylist">Eine Playlist mit diesem Namen existiert bereits!</string>
+        <string name="noPlaylist">Playlist konnte nicht erstellt werden</string>
+        <string name="editPlaylist">Playlist bearbeiten</string>
+        <string name="noEditPlaylist">Playlist konnte nicht bearbeitet werden</string>
+        <string name="deletePlaylist">Playlist löschen</string>
+        <string name="sureDelete">Sicher?</string>
+        <string name="color">Farbschema</string>
+        <string name="newColor">Neues Farbschema erstellen</string>
+        <string name="nameColor">Wähle den Namen des neuen Farbschemas</string>
+        <string name="noColor">Farbschema konnte nicht erstellt werden</string>
+        <string name="existsColor">Ein Farbschema mit diesem Namen existiert bereits!</string>
+        <string name="noChosenColor">Keine Visualisirung ausgewählt</string>
+        <string name="chooseColor">Bitte eine Visualisierung auswählen</string>
+        <string name="editColor">Farbschema bearbeiten</string>
+        <string name="noEditColor">Farbschema konnte nicht bearbeitet werden</string>
+        <string name="deleteColor">Farbschema löschen</string>
+
+      <string name="MM00">
+        <![CDATA[<b>Suchleiste</b> - Eingabefläche zum vereinfachten Auffinden von Songs
+
+<b>Pfadangabe</b> - Anzeige des ausgewählten Pfades
+
+<b>Song-/Ordnerliste</b> - Liste aller Songs/Ordner des aktuellen Pfads
+
+Linksklick um fortzufahren...]]>
+      </string>
+      <string name="MM01">
+        <![CDATA[<b>Playlist</b> - Liste aller erstellten Playlists
+
+Erstelle mit dem <b>+</b> Symbol eine neue Playlist]]>
+      </string>
+      <string name="MM02">
+        <![CDATA[<b>Playlist</b> - Gebe deiner neuen Playlist einen Namen und bestätige]]>
+      </string>
+      <string name="MM03">
+        <![CDATA[<b>Playlist</b> - Füge einen neuen Track per Drag&Drop oder Doppelklick hinzu]]>
+      </string>
+      <string name="MM04">
+        <![CDATA[<b>Tabs</b> - Man kann zwischen Musik und Visualisierung hin und her wechseln.
+
+Klicke nun auf das Visualisierungstab...]]>
+      </string>
+      <string name="VM00">
+        <![CDATA[<b>Suchleiste</b> - Eingabefläche zum Suchen von Visualisierungen
+
+<b>Visualisierungsliste</b> - Liste aller verfügbaren Visualisierungen
+
+Linksklick um fortzufahren...]]>
+      </string>
+      <string name="VM01">
+        <![CDATA[<b>Farbschema</b> - Liste aller Farbschemata
+
+Wähle erst links eine <b>Visualisierung</b> aus
+
+Drücke dann <b>+</b> um ein neues Schema zu erstellen...]]>
+      </string>
+      <string name="VM02">
+        <![CDATA[<b>Farbschema</b> - Benenne dein Schema]]>
+      </string>
+      <string name="VM03">
+        <![CDATA[<b>Farbauswahl</b> - Klicke auf eins der Kästchen um seine Farbe zu ändern]]>
+      </string>
+      <string name="VM04">
+        <![CDATA[<b>Start</b> - Drücke den Startbutton um die Musikvisualisierung zu starten]]>
+      </string>
+      <string name="PM00">
+        <![CDATA[<b>Musikplayer</b> - Steuerung der Musikwiedergabe:
+
+Play/Pause, Lied Vor/Zurück, Shuffle, Repeat
+Lautstärke wird durch den Kreis bestimmt...
+
+Erhöhe die Lautstärke um fortzufahren... ]]>
+      </string>
+      <string name="PM01">
+        <![CDATA[<b>Visualisierung</b> - Steuerung der Visualisierung:
+
+Play/Pause, Visualisierung Vor/Zurück, Shuffle
+Im Kreis wird das Farbschema angezeigt
+
+Klicke auf den Luchs um fortzufahren...]]>
+      </string>
+      <string name="PM02">
+        <![CDATA[<b>Steuerung</b>
+
+Leertaste: Zwischen Player und Bewegungsmodus wechseln
+
+Bitte drücke nun die Leertaste...]]>
+      </string>
+      <string name="PM03">
+        <![CDATA[<b>Steuerung</b>
+
+WASD-Tasten: Kamerabewegungen
+
+Mausbewegung: Kameradrehung 
+
+Benutze bitte jetzt die WASD-Tasten...]]>
+      </string>
+      <string name="PM04">
+        <![CDATA[<b>Steuerung</b>
+
+Umschalttaste: Geschwindigkeit erhöhen
+
+R-Taste: Kamera zurücksetzen
+
+Drücke R und danach Leertaste fortzufahren...]]>
+      </string>
+      <string name="PM05">
+        <![CDATA[<b>Hauptmenü</b>
+
+<b>Einstellungen</b>
+
+<b>Visualisierungsauswahl</b>
+
+<b>Musikauswahl</b>
+
+Drücke auf Einstellungen um das Tutorial zu deaktivieren...]]>
+      </string>
+    </German>
+
+    
+</languages>

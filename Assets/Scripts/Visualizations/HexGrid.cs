@@ -15,7 +15,9 @@ public class HexGrid : MonoBehaviour
     public GameObject tempChild;
     private ColorSchemeObj colorScheme;
 
-    // Use this for initialization
+    /**
+          * Initializing the scene, creating a field of hexagons shaped like a triangle.
+          **/
     void Start()
     {
         Vector3 pos = new Vector3(startPos.x, startPos.y, startPos.z);
@@ -42,7 +44,7 @@ public class HexGrid : MonoBehaviour
         colorScheme = Settings.Active.ColorScheme;
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 

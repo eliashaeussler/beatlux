@@ -109,7 +109,7 @@ public class VizPlayer : MonoBehaviour {
 			Settings.Selected.Visualization = null;
 
 			// Keep player active
-			canvas.KeepPlayer ();
+//			canvas.KeepPlayer ();
 		}
 	}
 
