@@ -36,6 +36,17 @@ Just build the project in Unity for your operating system, run it and try it out
 ## Contributors
 Anyone who wants to participate in the development of Beatlux can simply fork the project and change anything, since it's open source.
 
+## Used packages and resources
+* mpg123.net (http://mpg123.net/)
+* SQLite (https://www.sqlite.org/)
+* TagLib# (https://github.com/mono/taglib-sharp)
+* HSV-Color-Picker-Unity (https://github.com/judah4/HSV-Color-Picker-Unity/tree/master/Assets/HSVPicker)
+* beatlux Font (created using IcoMoon: https://icomoon.io/)
+* Skybox Purple Nebula (https://www.assetstore.unity3d.com/en/#!/content/2967)
+* TextUnicode.cs (http://forum.unity3d.com/threads/image-fonts-fontawesome.281746/#post-1862245)
+* MainThreadDispatcher.cs (https://github.com/PimDeWitte/UnityMainThreadDispatcher)
+* Mutli-Lang Support (https://forum.unity3d.com/threads/add-multiple-language-support-to-your-unity-projects.206271/)
+
 ## License
 The MIT License (MIT)
 Copyright (c) 2016 Judah Perez
