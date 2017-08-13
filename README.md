@@ -24,7 +24,7 @@ New visualisations can be added to the programm as a new scene in Unity. They al
 The creation of Beatlux was the result of a student project of the study course "Media-Informatics" at Harz University of Applied Science Wernigerode. The task was to visualize music in any form, so we decided to create a program that does just that.
 
 ## Installation
-To install the program, simply download the appropriate files for your operating system from our website, beatlux.hs-harz.de and run it on your computer.
+To install the program, simply download the appropriate files for your operating system from our website (http://beatlux.hs-harz.de) and run it on your computer.
 
 ## API Reference
 https://unity3d.com/de/get-unity/download
