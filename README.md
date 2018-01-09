@@ -3,6 +3,8 @@
 # beatlux
 Beatlux is a music visualisation software. It features a music player with all the standard functions, as well as some visualisations that react to the music that is playing. You are able to create playlists, customize the visualisations and move through the visualisations freely.
 
+[![Build Status](https://travis-ci.org/eliashaeussler/beatlux.svg?branch=master)](https://travis-ci.org/eliashaeussler/beatlux)
+
 ## Code Example
     void Start()
     {
