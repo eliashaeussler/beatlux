@@ -93,6 +93,5 @@ public class LangMainMenu : MonoBehaviour {
         mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("off")));
         mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
         mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
-        Debug.Log("Texts set to " + _currentLang);
     }
 }

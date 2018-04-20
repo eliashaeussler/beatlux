@@ -40,7 +40,6 @@ public class SettingManager : MonoBehaviour {
     void OnEnable()
 	{
 		gameSettings = new GameSettings();
-		Debug.Log(gameSettings.tutorial);
 
         //Listeners for all options, delegating the appropriate methode on change of value
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
@@ -74,7 +73,6 @@ public class SettingManager : MonoBehaviour {
     public void OnTutorialToggle()
     {
         gameSettings.tutorial = tutorialToggle.isOn;
-        Debug.Log(gameSettings.tutorial);
         Settings.Player.TutorialTog = gameSettings.tutorial;
     }
 
