@@ -26,7 +26,7 @@ public class Settings {
 		public static VisualizationObj Visualization;
 		public static ColorSchemeObj ColorScheme;
 
-		public static int Scene = 1;
+		public static int Scene = 0;
 	}
 
 	//-- OPENED ELEMENTS
