@@ -38,7 +38,6 @@ public class MenuFunctions : MonoBehaviour {
 
 		// Load main menu
 		StartLevel (defaultStart);
-
         
     }
 
@@ -81,25 +80,25 @@ public class MenuFunctions : MonoBehaviour {
 
 	public void StartLevel (int level)
 	{
-		if (Application.CanStreamedLevelBeLoaded (level))
-		{
-			// Start level
-			SceneManager.LoadScene (level, LoadSceneMode.Additive);
-
-			// Destroy unused GameObjects
-			SceneManager.sceneLoaded += delegate {
-
-				DestroyOld ();
-			};
-
-			// Update skybox and unload last scene
-			SceneManager.sceneLoaded += delegate {
-
-				SetLevel (level);
-
-			};
+		if (Application.CanStreamedLevelBeLoaded (level)) {
+			StartCoroutine (StartLevelAsync (level));
 		}
     }
+
+	private IEnumerator StartLevelAsync (int level)
+	{
+		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync (level, LoadSceneMode.Additive);
+
+		while (!asyncLoad.isDone) {
+			yield return null;
+		}
+
+		// Destroy unused GameObjects
+		DestroyOld ();
+
+		// Update skybox and unload last scene
+		SetLevel (level);
+	}
 
 	public VisualizationObj NextVisualization ()
 	{
@@ -185,7 +184,9 @@ public class MenuFunctions : MonoBehaviour {
 		}
 
 		// Unload last scene
-		SceneManager.UnloadScene (Settings.Active.Scene);
+		if (Settings.Active.Scene > 0) {
+			SceneManager.UnloadSceneAsync (Settings.Active.Scene);
+		}
 		Settings.Active.Scene = level;
 	}
 
