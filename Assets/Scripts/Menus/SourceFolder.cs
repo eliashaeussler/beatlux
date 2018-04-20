@@ -278,7 +278,7 @@ public class SourceFolder : MonoBehaviour {
 			// Dispose current thread
 			if (thread != null && thread.IsBusy) {
 				thread.Abort ();
-				thread.Dispose ();
+				// thread.Dispose ();
 			}
 
 			// Initalize thread
