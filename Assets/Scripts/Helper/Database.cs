@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
+ */
+
+using UnityEngine;
 using UnityEngine.UI;
-
 using Mono.Data.Sqlite;
-
 using System;
 using System.Collections;
 using System.Data;
 using System.Collections.Generic;
 using System.IO;
+
 
 /// <summary>
 /// Offers connection to the local database. It should be only one connection opened

@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/*
+ * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +10,7 @@ using System.IO;
 using UnityEngine.EventSystems;
 using System;
 using System.Linq;
+
 
 public class SourceFolder : MonoBehaviour {
 

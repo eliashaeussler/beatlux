@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
+ */
+
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.IO;
@@ -7,6 +11,7 @@ using System;
 using System.Threading;
 using System.Linq;
 using UnityEngine.UI;
+
 
 public class MenuFunctions : MonoBehaviour {
 

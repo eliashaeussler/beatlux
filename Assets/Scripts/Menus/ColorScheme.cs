@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
+ */
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
 using Mono.Data.Sqlite;
-
 using System;
 using System.Collections;
 using System.Data;
 using System.Collections.Generic;
 using System.IO;
+
 
 /// <summary>
 /// Provides methods to display color schemes of a given visualization inside the UI.
