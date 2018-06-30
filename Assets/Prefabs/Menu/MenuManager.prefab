@@ -51,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61bf73710d3d4fbb8a8cad93031c403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audio: {fileID: 0}
-  player: {fileID: 0}
-  defaultStart: 0
+  Audio: {fileID: 0}
+  Player: {fileID: 0}
+  DefaultStart: 0

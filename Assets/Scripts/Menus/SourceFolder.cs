@@ -2,401 +2,372 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using UnityEngine.EventSystems;
-using System;
-using System.Linq;
+
+public class SourceFolder : MonoBehaviour
+{
+    private const float DblClickWait = 0.5f;
+
+    private static readonly string[] SupportedFormats =
+    {
+        ".mp3",
+        ".ogg",
+        ".wav",
+        ".aif",
+        ".aiff",
+        ".m4a"
+    };
+
+    private static List<string> _sDirs;
+    private static List<string> _sFiles;
+    private static bool _searching;
+
+    private Coroutine _dblClick;
+    private GameObject _dblClickGo;
+    private BackgroundThread _thread;
 
 
-public class SourceFolder : MonoBehaviour {
+    private void Start()
+    {
+        // Set main path
+        Settings.Source.Main = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
-	public static string[] SupportedFormats =
-	{
-		".mp3",
-		".ogg",
-		".wav",
-		".aif",
-		".aiff"
-	};
+        // Set current path
+        if (Settings.Source.Current == null) Settings.Source.Current = Settings.Source.Main;
 
-	public static List<String> sDirs;
-	public static List<String> sFiles;
-	public static bool Searching;
-	private BackgroundThread thread;
+        // Display files and folders for main path
+        Initialize(Directory.Exists(Settings.Source.Current) ? Settings.Source.Current : Settings.Source.Main);
+    }
 
-	private Coroutine dblClick;
-	private GameObject dblClickGo;
-	private float dblClickWait = 0.5f;
+    private static void Initialize()
+    {
+        Initialize(Settings.Source.Current ?? Settings.Source.Main);
+    }
 
+    private static void Initialize(string path)
+    {
+        // path and objects are initialised
+        Settings.Source.Current = path;
 
-	
-	void Start ()
-	{
-		// Set main path
-		Settings.Source.Main = @Environment.GetFolderPath (Environment.SpecialFolder.MyMusic);
+        // Get files and folders
+        var directories = GetDirs(Settings.Source.Current);
+        var files = GetFiles(Settings.Source.Current);
 
-		// Set current path
-		if (Settings.Source.Current == null) Settings.Source.Current = Settings.Source.Main;
-
-		// Display files and folders for main path
-		Initialize (Directory.Exists (Settings.Source.Current) ? Settings.Source.Current : Settings.Source.Main);
-	}
-
-	public static void Initialize ()
-	{
-		Initialize (Settings.Source.Current ?? Settings.Source.Main);
-	}
-
-	public static void Initialize (string Path)
-	{
-		// path and objects are initialised
-		Settings.Source.Current = Path;
-
-		// Get files and folders
-		List<string> directories = GetDirs (Settings.Source.Current);
-		List<string> files = GetFiles (Settings.Source.Current);
-
-		// Show files and folders
-		Display (directories, files, false);
-	}
+        // Show files and folders
+        Display(directories, files, false);
+    }
 
 
-	public static void Display (List<string> Directories, List<string> Files, bool FromSearch)
-	{
-		// Delete all previous created GameObjects
-		DestroyAll ();
+    private static void Display(IEnumerable<string> directories, IEnumerable<string> files, bool fromSearch)
+    {
+        // Delete all previous created GameObjects
+        DestroyAll();
 
-		// Scroll to top
-		if (!FromSearch) GameObject.Find ("Files").GetComponent<ScrollRect> ().verticalScrollbar.value = 1;
+        // Scroll to top
+        if (!fromSearch) GameObject.Find("Files").GetComponent<ScrollRect>().verticalScrollbar.value = 1;
 
-		// Combine directories and folders
-		List<string> results = new List<string> (Directories);
-		int lastDirectory = results.Count;
-		results.AddRange (Files);
+        // Combine directories and folders
+        var results = new List<string>(directories);
+        var lastDirectory = results.Count;
+        results.AddRange(files);
 
-		// Get current GameObject
-		GameObject gameObject = GameObject.Find ("FileContent");
+        // Get current GameObject
+        var gameObject = GameObject.Find("FileContent");
 
-		// Create item for ech entry in results
-		foreach (string item in results)
-		{
-			// Test if item is directory
-			bool isDir = Directory.Exists (item);
+        // Create item for ech entry in results
+        foreach (var item in results)
+        {
+            // Test if item is directory
+            var isDir = Directory.Exists(item);
 
-			// Create GameObject
-			GameObject obj = new GameObject (item);
-			obj.transform.SetParent (gameObject.transform);
+            // Create GameObject
+            var obj = new GameObject(item);
+            obj.transform.SetParent(gameObject.transform);
 
-			// Add Horizontal Layout Group
-			HorizontalLayoutGroup hlg = obj.AddComponent<HorizontalLayoutGroup> ();
-			hlg.spacing = 20;
-			hlg.childAlignment = TextAnchor.MiddleLeft;
-			hlg.childForceExpandWidth = false;
-			hlg.childForceExpandHeight = true;
+            // Add Horizontal Layout Group
+            var hlg = obj.AddComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 20;
+            hlg.childAlignment = TextAnchor.MiddleLeft;
+            hlg.childForceExpandWidth = false;
+            hlg.childForceExpandHeight = true;
 
-			// Set RectTransform
-			RectTransform trans = obj.GetComponent<RectTransform> ();
-			trans.localScale = Vector3.one;
-
-
-			// Create image GameObject
-			GameObject goImage = new GameObject ("Image");
-			goImage.transform.SetParent (obj.transform);
-
-			// Add text
-			TextUnicode textImage = goImage.AddComponent<TextUnicode> ();
-
-			textImage.color = Settings.GetColorFromRgb (180, 180, 180);
-			textImage.text = isDir ? IconFont.FOLDER : IconFont.MUSIC;
-			textImage.alignment = TextAnchor.MiddleLeft;
-			textImage.font = IconFont.font;
-			textImage.fontSize = 30;
-
-			// Add RectTransform
-			RectTransform imageTrans = goImage.GetComponent<RectTransform> ();
-			imageTrans.localScale = Vector3.one;
-
-			// Add Layout Element
-			LayoutElement imageLayout = goImage.AddComponent<LayoutElement> ();
-			imageLayout.minWidth = 30;
+            // Set RectTransform
+            var trans = obj.GetComponent<RectTransform>();
+            trans.localScale = Vector3.one;
 
 
-			// Create text GameObject
-			GameObject goText = new GameObject ("Text");
-			goText.transform.SetParent (obj.transform);
+            // Create image GameObject
+            var goImage = new GameObject("Image");
+            goImage.transform.SetParent(obj.transform);
 
-			// Add RectTransform element
-			RectTransform textTrans = goText.AddComponent<RectTransform> ();
-			textTrans.pivot = new Vector2 (0.5f, 0.5f);
-			textTrans.localScale = Vector3.one;
+            // Add text
+            var textImage = goImage.AddComponent<TextUnicode>();
 
-			// Add Layout Element
-			LayoutElement layoutElement = goText.AddComponent<LayoutElement> ();
-			layoutElement.minHeight = 30;
-			layoutElement.preferredHeight = 30;
+            textImage.color = Settings.GetColorFromRgb(180, 180, 180);
+            textImage.text = isDir ? IconFont.Folder : IconFont.Music;
+            textImage.alignment = TextAnchor.MiddleLeft;
+            textImage.font = IconFont.Font;
+            textImage.fontSize = 30;
 
-			// Add Drag Handler
-			if (!isDir) goText.AddComponent<DragHandler> ();
+            // Add RectTransform
+            var imageTrans = goImage.GetComponent<RectTransform>();
+            imageTrans.localScale = Vector3.one;
 
-			// Add Button
-			Button button = goText.AddComponent<Button> ();
-			button.transition = Selectable.Transition.Animation;
+            // Add Layout Element
+            var imageLayout = goImage.AddComponent<LayoutElement>();
+            imageLayout.minWidth = 30;
 
-			Navigation nav = new Navigation ();
-			nav.mode = Navigation.Mode.None;
-			button.navigation = nav;
 
-			// Add OnClick Handler
-			string currentItem = item;
-			if (isDir)
-			{
-				button.onClick.AddListener (delegate {
-					Initialize (currentItem);
-				});
-			}
-			else
-			{
-				string currentFile = item;
-				button.onClick.AddListener (delegate {
+            // Create text GameObject
+            var goText = new GameObject("Text");
+            goText.transform.SetParent(obj.transform);
 
-					// Get reference to playlist object
-					Playlist pl = GameObject.Find ("PlaylistContent").GetComponent <Playlist> ();
+            // Add RectTransform element
+            var textTrans = goText.AddComponent<RectTransform>();
+            textTrans.pivot = new Vector2(0.5f, 0.5f);
+            textTrans.localScale = Vector3.one;
 
-					// Get file object if available
-					FileObj file = pl.GetFile (currentItem);
+            // Add Layout Element
+            var layoutElement = goText.AddComponent<LayoutElement>();
+            layoutElement.minHeight = 30;
+            layoutElement.preferredHeight = 30;
 
-					// Get source folder object
-					SourceFolder sf = GameObject.Find ("FileContent").GetComponent<SourceFolder> ();
+            // Add Drag Handler
+            if (!isDir) goText.AddComponent<DragHandler>();
 
-					if (sf.DoubleClicked (goText))
-					{
-						// Get drop area
-						GameObject dropObj = GameObject.FindGameObjectWithTag ("PlaylistDrop");
+            // Add Button
+            var button = goText.AddComponent<Button>();
+            button.transition = Selectable.Transition.Animation;
 
-						// Insert file
-						DropHandler.InsertFile (currentFile, dropObj, dropObj);
-					}
+            var nav = new Navigation {mode = Navigation.Mode.None};
+            button.navigation = nav;
 
-				});
-			}
+            // Add OnClick Handler
+            var currentItem = item;
+            if (isDir)
+            {
+                button.onClick.AddListener(delegate { Initialize(currentItem); });
+            }
+            else
+            {
+                var currentFile = item;
+                button.onClick.AddListener(delegate
+                {
+                    // Get reference to playlist object
+                    var pl = GameObject.Find("PlaylistContent").GetComponent<Playlist>();
 
-			// Add Animator
-			Animator animator = goText.AddComponent<Animator> ();
-			animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
+                    // Get file object if available
+                    var file = pl.GetFile(currentItem);
 
-			// Add Text
-			Text text = goText.AddComponent<Text> ();
+                    // Get source folder object
+                    var sf = GameObject.Find("FileContent").GetComponent<SourceFolder>();
 
-			text.color = Color.white;
-			text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-			text.text = Path.GetFileName (item);
-			text.fontSize = 30;
-			text.alignment = TextAnchor.MiddleLeft;
-		}
-	}
+                    if (!sf.DoubleClicked(goText)) return;
 
-	public void HistoryBack ()
-	{
+                    // Get drop area
+                    var dropObj = GameObject.FindGameObjectWithTag("PlaylistDrop");
+
+                    // Insert file
+                    DropHandler.InsertFile(currentFile, dropObj, dropObj);
+                });
+            }
+
+            // Add Animator
+            var animator = goText.AddComponent<Animator>();
+            animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animations/MenuButtons");
+
+            // Add Text
+            var text = goText.AddComponent<Text>();
+
+            text.color = Color.white;
+            text.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
+            text.text = Path.GetFileName(item);
+            text.fontSize = 30;
+            text.alignment = TextAnchor.MiddleLeft;
+        }
+    }
+
+    public void HistoryBack()
+    {
 //		// Get user folder
 //		string userPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 //
 //		if (!Path.Equals (userPath, Settings.Source.Current))
 //		{
-			// Get new path
-			string path = Path.GetFullPath (Path.Combine (Settings.Source.Current, @".."));
+        // Get new path
+        var path = Path.GetFullPath(Path.Combine(Settings.Source.Current, @".."));
 
-			// Display file contents
-			Initialize (path);
+        // Display file contents
+        Initialize(path);
 //		}
-	}
+    }
 
-	public static void DestroyAll ()
-	{
-		Transform entries = GameObject.Find ("FileContent").transform;
-		for (int i=entries.childCount - 1; i >= 0; i--) {
-			GameObject.DestroyImmediate (entries.GetChild (i).gameObject);
-		}
-	}
+    private static void DestroyAll()
+    {
+        var entries = GameObject.Find("FileContent").transform;
+        for (var i = entries.childCount - 1; i >= 0; i--) DestroyImmediate(entries.GetChild(i).gameObject);
+    }
 
-	public static List<string> GetDirs (string Path)
-	{
-		// Get directories
-		string[] dirs = Directory.GetDirectories (Path).Where (x =>
-			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
-		).ToArray ();
+    private static IEnumerable<string> GetDirs(string path)
+    {
+        // Get directories
+        var dirs = Directory.GetDirectories(path).Where(x =>
+            (new DirectoryInfo(x).Attributes & FileAttributes.Hidden) == 0
+        ).ToArray();
 
-		List<string> elements = new List<string> ();
-		foreach (string subDir in dirs)
-		{
-			try {
-				// Try to get files inside sub dir
-				@Directory.GetFiles (subDir);
+        var elements = new List<string>();
+        foreach (var subDir in dirs)
+            try
+            {
+                // Try to get files inside sub dir
+                Directory.GetFiles(subDir);
 
-				// Add sub dir to list
-				elements.Add (subDir);
-			} catch {}
-		}
+                // Add sub dir to list
+                elements.Add(subDir);
+            }
+            catch
+            {
+                // ignored
+            }
 
-		return elements;
-	}
+        return elements;
+    }
 
-	public static List<string> GetFiles (string Path)
-	{
-		// Get files
-		string[] files = Directory.GetFiles (Path).Where (x =>
-			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
-			&& IsSupportedFile (x)
-		).ToArray ();
+    private static IEnumerable<string> GetFiles(string Path)
+    {
+        // Get files
+        var files = Directory.GetFiles(Path).Where(x =>
+            (new FileInfo(x).Attributes & FileAttributes.Hidden) == 0
+            && IsSupportedFile(x)
+        ).ToArray();
 
-		List<string> elements = new List<string> ();
-		foreach (string file in files) {
-			elements.Add (file);
-		}
-
-		return elements;
-	}
+        return files.ToList();
+    }
 
 
+    //-- FILE SEARCH
 
-	//-- FILE SEARCH
+    public void SearchFiles(string s)
+    {
+        _searching = s.Length > 0;
 
-	public void SearchFiles (string s)
-	{
-		Searching = s.Length > 0;
+        if (!_searching)
+        {
+            // Search done
+            Invoke("HideProgress", 0.01f);
+            Initialize();
+        }
+        else
+        {
+            // Reset results
+            _sDirs = new List<string>();
+            _sFiles = new List<string>();
 
-		if (!Searching)
-		{
-			// Search done
-			Invoke ("HideProgress", 0.01f);
-			SourceFolder.Initialize ();
-		}
-		else
-		{
-			// Reset results
-			sDirs = new List<String> ();
-			sFiles = new List<String> ();
+            // Dispose current thread
+            if (_thread != null && _thread.IsBusy) _thread.Abort();
 
-			// Dispose current thread
-			if (thread != null && thread.IsBusy) {
-				thread.Abort ();
-				// thread.Dispose ();
-			}
+            // Initalize thread
+            _thread = new BackgroundThread {WorkerSupportsCancellation = true};
+            _thread.DoWork += delegate
+            {
+                // Destroy elements
+                MainThreadDispatcher.Instance().Enqueue(DestroyAll);
 
-			// Initalize thread
-			thread = new BackgroundThread ();
-			thread.WorkerSupportsCancellation = true;
-			thread.DoWork += delegate {
+                // Get search results
+                GetResults(s);
 
-				// Destroy elements
-				MainThreadDispatcher.Instance ().Enqueue (SourceFolder.DestroyAll);
+                // Display search results
+                MainThreadDispatcher.Instance().Enqueue(delegate { Display(_sDirs, _sFiles, true); });
 
-				// Get search results
-				GetResults (s);
+                // Hide progress
+                MainThreadDispatcher.Instance().Enqueue(HideProgress);
+            };
 
-				// Display search results
-				MainThreadDispatcher.Instance ().Enqueue (delegate {
-					SourceFolder.Display (sDirs, sFiles, true);
-				});
+            // Run thread
+            _thread.RunWorkerAsync();
+        }
+    }
 
-				// Hide progress
-				MainThreadDispatcher.Instance ().Enqueue (HideProgress);
+    private static void GetResults(string pattern)
+    {
+        // Get results
+        var path = Settings.Source.Current;
+        FileSearch(path, pattern);
+    }
 
-			};
+    private static void FileSearch(string folder, string pattern)
+    {
+        if (Path.GetFileName(folder).IndexOf(pattern, StringComparison.OrdinalIgnoreCase) >= 0) _sDirs.Add(folder);
 
-			// Run thread
-			thread.RunWorkerAsync ();
-		}
-	}
+        // Get files
+        var files = Directory.GetFiles(folder).Where(x =>
+            (new FileInfo(x).Attributes & FileAttributes.Hidden) == 0
+            && Path.GetFileName(x).IndexOf(pattern, StringComparison.OrdinalIgnoreCase) >= 0
+            && IsSupportedFile(x)
+        ).ToArray();
 
-	private void GetResults (string pattern)
-	{
-		// Get results
-		string path = Settings.Source.Current;
-		FileSearch (path, pattern);
-	}
+        // Add file if file name contains pattern
+        foreach (var file in files) _sFiles.Add(file);
 
-	private void FileSearch (string folder, string pattern)
-	{
-		if (Path.GetFileName (folder).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0) {
-			sDirs.Add (folder);
-		}
+        // Get directories
+        var dirs = Directory.GetDirectories(folder).Where(x =>
+            (new DirectoryInfo(x).Attributes & FileAttributes.Hidden) == 0
+        ).ToArray();
 
-		// Get files
-		string[] files = Directory.GetFiles (folder).Where (x =>
-			(new FileInfo (x).Attributes & FileAttributes.Hidden) == 0
-			&& Path.GetFileName (x).IndexOf (pattern, StringComparison.OrdinalIgnoreCase) >= 0
-			&& SourceFolder.IsSupportedFile (x)
-		).ToArray ();
+        // Jump into sub directory
+        foreach (var dir in dirs) FileSearch(dir, pattern);
+    }
 
-		// Add file if file name contains pattern
-		foreach (string file in files) {
-			sFiles.Add (file);
-		}
-
-		// Get directories
-		string[] dirs = Directory.GetDirectories (folder).Where (x =>
-			(new DirectoryInfo (x).Attributes & FileAttributes.Hidden) == 0
-		).ToArray ();
-
-		// Jump into sub directory
-		foreach (string dir in dirs) {
-			FileSearch (dir, pattern);
-		}
-	}
-
-	public void HideProgress () {
-		GameObject.Find ("FileSearch/Input/Progress").SetActive (false);
-	}
+    private static void HideProgress()
+    {
+        GameObject.Find("FileSearch/Input/Progress").SetActive(false);
+    }
 
 
+    //-- HELPER METHODS
 
-	//-- HELPER METHODS
+    private static bool IsSupportedFile(string file)
+    {
+        return SupportedFormats.Contains(Path.GetExtension(file).ToLower());
+    }
 
-	public static bool IsSupportedFile (string file)
-	{
-		return SupportedFormats.Contains (Path.GetExtension (file).ToLower ());
-	}
+    private bool DoubleClicked(GameObject obj)
+    {
+        // Stop coroutine
+        if (_dblClick != null) StopCoroutine(_dblClick);
 
-	public bool DoubleClicked (GameObject obj)
-	{
-		// Stop coroutine
-		if (dblClick != null) {
-			StopCoroutine (dblClick);
-		}
+        if (_dblClickGo != null && _dblClickGo == obj)
+        {
+            // Second click
+            HideDoubleClickImmediate();
+            return true;
+        }
 
-		if (dblClickGo != null && dblClickGo == obj)
-		{
-			// Second click
-			HideDoubleClickImmediate ();
-			return true;
-		}
-		else
-		{
-			// First click
-			StartCoroutine (HideDoubleClick (obj));
-			return false;
-		}
-	}
+        // First click
+        StartCoroutine(HideDoubleClick(obj));
+        return false;
+    }
 
-	private IEnumerator HideDoubleClick (GameObject obj)
-	{
-		// Set clicked game object
-		dblClickGo = obj;
-		
-		// Wait
-		yield return new WaitForSeconds (dblClickWait);
+    private IEnumerator HideDoubleClick(GameObject obj)
+    {
+        // Set clicked game object
+        _dblClickGo = obj;
 
-		// Hide double click
-		HideDoubleClickImmediate ();
-	}
+        // Wait
+        yield return new WaitForSeconds(DblClickWait);
 
-	private void HideDoubleClickImmediate ()
-	{
-		dblClickGo = null;
-	}
+        // Hide double click
+        HideDoubleClickImmediate();
+    }
 
+    private void HideDoubleClickImmediate()
+    {
+        _dblClickGo = null;
+    }
 }

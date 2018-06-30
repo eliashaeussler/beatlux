@@ -3,394 +3,348 @@
  */
 
 using UnityEngine;
-using System.Collections;
-
 
 public class KetteVersuch : MonoBehaviour
 {
+    //Colors
+    private Color _color1 = new Color(1, 0, 0, 1);
+    private Color _color2 = new Color(0, 1, 0, 1);
+    private Color _color3 = new Color(0, 0, 1, 1);
+    private Color _color4 = new Color(1, 1, 0, 1);
+    private Color _color5 = new Color(0, 1, 1, 1);
+
+    private Color[] _colors;
+    public GameObject[][] HaengAr;
+    public GameObject Haenger;
+
+    //arrays to store the lights of the different lightchains
+    public GameObject[][] KetAr;
 
     //Game Objects to store the needed Prefabs
-    public GameObject ketten;
-    public GameObject haenger;
+    public GameObject Ketten;
+    public int NumHaenger;
 
     //integers describing how many of the different Game Objects have to be created
-    public int numKetten;
-    public int numHaenger;
-    
-    //arrays to store the lights of the different lightchains
-    public GameObject[][] ketAr;
-    public GameObject[][] haengAr;
+    public int NumKetten;
+    public int[][] RandHaeng;
 
     //arrays to store the random range of spectrum displayed by the different lights
-    public int[][] randKet;
-    public int[][] randHaeng;
+    public int[][] RandKet;
 
-    //Colors
-    Color color1 = new Color(1, 0, 0, 1);
-    Color color2 = new Color(0, 1, 0, 1);
-    Color color3 = new Color(0, 0, 1, 1);
-    Color color4 = new Color(1, 1, 0, 1);
-    Color color5 = new Color(0, 1, 1, 1);
-
-    Color[] colors;
-
-    void Start()
+    private void Start()
     {
+        _colors = Settings.Active.ColorScheme.Colors;
 
-        colors = Settings.Active.ColorScheme.Colors;
-
-        color1 = colors[0];
-        color2 = colors[1];
-        color3 = colors[2];
-        color4 = colors[3];
-        color5 = colors[4];
+        _color1 = _colors[0];
+        _color2 = _colors[1];
+        _color3 = _colors[2];
+        _color4 = _colors[3];
+        _color5 = _colors[4];
 
         //initializing the arrays to store the lights
-        ketAr = new GameObject[numKetten][];
-        haengAr = new GameObject[numHaenger][];
+        KetAr = new GameObject[NumKetten][];
+        HaengAr = new GameObject[NumHaenger][];
 
         /**
          *  creating the chains
          *  assigning colors to lights
          **/
 
-        for (int i = 0; i < numKetten; i++)
+        for (var i = 0; i < NumKetten; i++)
         {
-
             //creating random numbers for x-Position, y-Position and type of coloring
-            int posX = Random.Range(0, 200);
-            int posZ = Random.Range(0, 200);
-            int random = Random.Range(1, 5);
+            var posX = Random.Range(0, 200);
+            var posZ = Random.Range(0, 200);
+            var random = Random.Range(1, 5);
 
             //Intantiating object and saving lights into an array
-            Vector3 pos = new Vector3(posX, -10, posZ);
-			Instantiate(ketten, pos, Quaternion.identity, Settings.MenuManager.vizContents);
-            GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+            var pos = new Vector3(posX, -10, posZ);
+            Instantiate(Ketten, pos, Quaternion.identity, Settings.MenuManager.VizContents);
+            var lichter = GameObject.FindGameObjectsWithTag("Light");
 
 
             //assigning colors to chains
 
 
-            // chain with colors 1 and 2(alternating)
-            if (random == 1)
+            switch (random)
             {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    if (j % 2 == 0 || j == 0)
+                // chain with colors 1 and 2(alternating)
+                case 1:
+                    for (var j = 0; j < lichter.Length; j++)
+                        if (j % 2 == 0 || j == 0)
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color1);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color1 * 2);
+                            lichter[j].GetComponent<Light>().color = _color1 * 3;
+                        }
+                        else
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color2);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color2 * 2);
+                            lichter[j].GetComponent<Light>().color = _color2 * 3;
+                        }
+
+                    break;
+
+                //chain with colors 3 and 4(alternating)
+                case 2:
+                    for (var j = 0; j < lichter.Length; j++)
+                        if (j % 2 == 0 || j == 0)
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color3);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color3 * 2);
+                            lichter[j].GetComponent<Light>().color = _color3 * 3;
+                        }
+                        else
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color4);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color4 * 2);
+                            lichter[j].GetComponent<Light>().color = _color4 * 3;
+                        }
+
+                    break;
+
+                //chain with color 5
+                case 3:
+                    foreach (var licht in lichter)
                     {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
-                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                        licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color5);
+                        licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color5 * 2);
+                        licht.GetComponent<Light>().color = _color5 * 3;
                     }
-                    else
+
+                    break;
+
+                //chain with all colors(randomly)
+                case 4:
+                    foreach (var licht in lichter)
                     {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
-                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                        var rand = Random.Range(0, 5);
+
+                        switch (rand)
+                        {
+                            case 0:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color1);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color1 * 2);
+                                licht.GetComponent<Light>().color = _color1 * 3;
+                                break;
+                            case 1:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color2);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color2 * 2);
+                                licht.GetComponent<Light>().color = _color2 * 3;
+                                break;
+                            case 2:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color3);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color3 * 2);
+                                licht.GetComponent<Light>().color = _color3 * 3;
+                                break;
+                            case 3:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color4);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color4 * 2);
+                                licht.GetComponent<Light>().color = _color4 * 3;
+                                break;
+                            default:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color5);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color5 * 2);
+                                licht.GetComponent<Light>().color = _color5 * 3;
+                                break;
+                        }
                     }
-                }
+
+                    break;
             }
 
-
-            //chain with colors 3 and 4(alternating)
-            if (random == 2)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    if (j % 2 == 0 || j == 0)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
-                        lichter[j].GetComponent<Light>().color = color3 * 3;
-                    }
-                    else
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
-                        lichter[j].GetComponent<Light>().color = color4 * 3;
-                    }
-                }
-            }
-
-            //chain with color 5
-            if (random == 3)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
-                    lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
-                    lichter[j].GetComponent<Light>().color = color5 * 3;
-                }
-            }
-
-
-            //chain with all colors(randomly)
-            if (random == 4)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    int rand = Random.Range(0, 5);
-
-                    if (rand == 0)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
-                        lichter[j].GetComponent<Light>().color = color1 * 3;
-                    }
-                    else if (rand == 1)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
-                        lichter[j].GetComponent<Light>().color = color2 * 3;
-                    }
-                    else if (rand == 2)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
-                        lichter[j].GetComponent<Light>().color = color3 * 3;
-                    }
-                    else if (rand == 3)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
-                        lichter[j].GetComponent<Light>().color = color4 * 3;
-                    }
-                    else
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
-                        lichter[j].GetComponent<Light>().color = color5 * 3;
-                    }
-                }
-
-            }
 
             //changing tags of light(necessary for sorting lights)
-            for (int j = 0; j < lichter.Length; j++)
-            {
-
-                lichter[j].tag = "LightDone";
-
-
-            }
+            foreach (var licht in lichter) licht.tag = "LightDone";
 
             //storing lights in ketAr
-            ketAr[i] = lichter;
-
-
+            KetAr[i] = lichter;
         }
 
 
+        /**
+          *creating the hanging chains
+          *assigning colors to lights
+         */
 
 
-       /**
-         *creating the hanging chains
-         *assigning colors to lights
-        */
-
-
-        for (int i = 0; i < numHaenger; i++)
+        for (var i = 0; i < NumHaenger; i++)
         {
             //creating random numbers for x-Position, y-Position and type of coloring
-            int posX = Random.Range(0, 200);
-            int posZ = Random.Range(0, 200);
-            int random = Random.Range(1, 5);
+            var posX = Random.Range(0, 200);
+            var posZ = Random.Range(0, 200);
+            var random = Random.Range(1, 5);
 
             //Intantiating object and saving lights into an array
-            Vector3 pos = new Vector3(posX, 20, posZ);
-			Instantiate(haenger, pos, Quaternion.identity, Settings.MenuManager.vizContents);
-            GameObject[] lichter = GameObject.FindGameObjectsWithTag("Light");
+            var pos = new Vector3(posX, 20, posZ);
+            Instantiate(Haenger, pos, Quaternion.identity, Settings.MenuManager.VizContents);
+            var lichter = GameObject.FindGameObjectsWithTag("Light");
 
 
             //assigning colors to chains
 
 
-            // chain with colors 1 and 2(alternating)
-            if (random == 1)
+            switch (random)
             {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    if (j % 2 == 0 || j == 0)
+                // chain with colors 1 and 2(alternating)
+                case 1:
+                    for (var j = 0; j < lichter.Length; j++)
+                        if (j % 2 == 0 || j == 0)
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color1);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color1 * 2);
+                            lichter[j].GetComponent<Light>().color = _color1 * 3;
+                        }
+                        else
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color2);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color2 * 2);
+                            lichter[j].GetComponent<Light>().color = _color2 * 3;
+                        }
+
+                    break;
+
+                //chain with colors 3 and 4(alternating)
+                case 2:
+                    for (var j = 0; j < lichter.Length; j++)
+                        if (j % 2 == 0 || j == 0)
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color3);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color3 * 2);
+                            lichter[j].GetComponent<Light>().color = _color3 * 3;
+                        }
+                        else
+                        {
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", _color4);
+                            lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", _color4 * 2);
+                            lichter[j].GetComponent<Light>().color = _color4 * 3;
+                        }
+
+                    break;
+
+                //chain with color 5
+                case 3:
+                    foreach (var licht in lichter)
                     {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
-                        lichter[j].GetComponent<Light>().color = color1 * 3;
+                        licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color5);
+                        licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color5 * 2);
+                        licht.GetComponent<Light>().color = _color5 * 3;
                     }
-                    else
+
+                    break;
+
+                //chain with all colors(randomly)
+                case 4:
+                    foreach (var licht in lichter)
                     {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
-                        lichter[j].GetComponent<Light>().color = color2 * 3;
+                        var rand = Random.Range(0, 5);
+
+                        switch (rand)
+                        {
+                            case 0:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color1);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color1 * 2);
+                                licht.GetComponent<Light>().color = _color1 * 3;
+                                break;
+                            case 1:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color2);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color2 * 2);
+                                licht.GetComponent<Light>().color = _color2 * 3;
+                                break;
+                            case 2:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color3);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color3 * 2);
+                                licht.GetComponent<Light>().color = _color3 * 3;
+                                break;
+                            case 3:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color4);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color4 * 2);
+                                licht.GetComponent<Light>().color = _color4 * 3;
+                                break;
+                            default:
+                                licht.GetComponent<Renderer>().material.SetColor("_ColorTint", _color5);
+                                licht.GetComponent<Renderer>().material.SetColor("_RimColor", _color5 * 2);
+                                licht.GetComponent<Light>().color = _color5 * 3;
+                                break;
+                        }
                     }
-                }
+
+                    break;
             }
-
-
-            //chain with colors 3 and 4(alternating)
-            if (random == 2)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    if (j % 2 == 0 || j == 0)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
-                        lichter[j].GetComponent<Light>().color = color3 * 3;
-                    }
-                    else
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
-                        lichter[j].GetComponent<Light>().color = color4 * 3;
-                    }
-                }
-            }
-
-
-            //chain with color 5
-            if (random == 3)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
-                    lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
-                    lichter[j].GetComponent<Light>().color = color5 * 3;
-                }
-            }
-
-
-            //chain with all colors(randomly)
-            if (random == 4)
-            {
-                for (int j = 0; j < lichter.Length; j++)
-                {
-                    int rand = Random.Range(0, 5);
-
-                    if (rand == 0)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color1);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color1 * 2);
-                        lichter[j].GetComponent<Light>().color = color1 * 3;
-                    }
-                    else if (rand == 1)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color2);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color2 * 2);
-                        lichter[j].GetComponent<Light>().color = color2 * 3;
-                    }
-                    else if (rand == 2)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color3);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color3 * 2);
-                        lichter[j].GetComponent<Light>().color = color3 * 3;
-                    }
-                    else if (rand == 3)
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color4);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color4 * 2);
-                        lichter[j].GetComponent<Light>().color = color4 * 3;
-                    }
-                    else
-                    {
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_ColorTint", color5);
-                        lichter[j].GetComponent<Renderer>().material.SetColor("_RimColor", color5 * 2);
-                        lichter[j].GetComponent<Light>().color = color5 * 3;
-                    }
-                }
-
-            }
-
 
 
             //changing tags of light(necessary for sorting lights)
-            for (int j = 0; j < lichter.Length; j++)
-            {
-
-                lichter[j].tag = "LightDone";
-
-
-            }
+            foreach (var licht in lichter) licht.tag = "LightDone";
 
             //storing lights in ketAr
-            haengAr[i] = lichter;
+            HaengAr[i] = lichter;
         }
 
-        
-        
-        
-        
+
         //instantiate arrays to store which part of the spectrum is displayed by every light
-        randKet = new int[ketAr.Length][];
-        randHaeng = new int[haengAr.Length][];
+        RandKet = new int[KetAr.Length][];
+        RandHaeng = new int[HaengAr.Length][];
         /*
          * get random numbers to determine the displayed spectrum of a chain
          **/
-        for (int i = 0; i < ketAr.Length; i++)
+        for (var i = 0; i < KetAr.Length; i++)
         {
-            int rand = Random.Range(0, 200);
-            int[] zw = new int[ketAr[i].Length];
+            var rand = Random.Range(0, 200);
+            var zw = new int[KetAr[i].Length];
 
-            for (int j = 0; j < ketAr[i].Length; j++)
+            for (var j = 0; j < KetAr[i].Length; j++)
             {
                 zw[j] = rand;
                 rand++;
             }
-            randKet[i] = zw;
+
+            RandKet[i] = zw;
         }
 
-        for (int i = 0; i < haengAr.Length; i++)
+        for (var i = 0; i < HaengAr.Length; i++)
         {
-            int rand = Random.Range(0, 200);
-            int[] zw = new int[haengAr[i].Length];
+            var rand = Random.Range(0, 200);
+            var zw = new int[HaengAr[i].Length];
 
-            for (int j = 0; j < haengAr[i].Length; j++)
+            for (var j = 0; j < HaengAr[i].Length; j++)
             {
                 zw[j] = rand;
                 rand++;
             }
-            randHaeng[i] = zw;
+
+            RandHaeng[i] = zw;
         }
-
-
     }
 
 
-
-
-
-    void Update()
+    private void Update()
     {
-        float[] spectrum = AudioListener.GetSpectrumData(1024, 0, FFTWindow.Hamming); //Reading the spectrum from the song put into the AudioListener 
+        // Reading the spectrum from the song put into the AudioListener
+        var spectrum = new float[1024];
+        AudioListener.GetSpectrumData(spectrum, 0, FFTWindow.Hamming);
 
-		if (ketAr == null)
-			Start ();
+        if (KetAr == null)
+            Start();
 
         /**
          * change the light intensity in reaction to the spectrum
          * change the rim Power(Glow) in reaction to the Spectrum
          **/
-        for (int i = 0; i < ketAr.Length; i++)
+        for (var i = 0; i < KetAr.Length; i++)
+        for (var j = 0; j < KetAr[i].Length; j++)
         {
-            for (int j = 0; j < ketAr[i].Length; j++)
-            {
-                ketAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randKet[i][j]] * 7));
-                ketAr[i][j].GetComponent<Light>().intensity = spectrum[randKet[i][j]] * 7;
-                ketAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randKet[i][j]] * 7;
-            }
-
-
+            KetAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[RandKet[i][j]] * 7));
+            KetAr[i][j].GetComponent<Light>().intensity = spectrum[RandKet[i][j]] * 7;
+            KetAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[RandKet[i][j]] * 7;
         }
 
-        for (int i = 0; i < haengAr.Length; i++)
+        for (var i = 0; i < HaengAr.Length; i++)
+        for (var j = 0; j < HaengAr[i].Length; j++)
         {
-            for (int j = 0; j < haengAr[i].Length; j++)
-            {
-                haengAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[randHaeng[i][j]] * 7));
-                haengAr[i][j].GetComponent<Light>().intensity = spectrum[randHaeng[i][j]] * 7;
-                haengAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[randHaeng[i][j]] * 7;
-            }
-
+            HaengAr[i][j].GetComponent<Renderer>().material.SetFloat("_RimPower", 1 / (spectrum[RandHaeng[i][j]] * 7));
+            HaengAr[i][j].GetComponent<Light>().intensity = spectrum[RandHaeng[i][j]] * 7;
+            HaengAr[i][j].GetComponent<Light>().bounceIntensity = spectrum[RandHaeng[i][j]] * 7;
         }
-
     }
 }

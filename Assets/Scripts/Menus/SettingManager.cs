@@ -2,65 +2,62 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using System.IO;
+using UnityEngine;
+using UnityEngine.UI;
 
-
-public class SettingManager : MonoBehaviour {
+public class SettingManager : MonoBehaviour
+{
+    public Dropdown AntialiasingDropdown;
+    public Button ApplyButton;
 
     //Referencing all the options from the menu
-    public Toggle fullscreenToggle;
-    public Toggle tutorialToggle;
-    public Dropdown resolutionDropdown;
-    public Dropdown languageDropdown;
-    public Dropdown textureQualityDropdown;
-    public Dropdown antialiasingDropdown;
-    public Button applyButton;
-    public Dropdown mirrorDropdown;
+    public Toggle FullscreenToggle;
 
-    public GameSettings gameSettings;
-    public GameObject langManager;
-    public GameObject mirrors;
+    public GameSettings GameSettings;
+    public GameObject LangManager;
+    public Dropdown LanguageDropdown;
+    public Dropdown MirrorDropdown;
+    public GameObject Mirrors;
+    public Dropdown ResolutionDropdown;
 
     //Storage for all available resolutions
-    public Resolution[] resolutions;
+    public Resolution[] Resolutions;
+    public Dropdown TextureQualityDropdown;
+    public Toggle TutorialToggle;
 
 
-    void Start()
+    private void Start()
     {
-        resolutions = Screen.resolutions;   //Saving all resolutions that the current monitor is able to display
+        Resolutions = Screen.resolutions; //Saving all resolutions that the current monitor is able to display
 
-		if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
-			Screen.fullScreen = gameSettings.fullscreen;
-			Screen.SetResolution (resolutions [gameSettings.resolutionIndex].width, resolutions [gameSettings.resolutionIndex].height, Screen.fullScreen);
-			QualitySettings.masterTextureLimit = gameSettings.textureQuality;
-			QualitySettings.antiAliasing = gameSettings.antialiasing;
-			setMirrors ();
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") != true) return;
 
-		}
+        Screen.fullScreen = GameSettings.Fullscreen;
+        Screen.SetResolution(Resolutions[GameSettings.ResolutionIndex].width,
+            Resolutions[GameSettings.ResolutionIndex].height, Screen.fullScreen);
+        QualitySettings.masterTextureLimit = GameSettings.TextureQuality;
+        QualitySettings.antiAliasing = GameSettings.Antialiasing;
+        SetMirrors();
     }
 
-    void OnEnable()
-	{
-		gameSettings = new GameSettings();
+    private void OnEnable()
+    {
+        GameSettings = new GameSettings();
 
         //Listeners for all options, delegating the appropriate methode on change of value
-        fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
-        tutorialToggle.onValueChanged.AddListener(delegate { OnTutorialToggle(); });
-        resolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
-        languageDropdown.onValueChanged.AddListener(delegate { OnLanguageChange(); });
-        textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
-        antialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
-        applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
-        mirrorDropdown.onValueChanged.AddListener(delegate { OnMirrorsChange(); });
-        resolutions = Screen.resolutions;
+        FullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
+        TutorialToggle.onValueChanged.AddListener(delegate { OnTutorialToggle(); });
+        ResolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
+        LanguageDropdown.onValueChanged.AddListener(delegate { OnLanguageChange(); });
+        TextureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureQualityChange(); });
+        AntialiasingDropdown.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
+        ApplyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
+        MirrorDropdown.onValueChanged.AddListener(delegate { OnMirrorsChange(); });
+        Resolutions = Screen.resolutions;
 
-        foreach (Resolution resolution in resolutions)
-        {
-            resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
-        }
+        foreach (var resolution in Resolutions)
+            ResolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
 
         LoadSettings();
     }
@@ -69,43 +66,42 @@ public class SettingManager : MonoBehaviour {
     /**
      * Methods that execute all the functions of the settings options, as well as writing them into the gameSettings file
      **/
-    public void OnFullscreenToggle()
+    private void OnFullscreenToggle()
     {
-       gameSettings.fullscreen = Screen.fullScreen = fullscreenToggle.isOn;
-        Debug.Log(gameSettings.fullscreen);
+        GameSettings.Fullscreen = Screen.fullScreen = FullscreenToggle.isOn;
     }
 
-    public void OnTutorialToggle()
+    private void OnTutorialToggle()
     {
-        gameSettings.tutorial = tutorialToggle.isOn;
-        Settings.Player.TutorialTog = gameSettings.tutorial;
+        GameSettings.Tutorial = TutorialToggle.isOn;
+        Settings.Player.TutorialTog = GameSettings.Tutorial;
     }
 
-    public void OnResolutionChange()
+    private void OnResolutionChange()
     {
-        Screen.SetResolution(resolutions[resolutionDropdown.value].width, resolutions[resolutionDropdown.value].height, Screen.fullScreen);
-        gameSettings.resolutionIndex = resolutionDropdown.value;
+        Screen.SetResolution(Resolutions[ResolutionDropdown.value].width, Resolutions[ResolutionDropdown.value].height,
+            Screen.fullScreen);
+        GameSettings.ResolutionIndex = ResolutionDropdown.value;
     }
 
-    public void OnTextureQualityChange()
+    private void OnTextureQualityChange()
     {
-        gameSettings.textureQuality = QualitySettings.masterTextureLimit = textureQualityDropdown.value;
-        
+        GameSettings.TextureQuality = QualitySettings.masterTextureLimit = TextureQualityDropdown.value;
     }
 
-    public void OnAntialiasingChange()
+    private void OnAntialiasingChange()
     {
-        gameSettings.antialiasing = QualitySettings.antiAliasing = (int)Mathf.Pow(2f, antialiasingDropdown.value);
+        GameSettings.Antialiasing = QualitySettings.antiAliasing = (int) Mathf.Pow(2f, AntialiasingDropdown.value);
     }
 
-    public void OnLanguageChange()
+    private void OnLanguageChange()
     {
-        gameSettings.language = languageDropdown.value;
+        GameSettings.Language = LanguageDropdown.value;
 
-        
-        string currentLang = "English";
 
-        switch (languageDropdown.value)
+        var currentLang = "English";
+
+        switch (LanguageDropdown.value)
         {
             case 0:
                 currentLang = "English";
@@ -114,43 +110,39 @@ public class SettingManager : MonoBehaviour {
             case 1:
                 currentLang = "German";
                 break;
-
-            default:
-                break;
         }
 
-        langManager.GetComponent<LangMainMenu>().setTexts(currentLang);
-    
+        LangManager.GetComponent<LangMainMenu>().SetTexts(currentLang);
     }
 
-    public void OnMirrorsChange()
+    private void OnMirrorsChange()
     {
-        gameSettings.mirrors = mirrorDropdown.value;
+        GameSettings.Mirrors = MirrorDropdown.value;
 
-        setMirrors();
+        SetMirrors();
     }
 
-    public void OnApplyButtonClick()
+    private void OnApplyButtonClick()
     {
         SaveSettings();
     }
 
-    public void setMirrors()
+    private void SetMirrors()
     {
-        switch (gameSettings.mirrors)
+        switch (GameSettings.Mirrors)
         {
             case 0:
-                mirrors.GetComponent<MirrorReflection>().enabled = false;
+                Mirrors.GetComponent<MirrorReflection>().enabled = false;
                 break;
+
             case 1:
-                mirrors.GetComponent<MirrorReflection>().enabled = true;
-                mirrors.GetComponent<MirrorReflection>().m_TextureSize = 256;
+                Mirrors.GetComponent<MirrorReflection>().enabled = true;
+                Mirrors.GetComponent<MirrorReflection>().TextureSize = 256;
                 break;
+
             case 2:
-                mirrors.GetComponent<MirrorReflection>().enabled = true;
-                mirrors.GetComponent<MirrorReflection>().m_TextureSize = 512;
-                break;
-            default:
+                Mirrors.GetComponent<MirrorReflection>().enabled = true;
+                Mirrors.GetComponent<MirrorReflection>().TextureSize = 512;
                 break;
         }
     }
@@ -158,27 +150,28 @@ public class SettingManager : MonoBehaviour {
     /**
      * Save all settings into a json-file
      **/
-    public void SaveSettings()
+    private void SaveSettings()
     {
-        string jsonData = JsonUtility.ToJson(gameSettings, true);
-        File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData); //In Windows, saving to "Appdata/LocalLow/HS_Harz_Musikvisualisierung" (foldername => company name in player settings)
+        var jsonData = JsonUtility.ToJson(GameSettings, true);
+        File.WriteAllText(Application.persistentDataPath + "/gamesettings.json",
+            jsonData); //In Windows, saving to "Appdata/LocalLow/HS_Harz_Musikvisualisierung" (foldername => company name in player settings)
     }
 
-    public void LoadSettings()
+    private void LoadSettings()
     {
-        resolutionDropdown.RefreshShownValue();
+        ResolutionDropdown.RefreshShownValue();
         //Check if there is a config file
-        if(File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
-        {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") != true) return;
 
-            languageDropdown.value = gameSettings.language;
-            antialiasingDropdown.value = gameSettings.antialiasing;
-            textureQualityDropdown.value = gameSettings.textureQuality;
-            resolutionDropdown.value = gameSettings.resolutionIndex;
-            fullscreenToggle.isOn = gameSettings.fullscreen;
-            tutorialToggle.isOn = gameSettings.tutorial;
-            mirrorDropdown.value = gameSettings.mirrors;
-        }
-    }   
+        GameSettings =
+            JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+
+        LanguageDropdown.value = GameSettings.Language;
+        AntialiasingDropdown.value = GameSettings.Antialiasing;
+        TextureQualityDropdown.value = GameSettings.TextureQuality;
+        ResolutionDropdown.value = GameSettings.ResolutionIndex;
+        FullscreenToggle.isOn = GameSettings.Fullscreen;
+        TutorialToggle.isOn = GameSettings.Tutorial;
+        MirrorDropdown.value = GameSettings.Mirrors;
+    }
 }

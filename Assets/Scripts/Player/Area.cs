@@ -2,84 +2,88 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
+using System;
 using UnityEngine;
-using System.Collections;
+
+public class Area : MonoBehaviour
+{
+    private Vector2 _rangeX;
+    private Vector2 _rangeY;
+    private Vector2 _size;
+
+    private RectTransform _trans;
+
+    public PlayerCanvas Canvas;
+    public bool OnBottom = true;
+    public bool OnLeft = true;
 
 
-public class Area : MonoBehaviour {
+    private void Start()
+    {
+        // Get transformation
+        _trans = GetComponent<RectTransform>();
 
-	public PlayerCanvas canvas;
-	public bool onLeft = true;
-	public bool onBottom = true;
+        // Get size
+        GetRealSize();
 
-	private RectTransform trans;
-	private Vector2 size;
-	private Vector2 rangeX;
-	private Vector2 rangeY;
+        // Set x and y range
+        GetRange();
+    }
 
+    private void Update()
+    {
+        // Get x and y range
+        GetRange();
 
-
-	void Start ()
-	{
-		// Get transformation
-		trans = GetComponent<RectTransform> ();
-
-		// Get size
-		GetRealSize ();
-
-		// Set x and y range
-		GetRange ();
-
-	}
-
-	void Update ()
-	{
-		// Get x and y range
-		GetRange ();
-
-		// Check if mouse is in range
-		if ((Input.GetAxis ("Mouse X") != 0 || Input.GetAxis ("Mouse Y") != 0)
-			&& Input.mousePosition.x >= rangeX.x && Input.mousePosition.x <= rangeX.y
-			&& Input.mousePosition.y >= rangeY.x && Input.mousePosition.y <= rangeY.y) {
-
+        // Check if mouse is in range
+        if ((Math.Abs(Input.GetAxis("Mouse X")) > 0 || Math.Abs(Input.GetAxis("Mouse Y")) > 0)
+            && Input.mousePosition.x >= _rangeX.x && Input.mousePosition.x <= _rangeX.y
+            && Input.mousePosition.y >= _rangeY.x && Input.mousePosition.y <= _rangeY.y)
+        {
 //			canvas.ShowPlayer ();
-		}
-	}
+        }
+    }
 
-	private void GetRealSize ()
-	{
-		// Get scale
-		size = trans.sizeDelta;
+    private void GetRealSize()
+    {
+        // Get scale
+        _size = _trans.sizeDelta;
 
-		// Change with current scale
-		size.x *= canvas.transform.localScale.x;
-		size.y *= canvas.transform.localScale.y;
+        // Change with current scale
+        _size.x *= Canvas.transform.localScale.x;
+        _size.y *= Canvas.transform.localScale.y;
 
-		// Change if area is completely stretched
-		if (size.x == 0) size.x = Camera.main.pixelWidth;
-		if (size.y == 0) size.y = Camera.main.pixelHeight;
-	}
+        // Change if area is completely stretched
+        if (Math.Abs(_size.x) < 1) _size.x = Camera.main.pixelWidth;
+        if (Math.Abs(_size.y) < 1) _size.y = Camera.main.pixelHeight;
+    }
 
-	private void GetRange ()
-	{
-		// IMPORTANT: mouse (0,0) is bottom-left
-		rangeX = new Vector2 ();
-		rangeY = new Vector2 ();
+    private void GetRange()
+    {
+        // IMPORTANT: mouse (0,0) is bottom-left
+        _rangeX = new Vector2();
+        _rangeY = new Vector2();
 
-		if (onLeft) {
-			rangeX.x = 0;
-			rangeX.y = size.x;
-		} else {
-			rangeX.x = Camera.main.pixelWidth - size.x;
-			rangeX.y = Camera.main.pixelWidth;
-		}
+        if (OnLeft)
+        {
+            _rangeX.x = 0;
+            _rangeX.y = _size.x;
+        }
+        else
+        {
+            _rangeX.x = Camera.main.pixelWidth - _size.x;
+            _rangeX.y = Camera.main.pixelWidth;
+        }
 
-		if (onBottom) {
-			rangeY.x = 0;
-			rangeY.y = size.y;
-		} else {
-			rangeY.x = Camera.main.pixelHeight - size.y;
-			rangeY.y = Camera.main.pixelHeight;
-		}
-	}
+        if (OnBottom)
+        {
+            _rangeY.x = 0;
+            _rangeY.y = _size.y;
+        }
+        else
+        {
+            _rangeY.x = Camera.main.pixelHeight - _size.y;
+            _rangeY.y = Camera.main.pixelHeight;
+        }
+    }
 }

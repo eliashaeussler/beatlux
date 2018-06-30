@@ -630,22 +630,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c021d28e82ad1f4487f1d8d2a7800f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {fileID: 1644488658}
-  settings: {fileID: 611829439}
-  credits: {fileID: 441413912}
-  exit: {fileID: 1340591440}
-  fullscreen: {fileID: 1433438602}
-  tutorial: {fileID: 800567714}
-  language: {fileID: 752044116}
-  resolution: {fileID: 1893449745}
-  texture: {fileID: 1960617211}
-  aa: {fileID: 1170127283}
-  mirrors: {fileID: 790469387}
-  back: {fileID: 558671565}
-  save: {fileID: 2054533066}
-  textureQualityDropdown: {fileID: 642834020}
-  antialiasingDropdown: {fileID: 1845100293}
-  mirrorDropdown: {fileID: 1473344066}
+  Start: {fileID: 1644488658}
+  Settings: {fileID: 611829439}
+  Credits: {fileID: 441413912}
+  Exit: {fileID: 1340591440}
+  Fullscreen: {fileID: 1433438602}
+  Tutorial: {fileID: 800567714}
+  Language: {fileID: 752044116}
+  Resolution: {fileID: 1893449745}
+  Texture: {fileID: 1960617211}
+  Aa: {fileID: 1170127283}
+  Mirrors: {fileID: 790469387}
+  Back: {fileID: 558671565}
+  Save: {fileID: 2054533066}
+  TextureQualityDropdown: {fileID: 642834020}
+  AntialiasingDropdown: {fileID: 1845100293}
+  MirrorDropdown: {fileID: 1473344066}
 --- !u!224 &115182725
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4527,16 +4527,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35295da63c6b70a4487c97d96d1fcc77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullscreenToggle: {fileID: 1971623}
-  tutorialToggle: {fileID: 1478315218}
-  resolutionDropdown: {fileID: 1820865225}
-  languageDropdown: {fileID: 941265291}
-  textureQualityDropdown: {fileID: 642834020}
-  antialiasingDropdown: {fileID: 1845100293}
-  applyButton: {fileID: 2054533068}
-  mirrorDropdown: {fileID: 1473344066}
-  langManager: {fileID: 115182723}
-  mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
+  FullscreenToggle: {fileID: 1971623}
+  TutorialToggle: {fileID: 1478315218}
+  ResolutionDropdown: {fileID: 1820865225}
+  LanguageDropdown: {fileID: 941265291}
+  TextureQualityDropdown: {fileID: 642834020}
+  AntialiasingDropdown: {fileID: 1845100293}
+  ApplyButton: {fileID: 2054533068}
+  MirrorDropdown: {fileID: 1473344066}
+  LangManager: {fileID: 115182723}
+  Mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
 --- !u!224 &943465273
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9093,8 +9093,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258e4c26901cc431c9eaa30eafb6ae26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {fileID: 1644488656}
-  settings: {fileID: 611829441}
+  StartText: {fileID: 1644488656}
+  SettingsButton: {fileID: 611829441}
 --- !u!1 &2126618471
 GameObject:
   m_ObjectHideFlags: 0

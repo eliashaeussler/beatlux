@@ -16,11 +16,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000012003117000}
-  - 135: {fileID: 135000012922007996}
-  - 114: {fileID: 114000011099100404}
+  - component: {fileID: 4000012003117000}
+  - component: {fileID: 135000012922007996}
+  - component: {fileID: 114000011099100404}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -33,15 +33,15 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000010313063672}
-  - 20: {fileID: 20000014242465894}
-  - 92: {fileID: 92000012439039006}
-  - 124: {fileID: 124000012052415240}
-  - 54: {fileID: 54000011606262274}
-  - 114: {fileID: 114000013050108824}
-  - 114: {fileID: 114000011310631126}
+  - component: {fileID: 4000010313063672}
+  - component: {fileID: 20000014242465894}
+  - component: {fileID: 92000012439039006}
+  - component: {fileID: 124000012052415240}
+  - component: {fileID: 54000011606262274}
+  - component: {fileID: 114000013050108824}
+  - component: {fileID: 114000011310631126}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -58,10 +58,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -11.76, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000012003117000}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000012003117000
 Transform:
   m_ObjectHideFlags: 1
@@ -71,11 +71,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 12.48, z: -21.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000010313063672}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &20000014242465894
 Camera:
   m_ObjectHideFlags: 1
@@ -106,10 +106,12 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!54 &54000011606262274
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -143,9 +145,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f904e919835132409fa96f6fab2785b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundaries: {fileID: 1000012909584292, guid: e5610e272d07507469d6e3d5d325e8a7, type: 2}
-  mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
-  mirrorsOnOff: 0
+  Boundaries: {fileID: 1000012909584292, guid: e5610e272d07507469d6e3d5d325e8a7, type: 2}
+  Mirrors: {fileID: 1000010189931478, guid: 9ad6ae686204bda4d9f9b4cde81e1462, type: 2}
+  MirrorsOnOff: 0
 --- !u!114 &114000011310631126
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -157,9 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01157996499882346960eb11dfa07912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  mouseSensitivity: 3
-  permitmove: 0
+  Speed: 10
+  MouseSensitivity: 3
+  Permitmove: 0
 --- !u!114 &114000013050108824
 MonoBehaviour:
   m_ObjectHideFlags: 1

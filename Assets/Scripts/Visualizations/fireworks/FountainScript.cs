@@ -3,117 +3,109 @@
  */
 
 using UnityEngine;
-using System.Collections;
+
+public class FountainScript : MonoBehaviour
+{
+    private readonly float[] _samples = new float[1024];
+    private bool _bol;
+    private Color _col1;
+    private Color _col2;
+    private Color _col3;
+    private Color[] _col4;
+    private Color _col5;
+    private Color _col6;
+    private Color _col7;
+    private int _colVal1;
+    private int _colVal2;
+    private float _comp;
+    private int _count;
+    private float _maxVol;
 
 
-public class FountainScript : MonoBehaviour {
-
-    Color col1;
-    Color col2;
-    Color col3;
-    Color col5;
-    Color col6;
-    Color col7;
-    float[] samples = new float[1024];
-    Color[] col4;
-    int count = 0;
-    int colVal1;
-    int colVal2;
-    float comp = 0f;
-    bool bol = false;
-    float maxVol = 0;
-    
-
-
-	// Initialisation of the given colors
-	void Start () {
-        this.GetComponent<ParticleSystem>().Play();
+    // Initialisation of the given colors
+    private void Start()
+    {
+        GetComponent<ParticleSystem>().Play();
         if (Settings.Active.ColorScheme == null)
         {
             //add colors here
         }
         else
         {
-            col1 = Settings.Active.ColorScheme.Colors[0];
-            col2 = Settings.Active.ColorScheme.Colors[1];
-            col3 = Settings.Active.ColorScheme.Colors[2];
-            col5 = Settings.Active.ColorScheme.Colors[3];
-            col6 = Settings.Active.ColorScheme.Colors[4];
-            col7 = Settings.Active.ColorScheme.Colors[5];
+            _col1 = Settings.Active.ColorScheme.Colors[0];
+            _col2 = Settings.Active.ColorScheme.Colors[1];
+            _col3 = Settings.Active.ColorScheme.Colors[2];
+            _col5 = Settings.Active.ColorScheme.Colors[3];
+            _col6 = Settings.Active.ColorScheme.Colors[4];
+            _col7 = Settings.Active.ColorScheme.Colors[5];
         }
 
-        col4  = new Color[] { col1, col2, col3, col5, col6, col7 };
-	}
-	
-	void Update () {
+        _col4 = new[] {_col1, _col2, _col3, _col5, _col6, _col7};
+    }
 
-        AudioListener.GetOutputData(samples, 0);
+    private void Update()
+    {
+        AudioListener.GetOutputData(_samples, 0);
 
         //makes fountains dependend on volume
         float vol = 0;
-        foreach (float sample in samples)
-        {
+        foreach (var sample in _samples)
             if (sample >= 0)
-            {
                 vol += sample;
-            }
-            else vol -= sample;
-        }
-        if (maxVol < vol) maxVol = vol;
+            else
+                vol -= sample;
+        if (_maxVol < vol) _maxVol = vol;
         if (vol <= 0)
         {
-            bol = true;
-            this.GetComponent<ParticleSystem>().Stop();
-            
-        } else if (vol>0&&bol== true){
-            this.GetComponent<ParticleSystem>().Play();
-            bol = false;
+            _bol = true;
+            GetComponent<ParticleSystem>().Stop();
         }
-        
+        else if (vol > 0 && _bol)
+        {
+            GetComponent<ParticleSystem>().Play();
+            _bol = false;
+        }
 
-        //switches between selected colors
-        if (count == 0)
+
+        switch (_count)
         {
-            colVal1 = Random.Range(0,col4.Length);
-            colVal2 = Random.Range(0,col4.Length);
+            //switches between selected colors
+            case 0:
+                _colVal1 = Random.Range(0, _col4.Length);
+                _colVal2 = Random.Range(0, _col4.Length);
+                break;
+            case 100:
+                _colVal1 = Random.Range(0, _col4.Length);
+                _colVal2 = Random.Range(0, _col4.Length);
+                break;
+            case 200:
+                _colVal1 = Random.Range(0, _col4.Length);
+                _colVal2 = Random.Range(0, _col4.Length);
+                break;
+            case 300:
+                _count = 0;
+                break;
         }
-        else if (count == 100)
-        {
-            colVal1 = Random.Range(0,col4.Length);
-            colVal2 = Random.Range(0,col4.Length);
-        }else if (count == 200)
-        {
-            colVal1 = Random.Range(0,col4.Length);
-            colVal2 = Random.Range(0,col4.Length);
-        }
-        else if (count == 300)
-        {
-            count = 0;
-        }
-        
+
         // controlls color
-        ParticleSystem ps = this.GetComponent<ParticleSystem>();
-        ps.startLifetime = 3.5f * vol / maxVol;
-        ps.startColor = Color.Lerp(col4[colVal1],col4[colVal2],Time.time);
-        
-        count++;
+        var ps = GetComponent<ParticleSystem>();
+        ps.startLifetime = 3.5f * vol / _maxVol;
+        ps.startColor = Color.Lerp(_col4[_colVal1], _col4[_colVal2], Time.time);
+
+        _count++;
 
         // controls angle
         var sh = ps.shape;
         sh.enabled = true;
-        if (comp < AudioPeer.freqBands[0])
+        if (_comp < AudioPeer.FreqBands[0])
         {
-            comp = AudioPeer.freqBands[0];
-            sh.angle = sh.angle+0.4f;
+            _comp = AudioPeer.FreqBands[0];
+            sh.angle = sh.angle + 0.4f;
         }
-        else if (comp > AudioPeer.freqBands[0]&&sh.angle>3.0)
+        else if (_comp > AudioPeer.FreqBands[0] && sh.angle > 3.0)
         {
-            comp = AudioPeer.freqBands[0];
+            _comp = AudioPeer.FreqBands[0];
             sh.angle = sh.angle - 0.4f;
         }
-        
-        
-
-	}
-
+    }
 }

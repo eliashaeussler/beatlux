@@ -3,38 +3,38 @@
  */
 
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
+public class MainMenu : MonoBehaviour
+{
+    public Button SettingsButton;
 
-public class MainMenu : MonoBehaviour {
+    public GameObject StartText;
 
-	public GameObject start;
-	public Button settings;
+    private void Start()
+    {
+        // Set start button
+        if (Settings.Active.Visualization != null)
+            StartText.GetComponent<Text>().text = Settings.MenuManager.LangManager.getString("continue");
 
-	void Start ()
-	{
-		// Set start button
-		if (Settings.Active.Visualization != null) {
-			start.GetComponent<Text> ().text = Settings.MenuManager.LangManager.getString ("continue");
-		}
+        // Set start button click event
+        StartText.GetComponent<Button>().onClick.AddListener(delegate
+        {
+            if (Settings.Active.Visualization != null)
+            {
+                Settings.Selected.Visualization = Settings.Active.Visualization;
+                Settings.MenuManager.StartVisualization();
+            }
+            else
+            {
+                Settings.MenuManager.StartLevel(2);
+            }
+        });
 
-		// Set start button click event
-		start.GetComponent<Button> ().onClick.AddListener (delegate {
+        if (!Settings.MenuManager.OpenSettings) return;
 
-			if (Settings.Active.Visualization != null) {
-				Settings.Selected.Visualization = Settings.Active.Visualization;
-				Settings.MenuManager.StartVisualization ();
-			} else {
-				Settings.MenuManager.StartLevel (2);
-			}
-			
-		});
-
-		// Open settings
-		if (Settings.MenuManager.openSettings) {
-			settings.onClick.Invoke ();
-			Settings.MenuManager.openSettings = false;
-		}
-	}
+        // Open settings
+        SettingsButton.onClick.Invoke();
+        Settings.MenuManager.OpenSettings = false;
+    }
 }

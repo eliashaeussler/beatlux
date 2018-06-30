@@ -3,89 +3,75 @@
  */
 
 using UnityEngine;
-using System.Collections;
-
 
 [RequireComponent(typeof(CameraMover))]
-public class CameraController : MonoBehaviour {
-    public float speed = 10f;
-    public float mouseSensitivity = 3f;
-    public bool permitmove = false;
-
-    private CameraMover move;
-	private PlayerCanvas player;
+public class CameraController : MonoBehaviour
+{
+    private CameraMover _move;
+    private PlayerCanvas _player;
+    public float MouseSensitivity = 3f;
+    public bool Permitmove;
+    public float Speed = 10f;
 
     /**
      * Initialize the mover
      **/
-    void Start()
+    private void Start()
     {
-        
-        move = GetComponent<CameraMover>();
-		player = GameObject.Find ("PlayerCanvas").GetComponent<PlayerCanvas> ();
+        _move = GetComponent<CameraMover>();
+        GameObject canvas;
+        if ((canvas = GameObject.Find("PlayerCanvas")) != null) _player = canvas.GetComponent<PlayerCanvas>();
     }
 
     /**
      * Get inputs from the player, tells the CameraMover what to do.
      **/
-    void Update()
-	{
-        float xMov = Input.GetAxisRaw("Horizontal");
+    private void Update()
+    {
+        var xMov = Input.GetAxisRaw("Horizontal");
 
 
-        float zMov = Input.GetAxisRaw("Vertical");
+        var zMov = Input.GetAxisRaw("Vertical");
 
         //Increase speed when pressing left shift
-        if(Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            if (speed < 50)
-            {
-                speed += 5f;
-            }
-        }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (Speed < 50)
+                Speed += 5f;
 
         //Decrease speed when pressing left shift
         if (Input.GetKeyDown(KeyCode.RightShift))
-        {
-            if (speed > 0)
-            {
-                speed -= 5f;
-            }
-        }
+            if (Speed > 0)
+                Speed -= 5f;
 
         //Enable/disable movement when pressing shift
         if (Input.GetKeyDown("space"))
         {
-            permitmove = !permitmove;
+            Permitmove = !Permitmove;
 
-			if (permitmove) {
-				player.HidePlayerImmediate ();
-			} else {
-				player.ShowPlayer ();
-			}
+            if (Permitmove)
+                _player.HidePlayerImmediate();
+            else
+                _player.ShowPlayer();
         }
 
         //Resets player position to standard when pressing R
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            move.resPosition();
-        }
+        if (Input.GetKeyDown(KeyCode.R)) _move.resPosition();
 
         //Get basic movement inputs from WASD and Mouse
-        Vector3 movHorizontal = transform.right * xMov;
-        Vector3 movVertical = transform.forward * zMov;
+        var movHorizontal = transform.right * xMov;
+        var movVertical = transform.forward * zMov;
 
-        Vector3 velocity = (movHorizontal + movVertical).normalized * speed;
-        move.Move(velocity);
+        var velocity = (movHorizontal + movVertical).normalized * Speed;
+        _move.Move(velocity);
 
-        float yRot = Input.GetAxisRaw("Mouse X");
-        float xRot = Input.GetAxisRaw("Mouse Y");
+        var yRot = Input.GetAxisRaw("Mouse X");
+        var xRot = Input.GetAxisRaw("Mouse Y");
 
 
-        Vector3 rotation = new Vector3(-xRot, yRot, 0f) * mouseSensitivity;
+        var rotation = new Vector3(-xRot, yRot, 0f) * MouseSensitivity;
 
-        move.Permission(permitmove);
+        _move.Permission(Permitmove);
 
-        move.Rotate(rotation);
+        _move.Rotate(rotation);
     }
 }

@@ -2,71 +2,72 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using System.Collections;
 using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
 
+public class LangVizMenu : MonoBehaviour
+{
+    private string _currentLang = "English";
+    private Lang _langManager;
+    private TextAsset _textAsset;
+    public Text Cancel;
+    public Text Color;
 
-public class LangVizMenu : MonoBehaviour {
+    public GameSettings GameSettings;
 
-    public Text music;
-    public Text viz;
-    public Text ok;
-    public Text cancel;
-    public Text search;
-    public Text color;
+    public Text Music;
+    public Text Ok;
+    public Text Search;
+    public Text Viz;
 
-    public GameSettings gameSettings;
-    private Lang LangManager;
-    private string currentLang = "English";
-    TextAsset textAsset;
-    /**
-    * Setting up language file, choosing language and setting texts
-    * 
-    * For more languages, add them in switch-statement
-    **/
-    void OnEnable()
+
+    /// <summary>
+    ///     Setting up language file, choosing language and setting texts
+    /// </summary>
+    /// <remarks>
+    ///     For more languages, add them in switch-statement
+    /// </remarks>
+    private void OnEnable()
     {
-        textAsset = (TextAsset)Resources.Load("XML/lang");
+        _textAsset = Resources.Load("XML/lang") as TextAsset;
 
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json"))
         {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+            GameSettings =
+                JsonUtility.FromJson<GameSettings>(
+                    File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
 
-            switch (gameSettings.language)
+            switch (GameSettings.Language)
             {
                 case 0:
-                    currentLang = "English";
+                    _currentLang = "English";
                     break;
 
                 case 1:
-                    currentLang = "German";
-                    break;
-
-                default:
+                    _currentLang = "German";
                     break;
             }
         }
-        LangManager = new Lang(textAsset, currentLang, false);
-        setTexts(currentLang);
 
+        _langManager = new Lang(_textAsset, _currentLang, false);
 
+        setTexts(_currentLang);
     }
 
-    /**
-     *  Sets all the texts to the specified language when called 
-     **/
-    public void setTexts(string _currentLang)
+    /// <summary>
+    ///     Sets all the texts to the specified language when called
+    /// </summary>
+    /// <param name="currentLang"></param>
+    private void setTexts(string currentLang)
     {
-        LangManager = new Lang(textAsset, currentLang, false);
+        _langManager = new Lang(_textAsset, currentLang, false);
 
-        music.text = LangManager.getString("music");
-        viz.text = LangManager.getString("viz");
-        ok.text = LangManager.getString("ok");
-        cancel.text = LangManager.getString("cancel");
-        search.text = LangManager.getString("search");
-        color.text = LangManager.getString("color");
-
+        Music.text = _langManager.getString("music");
+        Viz.text = _langManager.getString("viz");
+        Ok.text = _langManager.getString("ok");
+        Cancel.text = _langManager.getString("cancel");
+        Search.text = _langManager.getString("search");
+        Color.text = _langManager.getString("color");
     }
 }

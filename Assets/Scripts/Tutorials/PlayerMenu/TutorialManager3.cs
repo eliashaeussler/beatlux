@@ -2,41 +2,35 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
+public class TutorialManager3 : MonoBehaviour
+{
+    private static TutorialManager3 _instance;
 
-public class TutorialManager3 : MonoBehaviour {
+    private Tutorial3 currentTutorial;
+    public Text ExpText;
 
     public List<Tutorial3> Tutorials = new List<Tutorial3>();
-    public Text ExpText;
-    private static TutorialManager3 instance;
 
     //creates an instance of the Tutorialmanager
     public static TutorialManager3 Instace
     {
         get
         {
-            if (instance == null)
-            {
-                instance = GameObject.FindObjectOfType<TutorialManager3>();
-            }
+            if (_instance == null) _instance = FindObjectOfType<TutorialManager3>();
 
-            if (instance == null)
-            {
-                Debug.Log("There is no TutorialManager");
-            }
+            if (_instance == null) Debug.Log("There is no TutorialManager");
 
-            return instance;
+            return _instance;
         }
     }
 
-    private Tutorial3 currentTutorial;
-
     // sets the tutorialstart to tutorial 0
-    void Start()
+    private void Start()
     {
         Init();
     }
@@ -47,12 +41,9 @@ public class TutorialManager3 : MonoBehaviour {
     }
 
     // if a tutorial is there, checks if sth is happening
-    void Update()
+    public void Update()
     {
-        if (currentTutorial)
-        {
-            currentTutorial.CheckIfHappening();
-        }
+        if (currentTutorial) currentTutorial.CheckIfHappening();
     }
 
     // called if a tutorial is finished
@@ -62,7 +53,7 @@ public class TutorialManager3 : MonoBehaviour {
     }
 
     // sets next tutorial if possible, else finish
-    public void SetNextTutorial(int currentOrder)
+    private void SetNextTutorial(int currentOrder)
     {
         currentTutorial = GetTutorialByOrder(currentOrder);
 
@@ -76,23 +67,14 @@ public class TutorialManager3 : MonoBehaviour {
     }
 
     // text if every tutorial is finished
-    public void CompletedAllTutorials()
+    private void CompletedAllTutorials()
     {
         ExpText.text = "You completed all the tutorials";
     }
 
     // gets the tutorial order
-    public Tutorial3 GetTutorialByOrder(int Order)
+    private Tutorial3 GetTutorialByOrder(int order)
     {
-        for (int i = 0; i < Tutorials.Count; i++)
-        {
-            if (Tutorials[i].Order == Order)
-            {
-                return Tutorials[i];
-            }
-        }
-
-
-        return null;
+        return Tutorials.FirstOrDefault(t => t.Order == order);
     }
 }

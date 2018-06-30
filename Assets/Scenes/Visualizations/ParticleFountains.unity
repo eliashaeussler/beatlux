@@ -9403,8 +9403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 6
-  extraHeight: 0
+  Band: 6
+  ExtraHeight: 0
 --- !u!199 &166051594
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -11241,8 +11241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 4
-  extraHeight: 0
+  Band: 4
+  ExtraHeight: 0
 --- !u!199 &173891111
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -13079,8 +13079,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 7
-  extraHeight: 0
+  Band: 7
+  ExtraHeight: 0
 --- !u!199 &251245272
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -14917,8 +14917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 5
-  extraHeight: 0
+  Band: 5
+  ExtraHeight: 0
 --- !u!199 &273308356
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -20449,8 +20449,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 1
-  extraHeight: 0
+  Band: 1
+  ExtraHeight: 0
 --- !u!199 &340713423
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -38923,8 +38923,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 0
-  extraHeight: 0
+  Band: 0
+  ExtraHeight: 0
 --- !u!1 &778598939
 GameObject:
   m_ObjectHideFlags: 0
@@ -38955,8 +38955,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 4
-  extraHeight: 0
+  Band: 4
+  ExtraHeight: 0
 --- !u!199 &778598941
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -51927,8 +51927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 2
-  extraHeight: 0
+  Band: 2
+  ExtraHeight: 0
 --- !u!199 &933855688
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -61273,8 +61273,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 0
-  extraHeight: 0
+  Band: 0
+  ExtraHeight: 0
 --- !u!199 &1080448763
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -64943,8 +64943,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 7
-  extraHeight: 0
+  Band: 7
+  ExtraHeight: 0
 --- !u!199 &1162871506
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -72309,8 +72309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 6
-  extraHeight: 0
+  Band: 6
+  ExtraHeight: 0
 --- !u!199 &1268452693
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -100011,8 +100011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 3
-  extraHeight: 0
+  Band: 3
+  ExtraHeight: 0
 --- !u!199 &1740032136
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -107445,8 +107445,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 5
-  extraHeight: 0
+  Band: 5
+  ExtraHeight: 0
 --- !u!199 &1865932260
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -112949,8 +112949,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 2
-  extraHeight: 0
+  Band: 2
+  ExtraHeight: 0
 --- !u!199 &1954620664
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -114787,8 +114787,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 3
-  extraHeight: 0
+  Band: 3
+  ExtraHeight: 0
 --- !u!199 &2000315934
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0
@@ -116625,8 +116625,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ec92880e6b3bc45b60dc5ad0f0d9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  band: 1
-  extraHeight: 0
+  Band: 1
+  ExtraHeight: 0
 --- !u!199 &2075957710
 ParticleSystemRenderer:
   m_ObjectHideFlags: 0

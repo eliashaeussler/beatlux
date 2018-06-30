@@ -3,51 +3,46 @@
  */
 
 using UnityEngine;
-using System.Collections;
 
 
 //[RequireComponent (typeof (AudioSource))]
-public class AudioPeer : MonoBehaviour {
+public class AudioPeer : MonoBehaviour
+{
+    private static readonly float[] Samples = new float[512];
+    public static readonly float[] FreqBands = new float[8];
 
-    public static float[] samples = new float[512];
-    public static float[] freqBands = new float[8];
 
+    // Use this for initialization
 
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    private void Update()
+    {
         GetSpectrumAudioSource();
         MakeFreqBands();
-	}
+    }
 
-    void GetSpectrumAudioSource()
+    private static void GetSpectrumAudioSource()
     {
-		AudioListener.GetSpectrumData(samples, 0, FFTWindow.Blackman);
+        AudioListener.GetSpectrumData(Samples, 0, FFTWindow.Blackman);
     }
 
     //creates frequences suitable for the human perception 
-    void MakeFreqBands()
+    private static void MakeFreqBands()
     {
-        int count = 0;
-        for (int i = 0; i < 8; i++)
+        var count = 0;
+        for (var i = 0; i < 8; i++)
         {
             float average = 0;
-            int sCount = (int)Mathf.Pow(2, i) * 2;
-            if (i == 7)
+            var sCount = (int) Mathf.Pow(2, i) * 2;
+            if (i == 7) sCount += 2;
+            for (var j = 0; j < sCount; j++)
             {
-                sCount += 2;
-            }
-            for (int j = 0; j < sCount; j++)
-            {
-                average += samples[count] * (count + 1);
+                average += Samples[count] * (count + 1);
                 count++;
             }
 
             average /= count;
-            freqBands[i] = average*10;
+            FreqBands[i] = average * 10;
         }
     }
 }

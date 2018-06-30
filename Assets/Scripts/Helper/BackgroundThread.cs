@@ -2,48 +2,47 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using System.Collections;
 using System.ComponentModel;
 using System.Threading;
 
-
 /// <summary>
-/// Provides methods background threading.
+///     Provides methods background threading.
 /// </summary>
-public class BackgroundThread : BackgroundWorker {
-
+public class BackgroundThread : BackgroundWorker
+{
 	/// <summary>
-	/// Thread which is being processed in the background.
+	///     Thread which is being processed in the background.
 	/// </summary>
-	private Thread thread;
+	private Thread _thread;
 
 	/// <summary>
-	/// Raises the do work event.
+	///     Raises the do work event.
 	/// </summary>
 	/// <param name="e">
-	/// Event arguments to be called in the background.
+	///     Event arguments to be called in the background.
 	/// </param>
-	protected override void OnDoWork (DoWorkEventArgs e)
-	{
-		thread = Thread.CurrentThread;
+	protected override void OnDoWork(DoWorkEventArgs e)
+    {
+        _thread = Thread.CurrentThread;
 
-		try {
-			base.OnDoWork (e);
-		} catch (ThreadAbortException) {
-			e.Cancel = true;
-			Thread.ResetAbort ();
-		}
-	}
+        try
+        {
+            base.OnDoWork(e);
+        }
+        catch (ThreadAbortException)
+        {
+            e.Cancel = true;
+            Thread.ResetAbort();
+        }
+    }
 
 	/// <summary>
-	/// Abort this instance.
+	///     Abort this instance.
 	/// </summary>
-	public void Abort ()
-	{
-		if (thread != null) {
-			thread.Abort ();
-			thread = null;
-		}
-	}
+	public void Abort()
+    {
+        if (_thread == null) return;
+        _thread.Abort();
+        _thread = null;
+    }
 }

@@ -8,11 +8,8 @@ C# version by O. Glorieux
  
 */
 
-using System;
 using System.Collections;
-using System.IO;
 using System.Xml;
-
 using UnityEngine;
 
 public class Lang
@@ -38,13 +35,9 @@ public class Lang
     public Lang(TextAsset text, string language, bool web)
     {
         if (!web)
-        {
             setLanguage(text, language);
-        }
         else
-        {
             setLanguageWeb(text, language);
-        }
     }
 
     /*
@@ -69,7 +62,7 @@ public class Lang
             var elemEnum = element.GetEnumerator();
             while (elemEnum.MoveNext())
             {
-                var xmlItem = (XmlElement)elemEnum.Current;
+                var xmlItem = (XmlElement) elemEnum.Current;
                 Strings.Add(xmlItem.GetAttribute("name"), xmlItem.InnerText);
             }
         }
@@ -104,7 +97,7 @@ public class Lang
             var elemEnum = element.GetEnumerator();
             while (elemEnum.MoveNext())
             {
-                var xmlItem = (XmlElement)elemEnum.Current;
+                var xmlItem = (XmlElement) elemEnum.Current;
                 Strings.Add(xmlItem.GetAttribute("name"), xmlItem.InnerText);
             }
         }
@@ -143,7 +136,6 @@ public class Lang
             return "";
         }
 
-        return (string)Strings[name];
+        return (string) Strings[name];
     }
-
 }

@@ -2,291 +2,272 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using System.Collections;
-using Mono.Data.Sqlite;
-using System.Data;
 using System;
 using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Linq;
-using System.IO;
-using UnityEngine.SceneManagement;
+using Mono.Data.Sqlite;
+using UnityEngine;
+using UnityEngine.UI;
 
+public class Visualization : MonoBehaviour
+{
+    private static List<VisualizationObj> _tempViz;
 
-public class Visualization : MonoBehaviour {
+    // Color scheme object
+    public ColorScheme ColorSchemes;
 
 
     // Color schemes
-    public List<VisualizationObj> Visualizations = new List<VisualizationObj> ();
+    public List<VisualizationObj> Visualizations = new List<VisualizationObj>();
 
-	// Color scheme object
-	public ColorScheme ColorSchemes;
+    private void Start()
+    {
+        // Select visualizations from database
+        Load();
 
-	public static List<VisualizationObj> tempViz;
+        // Set selected elements
+        MenuFunctions.SetSelected();
 
-    void Start ()
-	{
-		// Select visualizations from database
-		Load ();
+        // Display visualizations
+        Display();
 
-		// Set selected elements
-		MenuFunctions.SetSelected ();
-
-		// Display visualizations
-		Display ();
-
-		// Display color schemes
-		ColorSchemes.Display ();
+        // Display color schemes
+        ColorSchemes.Display();
 
         // Close database connection
-		Database.Close ();
+        Database.Close();
 
-		// Show or hide start button
-		MenuManager.ToggleStart ();
+        // Show or hide start button
+        MenuFunctions.ToggleStart();
 
-		// Set start button
-		if (Settings.Active.File != null) {
-			GameObject.Find ("Start/Button/Text").GetComponent<Text> ().text = Settings.MenuManager.LangManager.getString("continue");
-		}
-	}
-
-
-
-	public void Display ()
-	{
-		if (Visualizations != null)
-		{
-			// Remove all GameObjects
-			for (int i = transform.childCount - 1; i >= 0; i--) {
-				GameObject.DestroyImmediate (transform.GetChild (i).gameObject);
-			}
-
-			foreach (VisualizationObj viz in Visualizations)
-			{
-				// Create GameObject
-				GameObject gameObject = new GameObject ("#" + viz.ID);
-				gameObject.transform.SetParent (transform);
-
-				RectTransform trans = gameObject.AddComponent<RectTransform> ();
-				trans.pivot = new Vector2 (0, 0.5f);
-
-				// Add Layout Element
-				LayoutElement layoutElement = gameObject.AddComponent<LayoutElement> ();
-				layoutElement.minHeight = 30;
-				layoutElement.preferredHeight = 30;
-
-				// Add Horizontal Layout Group
-				HorizontalLayoutGroup hlg = gameObject.AddComponent<HorizontalLayoutGroup> ();
-				hlg.childForceExpandWidth = false;
-				hlg.childForceExpandHeight = false;
-				hlg.spacing = 10;
-				hlg.childAlignment = TextAnchor.MiddleLeft;
+        // Set start button
+        if (Settings.Active.File != null)
+            GameObject.Find("Start/Button/Text").GetComponent<Text>().text =
+                Settings.MenuManager.LangManager.getString("continue");
+    }
 
 
-				// Create arrow text GameObject
-				GameObject mainArrow = new GameObject ("Arrow");
-				mainArrow.transform.SetParent (gameObject.transform);
-
-				// Add text
-				TextUnicode mainTextArrow = mainArrow.AddComponent<TextUnicode> ();
-				mainTextArrow.text = viz.Equals (Settings.Selected.Visualization) ? IconFont.DROPDOWN_CLOSED : "";
-
-				// Set text alignment
-				mainTextArrow.alignment = TextAnchor.MiddleLeft;
-
-				// Font settings
-				mainTextArrow.font = IconFont.font;
-				mainTextArrow.fontSize = 20;
-
-				// Add Layout Element
-				LayoutElement mainLayoutElementArrow = mainArrow.AddComponent<LayoutElement> ();
-				mainLayoutElementArrow.minWidth = 22;
-
-
-				// Create Text GameObject
-				GameObject mainText = new GameObject ("Text");
-				mainText.transform.SetParent (gameObject.transform);
-
-				// Add Text
-				Text text = mainText.AddComponent<Text> ();
-				text.color = Color.white;
-				text.font = Resources.Load<Font> ("Fonts/FuturaStd-Book");
-				text.text = viz.Name;
-				text.fontSize = 30;
-
-				// Add Button
-				Button button = mainText.AddComponent<Button> ();
-				button.transition = Selectable.Transition.Animation;
-
-				// Add OnClick Handler
-				VisualizationObj currentViz = viz;
-				button.onClick.AddListener (delegate {
-
-					if (!currentViz.Equals (Settings.Selected.Visualization))
-					{
-						Settings.Selected.Visualization = currentViz;
-
-						if (Settings.Selected.Visualization.Equals (Settings.Active.Visualization)) {
-							Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
-						} else {
-							Settings.Selected.ColorScheme = ColorScheme.GetDefault (currentViz);
-						}
-
-						ColorSchemes.Display ();
-						Display ();
-
-						// Show or hide start button
-						MenuManager.ToggleStart ();
-					}
-
-				});
-
-				// Add Animator
-				Animator animator = mainText.AddComponent<Animator> ();
-				animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController> ("Animations/MenuButtons");
-
-
-				// Create active text GameObject
-				GameObject mainActive = new GameObject ("Active");
-				mainActive.transform.SetParent (gameObject.transform);
-
-				// Add text
-				TextUnicode mainTextActive = mainActive.AddComponent<TextUnicode> ();
-
-				if (viz.Equals (Settings.Active.Visualization))
-				{
-					mainTextActive.text = IconFont.VISUALIZATION;
-					mainTextActive.fontSize = 30;
-					mainTextActive.color = new Color (0.7f, 0.7f, 0.7f);
-				}
-
-				// Set text alignment
-				mainTextActive.alignment = TextAnchor.MiddleRight;
-
-				// Font settings
-				mainTextActive.font = IconFont.font;
-
-				// Add Layout Element
-				LayoutElement mainLayoutElementActive = mainActive.AddComponent<LayoutElement> ();
-				mainLayoutElementActive.preferredWidth = 40;
-				mainLayoutElementActive.preferredHeight = 30;
-
-
-
-				// Set scaling
-				gameObject.GetComponent<RectTransform> ().localScale = Vector3.one;
-			}
-		}
-	}
-
-
-
-	//-- DATABASE METHODS
-
-	public void Load ()
+    private void Display()
     {
-        if (Database.Connect ())
+        if (Visualizations == null) return;
+
+        // Remove all GameObjects
+        for (var i = transform.childCount - 1; i >= 0; i--) DestroyImmediate(transform.GetChild(i).gameObject);
+
+        foreach (var viz in Visualizations)
+        {
+            // Create GameObject
+            var element = new GameObject("#" + viz.Id);
+            element.transform.SetParent(transform);
+
+            var trans = element.AddComponent<RectTransform>();
+            trans.pivot = new Vector2(0, 0.5f);
+
+            // Add Layout Element
+            var layoutElement = element.AddComponent<LayoutElement>();
+            layoutElement.minHeight = 30;
+            layoutElement.preferredHeight = 30;
+
+            // Add Horizontal Layout Group
+            var hlg = element.AddComponent<HorizontalLayoutGroup>();
+            hlg.childForceExpandWidth = false;
+            hlg.childForceExpandHeight = false;
+            hlg.spacing = 10;
+            hlg.childAlignment = TextAnchor.MiddleLeft;
+
+
+            // Create arrow text GameObject
+            var mainArrow = new GameObject("Arrow");
+            mainArrow.transform.SetParent(element.transform);
+
+            // Add text
+            var mainTextArrow = mainArrow.AddComponent<TextUnicode>();
+            mainTextArrow.text = viz.Equals(Settings.Selected.Visualization) ? IconFont.DropdownClosed : "";
+
+            // Set text alignment
+            mainTextArrow.alignment = TextAnchor.MiddleLeft;
+
+            // Font settings
+            mainTextArrow.font = IconFont.Font;
+            mainTextArrow.fontSize = 20;
+
+            // Add Layout Element
+            var mainLayoutElementArrow = mainArrow.AddComponent<LayoutElement>();
+            mainLayoutElementArrow.minWidth = 22;
+
+
+            // Create Text GameObject
+            var mainText = new GameObject("Text");
+            mainText.transform.SetParent(element.transform);
+
+            // Add Text
+            var text = mainText.AddComponent<Text>();
+            text.color = Color.white;
+            text.font = Resources.Load<Font>("Fonts/FuturaStd-Book");
+            text.text = viz.Name;
+            text.fontSize = 30;
+
+            // Add Button
+            var button = mainText.AddComponent<Button>();
+            button.transition = Selectable.Transition.Animation;
+
+            // Add OnClick Handler
+            var currentViz = viz;
+            button.onClick.AddListener(delegate
+            {
+                if (currentViz.Equals(Settings.Selected.Visualization)) return;
+
+                Settings.Selected.Visualization = currentViz;
+
+                Settings.Selected.ColorScheme = Settings.Selected.Visualization.Equals(Settings.Active.Visualization)
+                    ? Settings.Active.ColorScheme
+                    : ColorScheme.GetDefault(currentViz);
+
+                ColorSchemes.Display();
+                Display();
+
+                // Show or hide start button
+                MenuFunctions.ToggleStart();
+            });
+
+            // Add Animator
+            var animator = mainText.AddComponent<Animator>();
+            animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animations/MenuButtons");
+
+
+            // Create active text GameObject
+            var mainActive = new GameObject("Active");
+            mainActive.transform.SetParent(element.transform);
+
+            // Add text
+            var mainTextActive = mainActive.AddComponent<TextUnicode>();
+
+            if (viz.Equals(Settings.Active.Visualization))
+            {
+                mainTextActive.text = IconFont.Visualization;
+                mainTextActive.fontSize = 30;
+                mainTextActive.color = new Color(0.7f, 0.7f, 0.7f);
+            }
+
+            // Set text alignment
+            mainTextActive.alignment = TextAnchor.MiddleRight;
+
+            // Font settings
+            mainTextActive.font = IconFont.Font;
+
+            // Add Layout Element
+            var mainLayoutElementActive = mainActive.AddComponent<LayoutElement>();
+            mainLayoutElementActive.preferredWidth = 40;
+            mainLayoutElementActive.preferredHeight = 30;
+
+
+            // Set scaling
+            element.GetComponent<RectTransform>().localScale = Vector3.one;
+        }
+    }
+
+
+    //-- DATABASE METHODS
+
+    private void Load()
+    {
+        if (Database.Connect())
         {
             // Database command
-			SqliteCommand cmd = new SqliteCommand (Database.Connection);
+            var cmd = new SqliteCommand(Database.Connection);
 
             // Query statement
-            string sql = "SELECT id,name,colors,buildNumber,skybox FROM visualization ORDER BY name ASC";
+            var sql = "SELECT id,name,colors,buildNumber,skybox FROM visualization ORDER BY name ASC";
             cmd.CommandText = sql;
 
             // Get sql results
-            SqliteDataReader reader = cmd.ExecuteReader ();
+            var reader = cmd.ExecuteReader();
 
             // Read sql results
-            while (reader.Read ())
+            while (reader.Read())
             {
                 // Create visualization object
-				VisualizationObj obj = new VisualizationObj ();
+                var obj = new VisualizationObj
+                {
+                    Id = reader.GetInt64(0),
+                    Name = reader.GetString(1),
+                    Colors = reader.GetInt32(2),
+                    BuildNumber = reader.GetInt32(3),
+                    Skybox = reader.IsDBNull(4) ? null : reader.GetString(4)
+                };
 
-                // Set id and name
-                obj.ID = reader.GetInt64 (0);
-                obj.Name = reader.GetString (1);
-				obj.Colors = reader.GetInt32 (2);
-                obj.BuildNumber = reader.GetInt32 (3);
-				obj.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
-
-				// Add visualization to visualizations array
-				if (Application.CanStreamedLevelBeLoaded (obj.BuildNumber))
-                	Visualizations.Add (obj);
+                // Add visualization to visualizations array
+                if (Application.CanStreamedLevelBeLoaded(obj.BuildNumber))
+                    Visualizations.Add(obj);
             }
 
             // Close reader
-            reader.Close ();
-            cmd.Dispose ();
+            reader.Close();
+            cmd.Dispose();
 
-			// Clone visualizations array
-			tempViz = Visualizations;
-		}
+            // Clone visualizations array
+            _tempViz = Visualizations;
+        }
 
-		// Close database connection
-		Database.Close ();
+        // Close database connection
+        Database.Close();
     }
 
-	public static VisualizationObj GetVisualization (long id, bool closeConnection)
-	{
-		if (Database.Connect ())
-		{
-			// Send database query
-			SqliteCommand cmd = new SqliteCommand (Database.Connection);
-			cmd.CommandText = "SELECT id,name,colors,buildNumber,skybox FROM visualization WHERE id = @ID";
+    public static VisualizationObj GetVisualization(long id, bool closeConnection)
+    {
+        if (Database.Connect())
+        {
+            // Send database query
+            var cmd = new SqliteCommand(Database.Connection)
+            {
+                CommandText = "SELECT id,name,colors,buildNumber,skybox FROM visualization WHERE id = @ID"
+            };
 
-			// Add Parameters to statement
-			cmd.Parameters.Add (new SqliteParameter ("ID", id));
+            // Add Parameters to statement
+            cmd.Parameters.Add(new SqliteParameter("ID", id));
 
-			SqliteDataReader reader = cmd.ExecuteReader ();
-			VisualizationObj viz = null;
+            var reader = cmd.ExecuteReader();
+            VisualizationObj viz = null;
 
-			// Read and add visualization
-			while (reader.Read ())
-			{
-				viz = new VisualizationObj ();
+            // Read and add visualization
+            while (reader.Read())
+                viz = new VisualizationObj
+                {
+                    Id = reader.GetInt64(0),
+                    Name = reader.GetString(1),
+                    Colors = reader.GetInt32(2),
+                    BuildNumber = reader.GetInt32(3),
+                    Skybox = reader.IsDBNull(4) ? null : reader.GetString(4)
+                };
 
-				viz.ID = reader.GetInt64 (0);
-				viz.Name = reader.GetString (1);
-				viz.Colors = reader.GetInt32 (2);
-				viz.BuildNumber = reader.GetInt32 (3);
-				viz.Skybox = reader.IsDBNull (4) ? null : reader.GetString (4);
-			}
+            // Close reader
+            reader.Close();
+            cmd.Dispose();
+            if (closeConnection) Database.Close();
 
-			// Close reader
-			reader.Close ();
-			cmd.Dispose ();
-			if (closeConnection) Database.Close ();
+            return viz;
+        }
 
-			return viz;
-		}
+        // Close database connection
+        if (closeConnection) Database.Close();
 
-		// Close database connection
-		if (closeConnection) Database.Close ();
-
-		return null;
-	}
-
+        return null;
+    }
 
 
-	//-- VISUALIZATION SEARCH
+    //-- VISUALIZATION SEARCH
 
-	public void SearchVisualizations (string s)
-	{
-		// Get Visualization object
-		Visualization viz = GameObject.Find ("VizContent").GetComponent<Visualization> ();
+    public void SearchVisualizations(string s)
+    {
+        // Get Visualization object
+        var viz = GameObject.Find("VizContent").GetComponent<Visualization>();
 
-		// Do search or reset
-		if (s.Length > 0) {
-			viz.Visualizations = tempViz.Where (x => x.Name.IndexOf (s, StringComparison.OrdinalIgnoreCase) >= 0).ToList ();
-		} else {
-			viz.Visualizations = tempViz;
-		}
+        // Do search or reset
+        viz.Visualizations = s.Length > 0
+            ? _tempViz.Where(x => x.Name.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0).ToList()
+            : _tempViz;
 
-		// Display visualizations
-		viz.Display ();
-	}
-    
+        // Display visualizations
+        viz.Display();
+    }
 }

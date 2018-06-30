@@ -3,46 +3,44 @@
  */
 
 using UnityEngine;
-using System.Collections;
 
-
+/// <inheritdoc />
 /// <summary>
-/// Provides variables to display icons using the icon font.
+///     Provides variables to display icons using the icon font.
 /// </summary>
-public class IconFont : MonoBehaviour {
+public class IconFont : MonoBehaviour
+{
+    public const string Visualization = "\ue900";
+    public const string DropdownOpened = "\ue901";
+    public const string DropdownClosed = "\ue902";
+    public const string Options = "\ue903";
+    public const string Listening = "\ue904";
+    public const string Search = "\ue905";
+    public const string Trash = "\ue906";
+    public const string Music = "\ue907";
+    public const string Folder = "\ue908";
+    public const string Pause = "\ue909";
+    public const string Play = "\ue90a";
+    public const string Add = "\ue90b";
+    public const string CloseCompressed = "\ue90c";
+    public const string Close = "\ue90d";
+    public const string Shuffle = "\ue90e";
+    public const string Edit = "\ue90f";
+    public const string FastForward = "\ue910";
+    public const string Rewind = "\ue911";
+    public const string Repeat = "\ue912";
+    public const string ArrowLeft = "\ue913";
+    public const string ArrowBack = "\ue914";
+    public const string Home = "\ue915";
+    public const string VizNext = "\ue916";
+    public const string VizPrev = "\ue917";
+    public const string VizNextOld = "\ue918";
+    public const string VizPrevOld = "\ue919";
+    public const string Lock = "\ue91a";
+    public const string RepeatSingle = "\ue91b";
 
 	/// <summary>
-	/// The icon font resource.
+	///     The icon font resource.
 	/// </summary>
-	public static Font font = Resources.Load<Font> ("Fonts/beatlux");
-
-	public const string VISUALIZATION = "\ue900";
-	public const string DROPDOWN_OPENED = "\ue901";
-	public const string DROPDOWN_CLOSED = "\ue902";
-	public const string OPTIONS = "\ue903";
-	public const string LISTENING = "\ue904";
-	public const string SEARCH = "\ue905";
-	public const string TRASH = "\ue906";
-	public const string MUSIC = "\ue907";
-	public const string FOLDER = "\ue908";
-	public const string PAUSE = "\ue909";
-	public const string PLAY = "\ue90a";
-	public const string ADD = "\ue90b";
-	public const string CLOSE_COMPRESSED = "\ue90c";
-	public const string CLOSE = "\ue90d";
-	public const string SHUFFLE = "\ue90e";
-	public const string EDIT = "\ue90f";
-	public const string FAST_FORWARD = "\ue910";
-	public const string REWIND = "\ue911";
-	public const string REPEAT = "\ue912";
-	public const string ARROW_LEFT = "\ue913";
-	public const string ARROW_BACK = "\ue914";
-	public const string HOME = "\ue915";
-	public const string VIZ_NEXT = "\ue916";
-	public const string VIZ_PREV = "\ue917";
-	public const string VIZ_NEXT_OLD = "\ue918";
-	public const string VIZ_PREV_OLD = "\ue919";
-	public const string LOCK = "\ue91a";
-	public const string REPEAT_SINGLE = "\ue91b";
-
+	public static readonly Font Font = Resources.Load<Font>("Fonts/beatlux");
 }

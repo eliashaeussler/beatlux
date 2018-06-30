@@ -2,101 +2,105 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
 using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
 
+public class LangMainMenu : MonoBehaviour
+{
+    private string _currentLang = "English";
+    private Lang _langManager;
+    private TextAsset _textAsset;
+    public Text Aa;
+    public Dropdown AntialiasingDropdown;
+    public Text Back;
+    public Text Credits;
+    public Text Exit;
 
-public class LangMainMenu : MonoBehaviour {
-    
-    public Text start;
-    public Text settings;
-    public Text credits;
-    public Text exit;
+    public Text Fullscreen;
 
-    public Text fullscreen;
-    public Text tutorial;
-    public Text language;
-    public Text resolution;
-    public Text texture;
-    public Text aa;
-    public Text mirrors;
-    public Text back;
-    public Text save;
+    public GameSettings GameSettings;
+    public Text Language;
+    public Dropdown MirrorDropdown;
+    public Text Mirrors;
+    public Text Resolution;
+    public Text Save;
+    public Text Settings;
 
-    public Dropdown textureQualityDropdown;
-    public Dropdown antialiasingDropdown;
-    public Dropdown mirrorDropdown;
+    public Text Start;
+    public Text Texture;
 
-    public GameSettings gameSettings;
-    private Lang LangManager;
-    private string currentLang = "English";
-    TextAsset textAsset;
+    public Dropdown TextureQualityDropdown;
+    public Text Tutorial;
 
-    /**
-     * Setting up language file, choosing language and setting texts
-     * 
-     * For more languages, add them in switch-statement
-     **/
-    void OnEnable () {
-        textAsset = (TextAsset)Resources.Load("XML/lang");
-        if (File.Exists(Application.persistentDataPath + "/gamesettings.json") == true)
+
+    /// <summary>
+    ///     Setting up language file, choosing language and setting texts
+    /// </summary>
+    /// <remarks>
+    ///     For more languages, add them in switch-statement
+    /// </remarks>
+    private void OnEnable()
+    {
+        _textAsset = Resources.Load("XML/lang") as TextAsset;
+
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json"))
         {
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+            GameSettings =
+                JsonUtility.FromJson<GameSettings>(
+                    File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
 
-            switch (gameSettings.language)
+            switch (GameSettings.Language)
             {
                 case 0:
-                    currentLang = "English";
+                    _currentLang = "English";
                     break;
 
                 case 1:
-                    currentLang = "German";
-                    break;
-
-                default:
+                    _currentLang = "German";
                     break;
             }
         }
 
-        LangManager = new Lang(textAsset, currentLang, false);
-        setTexts(currentLang);
-        
+        _langManager = new Lang(_textAsset, _currentLang, false);
+
+        SetTexts(_currentLang);
     }
 
-    /**
-     *  Sets all the texts in the mainMenu to the specified language when called 
-     **/
-	public void setTexts(string _currentLang)
+    /// <summary>
+    ///     Sets all the texts in the mainMenu to the specified language when called
+    /// </summary>
+    /// <param name="currentLang"></param>
+    public void SetTexts(string currentLang)
     {
-        LangManager.setLanguage(textAsset, _currentLang);
+        _langManager.setLanguage(_textAsset, currentLang);
 
-        start.text = LangManager.getString("start");
-        settings.text = LangManager.getString("settings");
-        credits.text = LangManager.getString("credits");
-        exit.text = LangManager.getString("exit");
-        fullscreen.text = LangManager.getString("fullscreen");
-        tutorial.text = LangManager.getString("tutorial");
-        language.text = LangManager.getString("language");
-        resolution.text = LangManager.getString("resolution");
-        texture.text = LangManager.getString("texture");
-        aa.text = LangManager.getString("aa");
-        mirrors.text = LangManager.getString("mirrors");
-        back.text = LangManager.getString("back");
-        save.text = LangManager.getString("save");
+        Start.text = _langManager.getString("start");
+        Settings.text = _langManager.getString("settings");
+        Credits.text = _langManager.getString("credits");
+        Exit.text = _langManager.getString("exit");
+        Fullscreen.text = _langManager.getString("fullscreen");
+        Tutorial.text = _langManager.getString("tutorial");
+        Language.text = _langManager.getString("language");
+        Resolution.text = _langManager.getString("resolution");
+        Texture.text = _langManager.getString("texture");
+        Aa.text = _langManager.getString("aa");
+        Mirrors.text = _langManager.getString("mirrors");
+        Back.text = _langManager.getString("back");
+        Save.text = _langManager.getString("save");
 
         //Add the values to all dropdowns for language support
-        textureQualityDropdown.options.Clear();
-        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
-        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
-        textureQualityDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("low")));
-        antialiasingDropdown.options.Clear();
-        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("off")));
-        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
-        antialiasingDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
-        mirrorDropdown.options.Clear();
-        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("off")));
-        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("medium")));
-        mirrorDropdown.options.Add(new Dropdown.OptionData(LangManager.getString("high")));
+        TextureQualityDropdown.options.Clear();
+        TextureQualityDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("high")));
+        TextureQualityDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("medium")));
+        TextureQualityDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("low")));
+        AntialiasingDropdown.options.Clear();
+        AntialiasingDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("off")));
+        AntialiasingDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("medium")));
+        AntialiasingDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("high")));
+        MirrorDropdown.options.Clear();
+        MirrorDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("off")));
+        MirrorDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("medium")));
+        MirrorDropdown.options.Add(new Dropdown.OptionData(_langManager.getString("high")));
     }
 }

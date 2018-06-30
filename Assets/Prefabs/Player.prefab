@@ -1468,9 +1468,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
-  onLeft: 1
-  onBottom: 1
+  Canvas: {fileID: 114000013817911306}
+  OnLeft: 1
+  OnBottom: 1
 --- !u!114 &114000010415628588
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2332,11 +2332,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7612f203cc5f5418bb67d0fe875399b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
-  previous: {fileID: 1000012082020600}
-  next: {fileID: 1000010816108162}
-  shuffle: {fileID: 1000010500325194}
-  logo: {fileID: 114000010803236020}
+  Canvas: {fileID: 114000013817911306}
+  PreviousButton: {fileID: 1000012082020600}
+  NextButton: {fileID: 1000010816108162}
+  ShuffleButton: {fileID: 1000010500325194}
+  Logo: {fileID: 114000010803236020}
 --- !u!114 &114000012139281234
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2557,9 +2557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
-  onLeft: 0
-  onBottom: 0
+  Canvas: {fileID: 114000013817911306}
+  OnLeft: 0
+  OnBottom: 0
 --- !u!114 &114000012343037596
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2838,7 +2838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae43e84daeb94a7cb8fecc10d7e384c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
+  Canvas: {fileID: 114000013817911306}
 --- !u!114 &114000012868606418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3122,7 +3122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ac28d996ae24e6c8881fc78eb46015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
+  Canvas: {fileID: 114000013817911306}
 --- !u!114 &114000013312838774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3578,8 +3578,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46fb721bcb7b4bda8925c0febb1f110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wrapper: {fileID: 1000013866171882}
-  displayLength: 3
+  Wrapper: {fileID: 1000013866171882}
+  DisplayLength: 3
 --- !u!114 &114000013860513900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3630,9 +3630,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 114000013817911306}
-  onLeft: 1
-  onBottom: 0
+  Canvas: {fileID: 114000013817911306}
+  OnLeft: 1
+  OnBottom: 0
 --- !u!114 &114000013927280596
 MonoBehaviour:
   m_ObjectHideFlags: 1

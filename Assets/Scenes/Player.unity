@@ -2045,11 +2045,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7612f203cc5f5418bb67d0fe875399b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
-  previous: {fileID: 1948767766}
-  next: {fileID: 1721230341}
-  shuffle: {fileID: 482290977}
-  logo: {fileID: 365746188}
+  Canvas: {fileID: 873409896}
+  PreviousButton: {fileID: 1948767766}
+  NextButton: {fileID: 1721230341}
+  ShuffleButton: {fileID: 482290977}
+  Logo: {fileID: 365746188}
 --- !u!114 &682404781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2062,7 +2062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae43e84daeb94a7cb8fecc10d7e384c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
+  Canvas: {fileID: 873409896}
 --- !u!114 &682404782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2328,8 +2328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46fb721bcb7b4bda8925c0febb1f110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wrapper: {fileID: 1669930099}
-  displayLength: 3
+  Wrapper: {fileID: 1669930099}
+  DisplayLength: 3
 --- !u!222 &873409897
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2647,9 +2647,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
-  onLeft: 1
-  onBottom: 1
+  Canvas: {fileID: 873409896}
+  OnLeft: 1
+  OnBottom: 1
 --- !u!114 &1062837796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3954,9 +3954,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
-  onLeft: 0
-  onBottom: 0
+  Canvas: {fileID: 873409896}
+  OnLeft: 0
+  OnBottom: 0
 --- !u!114 &1520361736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5304,9 +5304,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6eb5b191fd643a7a4e4d4888645801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
-  onLeft: 1
-  onBottom: 0
+  Canvas: {fileID: 873409896}
+  OnLeft: 1
+  OnBottom: 0
 --- !u!114 &1902056612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5772,7 +5772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ac28d996ae24e6c8881fc78eb46015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 873409896}
+  Canvas: {fileID: 873409896}
 --- !u!222 &2022326757
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5857,22 +5857,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6995023b27d40738042708542d90ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audio: {fileID: 2070074907}
-  play: {fileID: 142382327}
-  pause: {fileID: 164995464}
-  previous: {fileID: 1334220369}
-  next: {fileID: 376723353}
-  shuffle: {fileID: 1393181769}
-  repeat: {fileID: 189381506}
-  currentTime: {fileID: 1223802701}
-  fullTime: {fileID: 1088358401}
-  artist: {fileID: 418097670}
-  visualization: {fileID: 1383157080}
-  timeline: {fileID: 2125300691}
-  volumeCircle: {fileID: 11917191}
-  volumeSlider: {fileID: 852975162}
-  colorCircle: {fileID: 1196425010}
-  colorElement: {fileID: 1130034106}
+  Audio: {fileID: 2070074907}
+  PlayButton: {fileID: 142382327}
+  PauseButton: {fileID: 164995464}
+  PreviousButton: {fileID: 1334220369}
+  NextButton: {fileID: 376723353}
+  ShuffleButton: {fileID: 1393181769}
+  RepeatButton: {fileID: 189381506}
+  CurrentTime: {fileID: 1223802701}
+  FullTime: {fileID: 1088358401}
+  Artist: {fileID: 418097670}
+  Visualization: {fileID: 1383157080}
+  Timeline: {fileID: 2125300691}
+  VolumeCircle: {fileID: 11917191}
+  VolumeSlider: {fileID: 852975162}
+  ColorCircle: {fileID: 1196425010}
+  ColorElement: {fileID: 1130034106}
 --- !u!4 &2050724487
 Transform:
   m_ObjectHideFlags: 0
@@ -5992,11 +5992,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb68c02f7a633448a942032fb38248f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audio: {fileID: 2070074907}
-  player: {fileID: 873409895}
-  playerControl: {fileID: 2050724485}
-  vizContents: {fileID: 93743669}
-  defaultStart: 1
+  Audio: {fileID: 2070074907}
+  Player: {fileID: 873409895}
+  PlayerControl: {fileID: 2050724485}
+  VizContents: {fileID: 93743669}
+  DefaultStart: 1
 --- !u!4 &2070074909
 Transform:
   m_ObjectHideFlags: 0

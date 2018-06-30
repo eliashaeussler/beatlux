@@ -3,52 +3,48 @@
  */
 
 using UnityEngine;
-using System.Collections;
-
 
 [RequireComponent(typeof(Rigidbody))]
-public class CameraMover : MonoBehaviour {
+public class CameraMover : MonoBehaviour
+{
+    private bool _permitmove;
 
-    private Rigidbody rb;
-    private Vector3 spawnPosition = Vector3.zero;
-    private Quaternion spawnRotation; 
-    
+    private Rigidbody _rb;
+    private bool _resetPosition;
+    private Vector3 _rotation = Vector3.zero;
+    private Vector3 _spawnPosition = Vector3.zero;
+    private Quaternion _spawnRotation;
 
-    private Vector3 velocity = Vector3.zero;
-    private Vector3 rotation = Vector3.zero;
-    private bool permitmove = false;
-    private bool resetPosition = false;
-   
 
-    
+    private Vector3 _velocity = Vector3.zero;
+
+
     /**
      * Set camera in the right position
      **/
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        spawnPosition = rb.position;
-        spawnRotation = rb.rotation;
+        _rb = GetComponent<Rigidbody>();
+        _spawnPosition = _rb.position;
+        _spawnRotation = _rb.rotation;
     }
 
     /**
      * Actual movement of the camera
      **/
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (resetPosition)
+        if (_resetPosition)
         {
-            resetPosition = false;
-            rb.position = spawnPosition;
-            rb.rotation = spawnRotation;
+            _resetPosition = false;
+            _rb.position = _spawnPosition;
+            _rb.rotation = _spawnRotation;
         }
 
-        if (permitmove)
-        {
-            PerformMovement();
-            PerformRotation();
-        }
-       
+        if (!_permitmove) return;
+
+        PerformMovement();
+        PerformRotation();
     }
 
     /**
@@ -63,48 +59,40 @@ public class CameraMover : MonoBehaviour {
     /**
      * Handover of inputs from controller
      **/
-    public void Move(Vector3 _velocity)
+    public void Move(Vector3 velocity)
     {
-        velocity = _velocity;
+        _velocity = velocity;
     }
 
-    public void Rotate(Vector3 _rotation)
+    public void Rotate(Vector3 rotation)
     {
-        rotation = _rotation;
+        _rotation = rotation;
     }
 
     public void resPosition()
     {
-        resetPosition = true;
+        _resetPosition = true;
     }
 
-    public void Permission(bool _permitmove)
+    public void Permission(bool permitmove)
     {
-        permitmove = _permitmove;
-
+        _permitmove = permitmove;
     }
 
 
     /**
      * Camera movement
      **/
-    void PerformMovement()
+    private void PerformMovement()
     {
-        if (velocity != Vector3.zero)
-        {
-            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
-        }
-
+        if (_velocity != Vector3.zero) _rb.MovePosition(_rb.position + _velocity * Time.fixedDeltaTime);
     }
 
     /**
      * Camera Rotation
      **/
-    void PerformRotation()
+    private void PerformRotation()
     {
-        rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-
-        
+        _rb.MoveRotation(_rb.rotation * Quaternion.Euler(_rotation));
     }
 }
-

@@ -2,272 +2,235 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using System;
 using System.Collections;
 using System.IO;
-using System.Collections.Generic;
-using System;
-using System.Threading;
 using System.Linq;
-using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
+public class MenuFunctions : MonoBehaviour
+{
+    private string _currentLang = "English";
 
-public class MenuFunctions : MonoBehaviour {
+    private TextAsset _textAsset;
 
-	public GameSettings gameSettings;
-	public Lang LangManager;
-	protected string currentLang = "English";
+    public AudioSource Audio;
+    public int DefaultStart = 1;
 
-	public AudioSource audio;
-	public GameObject player;
-	public GameObject playerControl;
-	public Transform vizContents;
-	public int defaultStart = 1;
+    public GameSettings GameSettings;
+    public Lang LangManager;
+    public GameObject Player;
+    public GameObject PlayerControl;
+    public Transform VizContents;
 
-	private bool _sett = false;
-	public bool openSettings {
-		get { return _sett; }
-		set { _sett = value; }
-	}
+    public bool OpenSettings { get; set; }
 
-    TextAsset textAsset;
+    private void Start()
+    {
+        // Set MenuManager
+        Settings.MenuManager = this;
 
-    void Start ()
-	{
-		// Set MenuManager
-		Settings.MenuManager = this;
+        // Set components
+        Audio = GetComponent<AudioSource>();
 
-		// Set components
-		audio = GetComponent<AudioSource> ();
-
-		// Load main menu
-		StartLevel (defaultStart);
-        
+        // Load main menu
+        StartLevel(DefaultStart);
     }
 
-	void OnEnable ()
-	{
-		if (!File.Exists (Application.persistentDataPath + "/gamesettings.json")) {
-			gameSettings = new GameSettings ();
-			gameSettings.fullscreen = true;
-			gameSettings.tutorial = true;
-			gameSettings.language = 0;
-			gameSettings.textureQuality = 0;
-			gameSettings.antialiasing = 0;
-			gameSettings.resolutionIndex = Screen.resolutions.Length - 1;
-			gameSettings.mirrors = 2;
-			string jsonData = JsonUtility.ToJson (gameSettings, true);
-			File.WriteAllText (Application.persistentDataPath + "/gamesettings.json", jsonData);
-		}
+    private void OnEnable()
+    {
+        if (!File.Exists(Application.persistentDataPath + "/gamesettings.json"))
+        {
+            GameSettings = new GameSettings
+            {
+                Fullscreen = true,
+                Tutorial = true,
+                Language = 0,
+                TextureQuality = 0,
+                Antialiasing = 0,
+                ResolutionIndex = Screen.resolutions.Length - 1,
+                Mirrors = 2
+            };
 
+            var jsonData = JsonUtility.ToJson(GameSettings, true);
+            File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData);
+        }
 
-		gameSettings = JsonUtility.FromJson<GameSettings> (File.ReadAllText (Application.persistentDataPath + "/gamesettings.json"));
-        textAsset = (TextAsset)Resources.Load("XML/lang");
-        if (File.Exists (Application.persistentDataPath + "/gamesettings.json") == true) {
-			switch (gameSettings.language) {
-			case 0:
-				currentLang = "English";
-				break;
+        GameSettings =
+            JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+        _textAsset = Resources.Load("XML/lang") as TextAsset;
 
-			case 1:
-				currentLang = "German";
-				break;
+        if (File.Exists(Application.persistentDataPath + "/gamesettings.json"))
+            switch (GameSettings.Language)
+            {
+                case 0:
+                    _currentLang = "English";
+                    break;
 
-			default:
-				break;
-			}
-		}
-        LangManager = new Lang(textAsset, currentLang, false);
+                case 1:
+                    _currentLang = "German";
+                    break;
+            }
+
+        LangManager = new Lang(_textAsset, _currentLang, false);
     }
 
 
+    public void StartLevel(int level)
+    {
+        if (!Application.CanStreamedLevelBeLoaded(level)) return;
 
-	public void StartLevel (int level)
-	{
-		if (Application.CanStreamedLevelBeLoaded (level)) {
-			StartCoroutine (StartLevelAsync (level));
-		}
+        // Destroy unused GameObjects
+        DestroyOld();
+
+        // Start level
+        StartCoroutine(StartLevelAsync(level));
     }
 
-	private IEnumerator StartLevelAsync (int level)
-	{
-		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync (level, LoadSceneMode.Additive);
+    private IEnumerator StartLevelAsync(int level)
+    {
+        var asyncLoad = SceneManager.LoadSceneAsync(level, LoadSceneMode.Additive);
 
-		while (!asyncLoad.isDone) {
-			yield return null;
-		}
+        while (!asyncLoad.isDone) yield return null;
 
-		// Destroy unused GameObjects
-		DestroyOld ();
-
-		// Update skybox and unload last scene
-		SetLevel (level);
-	}
-
-	public VisualizationObj NextVisualization ()
-	{
-		// Set default visualization
-		if (Settings.Selected.Visualization == null) {
-			Settings.Selected.Visualization = Settings.Visualizations.First ();
-		}
-
-		// Set default color scheme
-		if (Settings.Selected.ColorScheme == null
-			&& !Settings.Selected.Visualization.Equals (Settings.Defaults.Visualization)) {
-
-			Settings.Selected.ColorScheme = ColorScheme.GetDefault (Settings.Selected.Visualization);
-		}
-
-		// Set color scheme
-		Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
-
-		// Select first file
-		if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Count > 0
-			&& Settings.Selected.File == null) {
-
-			Settings.Selected.File = Settings.Selected.Playlist.Files.First ();
-		}
-
-		// Start visualization level
-		if (Settings.Selected.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Selected.Visualization.BuildNumber))
-		{
-			// Do nothing.
-		}
-		else if (Settings.Defaults.Visualization != null && Application.CanStreamedLevelBeLoaded (Settings.Defaults.Visualization.BuildNumber))
-		{
-			Settings.Selected.Visualization = Settings.Defaults.Visualization;
-			Settings.Selected.ColorScheme = null;
-		}
-		else
-		{
-			return null;
-		}
-
-		return Settings.Selected.Visualization;
-	}
-
-	public void StartVisualization ()
-	{
-		VisualizationObj viz = NextVisualization ();
-
-		if (viz != null)
-		{
-			// Start visualization
-			StartLevel (viz.BuildNumber);
-		}
-		else
-		{
-			// Show dialog
-			GameObject.Find ("MenuManager").GetComponent<Dialog> ().ShowDialog (
-				"Keine Visualisierung",
-				"Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
-			);
-		}
-	}
-
-	private void SetLevel (int level)
-	{
-		// Show or hide player skin
-		player.SetActive (IsVisualization (level));
-		playerControl.SetActive (IsVisualization (level));
-
-		// Set skybox
-		if (!IsVisualization (level) || level == Settings.Defaults.Visualization.BuildNumber)
-		{
-			RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/Nebula");
-		}
-		else
-		{
-			VisualizationObj viz = Array.Find (Settings.Visualizations, x => x.BuildNumber == level);
-
-			if (viz.Skybox != null) {
-				RenderSettings.skybox = Resources.Load<Material> ("Skyboxes/" + viz.Skybox);
-			} else {
-				RenderSettings.skybox = null;
-			}
-		}
-
-		// Unload last scene
-		if (Settings.Active.Scene > 0) {
-			SceneManager.UnloadSceneAsync (Settings.Active.Scene);
-		}
-		Settings.Active.Scene = level;
-	}
-
-	public void Dismiss ()
-	{
-		Settings.Selected.Visualization = Settings.Active.Visualization;
-		Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
-		Settings.Selected.Playlist = Settings.Active.Playlist;
-		Settings.Selected.File = Settings.Active.File;
-
-		StartVisualization ();
-	}
-
-	public void Close ()
-	{
-		if (Settings.Active.Visualization != null) {
-			Dismiss ();
-		} else {
-			StartLevel (1);
-		}
-	}
-		
-    public void Quit ()
-	{
-		Application.Quit ();
+        // Update skybox and unload last scene
+        SetLevel(level);
     }
 
-	private void DestroyOld ()
-	{
-		for (int i = Settings.MenuManager.vizContents.childCount - 1; i >= 0; i--) {
-			GameObject.DestroyImmediate (Settings.MenuManager.vizContents.GetChild (i).gameObject);
-		}
-	}
+    private static VisualizationObj NextVisualization()
+    {
+        // Set default visualization
+        if (Settings.Selected.Visualization == null) Settings.Selected.Visualization = Settings.Visualizations.First();
 
-	public static void SetSelected ()
-	{
-		// Set selected playlist
-		if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null) {
-			Settings.Selected.Playlist = Settings.Active.Playlist;
-		}
+        // Set default color scheme
+        if (Settings.Selected.ColorScheme == null
+            && !Settings.Selected.Visualization.Equals(Settings.Defaults.Visualization))
+            Settings.Selected.ColorScheme = ColorScheme.GetDefault(Settings.Selected.Visualization);
 
-		// Set selected file
-		if (Settings.Selected.File == null && Settings.Active.File != null &&
-			Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains (Settings.Active.File)) {
+        // Set color scheme
+        Settings.Active.ColorScheme = Settings.Selected.ColorScheme;
 
-			Settings.Selected.File = Settings.Active.File;
-		}
+        // Select first file
+        if (Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Count > 0
+                                               && Settings.Selected.File == null)
+            Settings.Selected.File = Settings.Selected.Playlist.Files.First();
 
-		// Set selected visualization
-		if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null) {
-			Settings.Selected.Visualization = Settings.Active.Visualization;
-		}
-	}
+        // Start visualization level
+        if (Settings.Selected.Visualization != null &&
+            Application.CanStreamedLevelBeLoaded(Settings.Selected.Visualization.BuildNumber))
+        {
+            // Do nothing.
+        }
+        else if (Settings.Defaults.Visualization != null &&
+                 Application.CanStreamedLevelBeLoaded(Settings.Defaults.Visualization.BuildNumber))
+        {
+            Settings.Selected.Visualization = Settings.Defaults.Visualization;
+            Settings.Selected.ColorScheme = null;
+        }
+        else
+        {
+            return null;
+        }
+
+        return Settings.Selected.Visualization;
+    }
+
+    public void StartVisualization()
+    {
+        var viz = NextVisualization();
+
+        if (viz != null)
+            StartLevel(viz.BuildNumber);
+        else
+            GameObject.Find("MenuManager").GetComponent<Dialog>().ShowDialog(
+                "Keine Visualisierung",
+                "Bitte wählen Sie eine gültige Visualisierung aus, um zu starten."
+            );
+    }
+
+    private void SetLevel(int level)
+    {
+        // Show or hide player skin
+        Player.SetActive(IsVisualization(level));
+        PlayerControl.SetActive(IsVisualization(level));
+
+        // Set skybox
+        if (!IsVisualization(level) || level == Settings.Defaults.Visualization.BuildNumber)
+        {
+            RenderSettings.skybox = Resources.Load<Material>("Skyboxes/Nebula");
+        }
+        else
+        {
+            var viz = Array.Find(Settings.Visualizations, x => x.BuildNumber == level);
+            RenderSettings.skybox = viz.Skybox != null ? Resources.Load<Material>("Skyboxes/" + viz.Skybox) : null;
+        }
+
+        // Unload last scene
+        if (Settings.Active.Scene > 0) SceneManager.UnloadSceneAsync(Settings.Active.Scene);
+        Settings.Active.Scene = level;
+    }
+
+    private void Dismiss()
+    {
+        Settings.Selected.Visualization = Settings.Active.Visualization;
+        Settings.Selected.ColorScheme = Settings.Active.ColorScheme;
+        Settings.Selected.Playlist = Settings.Active.Playlist;
+        Settings.Selected.File = Settings.Active.File;
+
+        StartVisualization();
+    }
+
+    public void Close()
+    {
+        if (Settings.Active.Visualization != null)
+            Dismiss();
+        else
+            StartLevel(1);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    private static void DestroyOld()
+    {
+        for (var i = Settings.MenuManager.VizContents.childCount - 1; i >= 0; i--)
+            DestroyImmediate(Settings.MenuManager.VizContents.GetChild(i).gameObject);
+    }
+
+    public static void SetSelected()
+    {
+        // Set selected playlist
+        if (Settings.Selected.Playlist == null && Settings.Active.Playlist != null)
+            Settings.Selected.Playlist = Settings.Active.Playlist;
+
+        // Set selected file
+        if (Settings.Selected.File == null && Settings.Active.File != null &&
+            Settings.Selected.Playlist != null && Settings.Selected.Playlist.Files.Contains(Settings.Active.File))
+            Settings.Selected.File = Settings.Active.File;
+
+        // Set selected visualization
+        if (Settings.Selected.Visualization == null && Settings.Active.Visualization != null)
+            Settings.Selected.Visualization = Settings.Active.Visualization;
+    }
 
 
+    //-- HELPER METHODS
 
-	//-- HELPER METHODS
+    private static bool IsVisualization(int level)
+    {
+        return level == Settings.Defaults.Visualization.BuildNumber ||
+               Settings.Visualizations.Any(viz => viz.BuildNumber == level);
+    }
 
-	public static bool IsVisualization (int level)
-	{
-		// Is default visualization?
-		if (level == Settings.Defaults.Visualization.BuildNumber) return true;
+    public static void ToggleStart()
+    {
+        // Get start button reference
+        var start = GameObject.Find("Canvas/Wrapper/Start");
 
-		// Check all visualizations
-		foreach (VisualizationObj viz in Settings.Visualizations)
-			if (viz.BuildNumber == level) return true;
-
-		return false;
-	}
-
-	public static void ToggleStart ()
-	{
-		// Get start button reference
-		GameObject start = GameObject.Find ("Canvas/Wrapper/Start");
-
-		// Show or hide start button
-		start.SetActive (Settings.Selected.Playlist != null || Settings.Selected.Visualization != null);
-	}
+        // Show or hide start button
+        start.SetActive(Settings.Selected.Playlist != null || Settings.Selected.Visualization != null);
+    }
 }
