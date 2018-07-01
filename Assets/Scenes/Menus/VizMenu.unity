@@ -1256,8 +1256,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c9e64678a5b77478380d2407468460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 2
   Explanation: <b>Farbschemata</b> - Benenne dein Schemata
+  Order: 2
 --- !u!1 &190777854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1528,12 +1528,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b64a1f873753f42b2a923257a4363f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Music: {fileID: 190777858}
-  Viz: {fileID: 2004180699}
-  Ok: {fileID: 552868427}
   Cancel: {fileID: 552868426}
-  Search: {fileID: 1482698308}
   Color: {fileID: 1751632353}
+  Music: {fileID: 190777858}
+  Ok: {fileID: 552868427}
+  Search: {fileID: 1482698308}
+  Viz: {fileID: 2004180699}
 --- !u!4 &213467026
 Transform:
   m_ObjectHideFlags: 0
@@ -2158,10 +2158,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9caec82be9dfa2f4e8e2d63fee69a048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 1
   Explanation: "<b>Farbschemata</b> - Liste aller Farbschemata\n\nW\xE4hle erst links
     eine <b>Visualisierung</b> aus\n\nDr\xFCcke dann <b>+</b> um ein neues Schemata
     zu erstellen..."
+  Order: 1
   Graphic: {fileID: 0}
 --- !u!1 &429656568
 GameObject:
@@ -2312,8 +2312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b68bc98d9ab5d844a25ca6e7ecc07a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tutorials: []
   ExpText: {fileID: 451707763}
+  Tutorials: []
 --- !u!224 &435816929
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3411,9 +3411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff1a502bd7d0b0f43b51f4a1bd514960, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 4
   Explanation: "<b>Start</b> - Dr\xFCcke den Startbutton um die Musikvisualisierung
     zu starten"
+  Order: 4
 --- !u!1 &615002140
 GameObject:
   m_ObjectHideFlags: 0
@@ -3915,9 +3915,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd0b4c1e0e8a8640a493d19fe1652f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 0
   Explanation: "<b>Suchleiste</b> - Eingabefl\xE4che zum Suchen von Visualisierungen\n\n<b>Visualisierungsliste</b>
     - Liste aller verf\xFCgbaren Visualisierungen\n\nLinksklick um fortzufahren..."
+  Order: 0
 --- !u!1 &803735118
 GameObject:
   m_ObjectHideFlags: 0
@@ -4270,8 +4270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eff0ef4c2c1c4f3c8bbbe4187b53fa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Dialog: {fileID: 39440759}
   ColorPicker: {fileID: 875691426}
+  Dialog: {fileID: 39440759}
   PickerObj: {fileID: 336891918}
 --- !u!1 &850509669
 GameObject:
@@ -5615,7 +5615,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: CS_ADD
+          m_StringArgument: 0
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -7712,9 +7712,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1386ad8a26db8f04ba68f2c6f89758c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 3
   Explanation: "<b>Farbauswahl</b> - Klicke auf eins der K\xE4stchen um seine Farbe
     zu \xE4ndern"
+  Order: 3
 --- !u!1 &1637269720
 GameObject:
   m_ObjectHideFlags: 0
@@ -8946,7 +8946,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1753397330}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10981,7 +10981,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2117070075}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

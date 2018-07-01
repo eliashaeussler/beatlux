@@ -408,7 +408,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: PL_ADD
+          m_StringArgument: 10
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -1091,10 +1091,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c37254e394984a4ca8410206ab4cfa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 0
   Explanation: "<b>Suchleiste</b> - Eingabefl\xE4che zum vereinfachten Auffinden von
     Songs\n\n<b>Pfadangabe</b> - Anzeige des ausgew\xE4hlten Pfades\n\n<b>Song-/Ordnerliste</b>
     - Liste aller Songs/Ordner des aktuellen Pfads\n\nLinksklick um fortzufahren..."
+  Order: 0
 --- !u!1 &515287737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,8 +1656,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154602a5d4b11f94bb8df0610b97411a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tutorials: []
   ExpText: {fileID: 1530480282}
+  Tutorials: []
 --- !u!224 &1127931266
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2328,12 +2328,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced62c649130dc94485771478ccd7c3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Music: {fileID: 1169949308}
-  Viz: {fileID: 70122652}
-  Ok: {fileID: 297990218}
   Cancel: {fileID: 297990217}
-  Search: {fileID: 1712950257}
+  Music: {fileID: 1169949308}
+  Ok: {fileID: 297990218}
   PlaylistName: {fileID: 668900327}
+  Search: {fileID: 1712950257}
+  Viz: {fileID: 70122652}
 --- !u!4 &1368887129
 Transform:
   m_ObjectHideFlags: 0
@@ -2575,11 +2575,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 114df7c03ba697b4d866a5cd376f7dde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 1
   Explanation: '<b>Playlist</b> - Liste aller erstellten Playlists
 
 
     Erstelle mit dem <b>+</b> Symbol eine neue Playlist'
+  Order: 1
   Graphic: {fileID: 21300000, guid: 59df6bdb0153cc44ebd855a3b9e44178, type: 3}
 --- !u!1 &1543742263
 GameObject:
@@ -2626,12 +2626,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5152e22ab62532c498c4f5c59c95a3c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 4
   Explanation: '<b>Tabs</b> - Man kann zwischen Musik und Visualisierung hin und her
     wechseln.
 
 
     Klicke nun auf das Visualisierungstab...'
+  Order: 4
 --- !u!1 &1553443065
 GameObject:
   m_ObjectHideFlags: 0
@@ -2952,7 +2952,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2113995382}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3200,8 +3200,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ced407549f238e459653d424d2b56bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 2
   Explanation: "<b>Playlist</b> - Gebe deiner neuen Playlist einen Namen und best\xE4tige"
+  Order: 2
 --- !u!1 &1695277479
 GameObject:
   m_ObjectHideFlags: 0
@@ -3679,9 +3679,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48dcf4c0a0867b74a961ddd704b3e338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Order: 3
   Explanation: "<b>Playlist</b> - F\xFCge einen neuen Track per Drag&Drop oder Doppelklick
     hinzu"
+  Order: 3
 --- !u!1 &2025802265
 GameObject:
   m_ObjectHideFlags: 0

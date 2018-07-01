@@ -678,6 +678,15 @@ public class Playlist : MonoBehaviour
         return playlist != null ? playlist.Files.Find(x => x.Id == fileId) : null;
     }
 
+    public void ShowDialog(string type)
+    {
+        var typeInt = 0;
+        if (int.TryParse(type, out typeInt) && Enum.IsDefined(typeof(Dialog.Type), typeInt))
+        {
+            ShowDialog((Dialog.Type) Enum.ToObject(typeof(Dialog.Type), typeInt));
+        }
+    }
+
     private void ShowDialog(Dialog.Type type, GameObject obj = null)
     {
         if (Dialog == null) return;

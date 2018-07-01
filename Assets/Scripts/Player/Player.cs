@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
@@ -343,7 +343,7 @@ public class Player : MonoBehaviour
             Timeline.value = 0;
     }
 
-    private void SetVolume(float value)
+    public void SetVolume(float value)
     {
         if (Math.Abs(Audio.volume - value) < 1) return;
 

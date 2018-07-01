@@ -2,12 +2,14 @@
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Mono.Data.Sqlite;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 /// <inheritdoc />
 /// <summary>
@@ -564,6 +566,15 @@ public class ColorScheme : MonoBehaviour
 
         // Edit color scheme in database
         Edit(colorScheme);
+    }
+
+    public void ShowDialog(string type)
+    {
+        var typeInt = 0;
+        if (int.TryParse(type, out typeInt) && Enum.IsDefined(typeof(Dialog.Type), typeInt))
+        {
+            ShowDialog((Dialog.Type) Enum.ToObject(typeof(Dialog.Type), typeInt));
+        }
     }
 
     private void ShowDialog(Dialog.Type type, GameObject obj = null)
