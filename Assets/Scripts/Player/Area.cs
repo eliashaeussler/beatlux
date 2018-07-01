@@ -54,8 +54,8 @@ public class Area : MonoBehaviour
         _size.y *= Canvas.transform.localScale.y;
 
         // Change if area is completely stretched
-        if (Math.Abs(_size.x) < 1) _size.x = Camera.main.pixelWidth;
-        if (Math.Abs(_size.y) < 1) _size.y = Camera.main.pixelHeight;
+        if (Math.Abs(_size.x) <= 0) _size.x = Camera.main.pixelWidth;
+        if (Math.Abs(_size.y) <= 0) _size.y = Camera.main.pixelHeight;
     }
 
     private void GetRange()

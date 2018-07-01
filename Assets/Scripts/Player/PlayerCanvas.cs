@@ -31,7 +31,7 @@ public class PlayerCanvas : MonoBehaviour
         // Update Camera Controller reference
         _ctrl = Camera.main.GetComponent<CameraController>();
 
-        if (Math.Abs(Input.GetAxis("Mouse X")) < 1 && Math.Abs(Input.GetAxis("Mouse Y")) < 1) return;
+        if (Math.Abs(Input.GetAxis("Mouse X")) <= 0 && Math.Abs(Input.GetAxis("Mouse Y")) <= 0) return;
 
         _canShow = true;
         Cursor.visible = true;

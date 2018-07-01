@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Elias Haeussler <mail@elias-haeussler.de> (www.elias-haeussler.de).
  */
 
@@ -345,7 +345,7 @@ public class Player : MonoBehaviour
 
     public void SetVolume(float value)
     {
-        if (Math.Abs(Audio.volume - value) < 1) return;
+        if (Math.Abs(Audio.volume - value) <= 0) return;
 
         // Set volume
         Audio.volume = value;
@@ -359,13 +359,14 @@ public class Player : MonoBehaviour
 
     private void SetColors()
     {
-        if ((Settings.Active.Visualization == null || Settings.Active.ColorScheme == null) &&
+        if (Settings.Active.Visualization != null &&
+            (Settings.Active.Visualization == null || Settings.Active.ColorScheme == null) &&
             !Settings.Active.Visualization.Equals(Settings.Defaults.Visualization)) return;
 
         if (Settings.Active.ColorScheme == null) return;
 
         // Get colors from color scheme
-        var colors = Settings.Active.Visualization.Equals(Settings.Defaults.Visualization)
+        var colors = Settings.Active.Visualization != null && Settings.Active.Visualization.Equals(Settings.Defaults.Visualization)
             ? new[] {Color.white}
             : Settings.Active.ColorScheme.Colors;
 
