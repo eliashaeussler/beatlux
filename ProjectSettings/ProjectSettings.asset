@@ -719,9 +719,9 @@ PlayerSettings:
     Unity_Ads: 0
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 3b09dcc0-53ea-4932-a5f2-e201e3bfb97b
+  cloudProjectId: d115c2bf-5d63-4755-8905-f3abc1157f2e
   projectName: beatlux
-  organizationId: maxmustermann123
+  organizationId: beatlux
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
