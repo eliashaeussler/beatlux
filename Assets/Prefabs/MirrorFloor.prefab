@@ -104,14 +104,14 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010189931478}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf564fa7b9700d840b0f7e6b5e39e738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DisablePixelLights: 1
-  TextureSize: 512
   ClipPlaneOffset: 0.07
+  DisablePixelLights: 1
   ReflectLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  TextureSize: 512
